@@ -1,0 +1,1200 @@
+package com.icg.jkt.service.impl;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.google.gson.JsonArray;
+import com.icg.jkt.dao.PatientRegistrationDao;
+import com.icg.jkt.entity.MasAdministrativeSex;
+import com.icg.jkt.entity.MasAppointmentSession;
+import com.icg.jkt.entity.MasAppointmentType;
+import com.icg.jkt.entity.MasBloodGroup;
+import com.icg.jkt.entity.MasCommand;
+import com.icg.jkt.entity.MasDepartment;
+import com.icg.jkt.entity.MasEmployee;
+import com.icg.jkt.entity.MasEmployeeDependent;
+import com.icg.jkt.entity.MasHospital;
+import com.icg.jkt.entity.MasIdentificationType;
+import com.icg.jkt.entity.MasMedicalCategory;
+import com.icg.jkt.entity.MasRank;
+import com.icg.jkt.entity.MasRecordOfficeAddress;
+import com.icg.jkt.entity.MasRegistrationType;
+import com.icg.jkt.entity.MasRelation;
+import com.icg.jkt.entity.MasReligion;
+import com.icg.jkt.entity.MasServiceType;
+import com.icg.jkt.entity.MasState;
+import com.icg.jkt.entity.MasTrade;
+import com.icg.jkt.entity.MasUnit;
+import com.icg.jkt.entity.Patient;
+import com.icg.jkt.entity.Visit;
+import com.icg.jkt.service.PatientRegistrationService;
+import com.icg.jkt.utils.HMSUtil;
+
+
+
+@Service("PatientRegistrationService")
+public class PatientRegistrationServiceImpl implements PatientRegistrationService{
+
+	@Autowired
+	PatientRegistrationDao patientRegistrationDao;
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, Object> findPatientAndDependentFromEmployee(Map<String, String> requestData) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> patientListofEmpAndDependent = new HashMap<String, Object>();
+		Map<Integer, Map<String, Object>> data = new HashMap<Integer, Map<String, Object>>();
+		List<Patient> existingPatientList= new ArrayList<Patient>();
+		List<MasEmployee> empAndDependentPatientList= new ArrayList<MasEmployee>();
+		List<MasEmployeeDependent> dependentPatientList= new ArrayList<MasEmployeeDependent>();
+		
+		
+		
+		long empRankId = 0;
+		long empTradeId = 0;
+		long empTotalService = 0;
+		long empUnitId = 0;
+		long empCommandId = 0;
+		long empRecordOfficeId = 0;
+		long empMaritalStatusId = 0;
+		long empReligionId = 0;
+		long relationId = 0;
+		long genderId=0;
+		long stateId=0;
+		long nok1RelationId=0;
+		long nok2RelationId=0;
+		long patientBloodGroupId=0;
+		long empMedicalCategoryId=0;
+		
+		Date dateOfBirth = null;
+		Date dateME=null;
+		Date empServiceJoinDate=null;
+		int age = 0;
+
+		String name = "";
+		String relation = "";
+		String gender = "";
+		String empName = "";
+		String serviceNo = "";
+		String empRank="";
+		String empTradeName="";
+		String empUnitName="";
+		String empCommandName="";
+		String empRecordOfficeName="";
+		String empMaritalStatusName="";
+		String empReligion="";
+		String patientAddress="";
+		String city="";
+		String stateName="";
+		String mobileNumber = "";
+		String patientEmailId="";
+		String patientBloodGroup="";
+		
+		String nok1Name=""; 
+		String nok1Relation="";
+		String nok1ContactNo="";
+		String Nok1Address="";
+		String nok1PoliceStation="";
+		String nok1Pincode="";
+		String nok1MobileNo="";
+		String nok1EamilId="";
+		
+		String nok2Name=""; 
+		String nok2Relation="";
+		String nok2ContactNo="";
+		String nok2Address="";
+		String nok2PoliceStation="";
+		String nok2Pincode="";
+		String nok2MobileNo="";
+		String nok2EamilId="";
+		String empMedicalCategory="";
+		
+		
+		
+		BigDecimal patientPincode= new BigDecimal(0) ;
+		
+		if (!requestData.isEmpty() && requestData != null ) {
+			if (requestData.get("serviceNo") != null && !requestData.get("serviceNo").isEmpty()) {
+				serviceNo = requestData.get("serviceNo");
+				patientListofEmpAndDependent = patientRegistrationDao.findPatientAndDependentFromEmployee(serviceNo);
+				
+				if(patientListofEmpAndDependent.size()>0 && !patientListofEmpAndDependent.isEmpty()) {
+					existingPatientList = (List<Patient>)patientListofEmpAndDependent.get("patientList");
+					if(!existingPatientList.isEmpty() && existingPatientList.size()>0) {
+						int rowCount=0;
+						for(Patient patient : existingPatientList) {
+							Map<String, Object> responsePatientMap = new HashMap<String, Object>();
+							String patientName = "";
+							if (patient.getPatientName() != null) {
+								patientName = patient.getPatientName();
+							}
+							// Employee related details 
+							
+							serviceNo= patient.getServiceNo();
+							empRankId= patient.getMasRank().getRankId();
+							empRank = patient.getMasRank().getRankName();
+							empTradeId= patient.getMasTrade().getTradeId();
+							empTradeName= patient.getMasTrade().getTradeName();
+							empName= patient.getEmployeeName();
+							empTotalService= HMSUtil.calculateAgeNoOfYear(patient.getServiceJoinDate());
+							empServiceJoinDate =patient.getServiceJoinDate();
+							empUnitId=patient.getMasUnit().getUnitId();
+							empUnitName=patient.getMasUnit().getUnitName();
+							empCommandId=patient.getMasCommand().getCommandId();
+							empCommandName=patient.getMasCommand().getCommandName();
+							empRecordOfficeId=patient.getMasRecordOfficeAddress().getRecordOfficeAddressId();
+							empRecordOfficeName=patient.getMasRecordOfficeAddress().getAddress();
+							empMaritalStatusId=patient.getMasMaritalStatus().getMaritalStatusId();
+							empMaritalStatusName=patient.getMasMaritalStatus().getMaritalStatusName();
+							empReligionId=patient.getMasReligion().getReligionId();
+							empReligion=patient.getMasReligion().getReligionName();
+							
+							
+							
+							// patient related details 
+							name = patientName;
+							age = HMSUtil.calculateAgeNoOfYear(patient.getDateOfBirth());
+							gender = patient.getMasAdministrativeSex().getAdministrativeSexName();
+							genderId = patient.getMasAdministrativeSex().getAdministrativeSexId();
+							dateOfBirth = patient.getDateOfBirth();
+							relation = patient.getMasRelation().getRelationName();
+							relationId=patient.getMasRelation().getRelationId();
+							mobileNumber=patient.getMobileNumber();
+							patientAddress = patient.getAddress();
+							city = patient.getCity();
+							stateId = patient.getMasState().getStateId();
+							stateName = patient.getMasState().getStateName();
+							patientPincode = patient.getPincode();
+							patientEmailId=patient.getEmailId();
+							patientBloodGroup = patient.getMasBloodGroup().getBloodGroupName();
+							patientBloodGroupId = patient.getMasBloodGroup().getBloodGroupId();
+							
+							// Medical category and Date ME only for employee  patient 
+							empMedicalCategory=(patient.getMasMedicalCategory()!=null ?patient.getMasMedicalCategory().getMedicalCategoryName():"");
+							empMedicalCategoryId=(patient.getMasMedicalCategory()!=null ?patient.getMasMedicalCategory().getMedicalCategoryId():0);
+							dateME=patient.getDateMe();
+							
+							// NOK1 related details 
+							
+							nok1Name = patient.getNok1Name();
+							nok1RelationId = patient.getMasRelationNok1().getRelationId();
+							nok1Relation=patient.getMasRelationNok1().getRelationName();
+							nok1ContactNo=patient.getNok1ContactNo();
+							Nok1Address=patient.getNok1Address();
+							nok1PoliceStation=patient.getNok1PoliceStation();
+							nok1Pincode=patient.getNok1PinCode();
+							nok1MobileNo=patient.getNok1MobileNo();
+							nok1EamilId=patient.getNok1EmailId();
+							
+							
+							// NOK2 related details 
+							
+							
+							nok2Name=patient.getNok2Name();
+							nok2RelationId=patient.getMasRelationNok2().getRelationId();
+							nok2Relation=patient.getMasRelationNok2().getRelationName();
+							nok2ContactNo=patient.getNok2ContactNo();
+							nok2Address=patient.getNok2Address();
+							nok2PoliceStation=patient.getNok2PoliceStation();
+							nok2Pincode=patient.getNok2PinCode();
+							nok2MobileNo=patient.getNok2MobileNo();
+							nok2EamilId=patient.getNok2EmailId();
+							
+							
+							responsePatientMap.put("Id", patient.getPatientId());
+							responsePatientMap.put("uhidNo", patient.getUhidNo());
+							responsePatientMap.put("name", name);
+							responsePatientMap.put("age", age);
+							responsePatientMap.put("gender", gender);
+							responsePatientMap.put("genderId", genderId);
+							responsePatientMap.put("dateOfBirth", dateOfBirth);
+							responsePatientMap.put("relation", relation);
+							responsePatientMap.put("relationId", relationId);
+							responsePatientMap.put("mobileNumber",mobileNumber);
+							responsePatientMap.put("patientAddress",patientAddress);
+							responsePatientMap.put("city",city);
+							responsePatientMap.put("stateId",stateId);
+							responsePatientMap.put("stateName",stateName);
+							responsePatientMap.put("patientPincode",patientPincode);
+							responsePatientMap.put("patientEmailId",patientEmailId);
+							responsePatientMap.put("patientBloodGroup",patientBloodGroup);
+							responsePatientMap.put("patientBloodGroupId",patientBloodGroupId);
+							
+							responsePatientMap.put("empMedicalCategory",empMedicalCategory);
+							responsePatientMap.put("empMedicalCategoryId",empMedicalCategoryId);
+							responsePatientMap.put("dateME",dateME);
+							
+							responsePatientMap.put("serviceNo",serviceNo);
+							responsePatientMap.put("empRankId",empRankId);
+							responsePatientMap.put("empRank",empRank);
+							responsePatientMap.put("empTradeId",empTradeId);
+							responsePatientMap.put("empTradeName",empTradeName);
+							responsePatientMap.put("empName",empName);
+							responsePatientMap.put("empTotalService",empTotalService);
+							responsePatientMap.put("empServiceJoinDate",empServiceJoinDate);
+							responsePatientMap.put("empUnitId",empUnitId);
+							responsePatientMap.put("empUnitName",empUnitName);
+							responsePatientMap.put("empCommandId",empCommandId);
+							responsePatientMap.put("empCommandName",empCommandName);
+							responsePatientMap.put("empRecordOfficeId",empRecordOfficeId);
+							responsePatientMap.put("empRecordOfficeName",empRecordOfficeName);
+							
+							responsePatientMap.put("empMaritalStatusId",empMaritalStatusId);
+							responsePatientMap.put("empMaritalStatusName",empMaritalStatusName);
+							responsePatientMap.put("empReligionId",empReligionId);
+							responsePatientMap.put("empReligion",empReligion);
+							
+							responsePatientMap.put("nok1Name",nok1Name);
+							responsePatientMap.put("nok1RelationId",nok1RelationId);
+							responsePatientMap.put("nok1Relation",nok1Relation);
+							responsePatientMap.put("nok1ContactNo",nok1ContactNo);
+							responsePatientMap.put("Nok1Address",Nok1Address);
+							responsePatientMap.put("nok1PoliceStation",nok1PoliceStation);
+							responsePatientMap.put("nok1Pincode",nok1Pincode);
+							responsePatientMap.put("nok1MobileNo",nok1MobileNo);
+							responsePatientMap.put("nok1EamilId",nok1EamilId);
+							
+							responsePatientMap.put("nok2Name",nok2Name);
+							responsePatientMap.put("nok2RelationId",nok2RelationId);
+							responsePatientMap.put("nok2Relation",nok2Relation);
+							responsePatientMap.put("nok2ContactNo",nok2ContactNo);
+							responsePatientMap.put("nok2Address",nok2Address);
+							responsePatientMap.put("nok2PoliceStation",nok2PoliceStation);
+							responsePatientMap.put("nok2Pincode",nok2Pincode);
+							responsePatientMap.put("nok2MobileNo",nok2MobileNo);
+							responsePatientMap.put("nok2EamilId",nok2EamilId);
+							
+							
+							data.put(++rowCount, responsePatientMap);
+							
+							
+						}
+						
+						dependentPatientList = (List<MasEmployeeDependent>)patientListofEmpAndDependent.get("employeeDependentList");
+						if(!dependentPatientList.isEmpty() && dependentPatientList.size()>0  ) {
+							for(MasEmployeeDependent depList :dependentPatientList ) {
+								
+
+								Map<String, Object> responseDepMap = new HashMap<String, Object>();
+								String depPatientName = "";
+								if (depList.getEmployeeDependentFName() != null) {
+									depPatientName = depList.getEmployeeDependentFName();
+								}
+
+								if (depList.getEmployeeDependentMName() != null) {
+									depPatientName = depPatientName + " "
+											+ depList.getEmployeeDependentMName();
+								}
+								if (depList.getEmployeeDependentLName()!= null) {
+									depPatientName = depPatientName + " "
+											+ depList.getEmployeeDependentLName();
+							 
+									}
+								
+								//Patient related data
+								name = depPatientName;
+								age = HMSUtil.calculateAgeNoOfYear(depList.getDateOfBirth());
+								gender = depList.getMasAdministrativeSex().getAdministrativeSexName();
+								genderId = depList.getMasAdministrativeSex().getAdministrativeSexId();
+								dateOfBirth = depList.getDateOfBirth();
+								relation = depList.getMasRelation().getRelationName();
+								relationId=depList.getMasRelation().getRelationId();
+								mobileNumber=depList.getContactNo();
+								patientAddress = depList.getAddress();
+								city = depList.getCity();
+								stateId = depList.getMasState().getStateId();
+								stateName = depList.getMasState().getStateName();
+								patientPincode = depList.getPincode();
+								patientEmailId = depList.getEmailId();
+								patientBloodGroup = depList.getMasBloodGroup().getBloodGroupName();
+								patientBloodGroupId = depList.getMasBloodGroup().getBloodGroupId();
+								
+								
+								//Employee related 
+								
+								serviceNo= depList.getMasEmployee().getServiceNo();
+								empRankId= depList.getMasEmployee().getMasRank().getRankId();
+								empRank = depList.getMasEmployee().getMasRank().getRankName();
+								empTradeId= depList.getMasEmployee().getMasTrade().getTradeId();
+								empTradeName= depList.getMasEmployee().getMasTrade().getTradeName();
+								empName= depList.getMasEmployee().getFirstName(); // full employee name need to be fetch
+								empTotalService= HMSUtil.calculateAgeNoOfYear(depList.getMasEmployee().getJoinDate());
+								empServiceJoinDate=depList.getMasEmployee().getJoinDate();
+								empUnitId=depList.getMasEmployee().getMasUnit2().getUnitId();
+								empUnitName=depList.getMasEmployee().getMasUnit2().getUnitName();
+								empCommandId=depList.getMasEmployee().getMasCommand().getCommandId();
+								empCommandName=depList.getMasEmployee().getMasCommand().getCommandName();
+								empRecordOfficeId=depList.getMasEmployee().getMasRecordOfficeAddress().getRecordOfficeAddressId();
+								empRecordOfficeName=depList.getMasEmployee().getMasRecordOfficeAddress().getAddress();
+								empMaritalStatusId=depList.getMasEmployee().getMasMaritalStatus().getMaritalStatusId();
+								empMaritalStatusName=depList.getMasEmployee().getMasMaritalStatus().getMaritalStatusName();
+								empReligionId=depList.getMasEmployee().getMasReligion().getReligionId();
+								empReligion=depList.getMasEmployee().getMasReligion().getReligionName();
+								
+								
+								// NOK1 related details 
+								
+								nok1Name = depList.getMasEmployee().getNok1Name();
+								nok1RelationId = depList.getMasEmployee().getMasRelation().getRelationId();
+								nok1Relation=depList.getMasEmployee().getMasRelation().getRelationName();
+								nok1ContactNo=depList.getMasEmployee().getNok1ContactNo();
+								Nok1Address=depList.getMasEmployee().getNok1Address();
+								nok1PoliceStation=depList.getMasEmployee().getNok1PoliceStation();
+								nok1Pincode=depList.getMasEmployee().getNok1Pincode();
+								nok1MobileNo=depList.getMasEmployee().getNok1MobileNo();
+								nok1EamilId=depList.getMasEmployee().getNok1EmailId();
+								
+								
+								
+								
+								
+								responseDepMap.put("Id", depList.getEmployeeDependentId());
+								responseDepMap.put("name", name);
+								responseDepMap.put("age", age);
+								responseDepMap.put("gender", gender);
+								responseDepMap.put("genderId", genderId);
+								responseDepMap.put("dateOfBirth", dateOfBirth);
+								responseDepMap.put("relation", relation);
+								responseDepMap.put("relationId", relationId);
+								responseDepMap.put("mobileNumber",mobileNumber);
+								responseDepMap.put("patientAddress",patientAddress);
+								responseDepMap.put("city",city);
+								responseDepMap.put("stateId",stateId);
+								responseDepMap.put("stateName",stateName);
+								responseDepMap.put("patientPincode",patientPincode);
+								responseDepMap.put("patientEmailId",patientEmailId);
+								responseDepMap.put("uhidNo", 0);
+								
+								responseDepMap.put("serviceNo",serviceNo);
+								responseDepMap.put("empRankId",empRankId);
+								responseDepMap.put("empRank",empRank);
+								responseDepMap.put("empTradeId",empTradeId);
+								responseDepMap.put("empTradeName",empTradeName);
+								responseDepMap.put("empName",empName);
+								responseDepMap.put("empTotalService",empTotalService);
+								responseDepMap.put("empServiceJoinDate",empServiceJoinDate);
+								responseDepMap.put("empUnitId",empUnitId);
+								responseDepMap.put("empUnitName",empUnitName);
+								responseDepMap.put("empCommandId",empCommandId);
+								responseDepMap.put("empCommandName",empCommandName);
+								responseDepMap.put("empRecordOfficeId",empRecordOfficeId);
+								responseDepMap.put("empRecordOfficeName",empRecordOfficeName);
+								
+								responseDepMap.put("empMaritalStatusId",empMaritalStatusId);
+								responseDepMap.put("empMaritalStatusName",empMaritalStatusName);
+								responseDepMap.put("empReligionId",empReligionId);
+								responseDepMap.put("empReligion",empReligion);
+								
+								responseDepMap.put("nok1Name",nok1Name);
+								responseDepMap.put("nok1RelationId",nok1RelationId);
+								responseDepMap.put("nok1Relation",nok1Relation);
+								responseDepMap.put("nok1ContactNo",nok1ContactNo);
+								responseDepMap.put("Nok1Address",Nok1Address);
+								responseDepMap.put("nok1PoliceStation",nok1PoliceStation);
+								responseDepMap.put("nok1Pincode",nok1Pincode);
+								responseDepMap.put("nok1MobileNo",nok1MobileNo);
+								responseDepMap.put("nok1EamilId",nok1EamilId);
+								responseDepMap.put("patientBloodGroup",patientBloodGroup);
+								responseDepMap.put("patientBloodGroupId",patientBloodGroupId);
+								
+								
+								data.put(++rowCount, responseDepMap);
+
+							
+								
+							}
+						}
+						
+						
+						empAndDependentPatientList = (List<MasEmployee>)patientListofEmpAndDependent.get("employeeList");
+							if(!empAndDependentPatientList.isEmpty() && empAndDependentPatientList.size()>0  ) {
+							for(MasEmployee ms : empAndDependentPatientList) {
+
+								
+								relation =  HMSUtil.getProperties("adt.properties", "SELF_RELATION");
+								relationId =  Long.parseLong(HMSUtil.getProperties("adt.properties", "SELF_RELATION_ID"));
+								
+								Map<String, Object> responseEmpMap = new HashMap<String, Object>();
+								String patientName = "";
+								if (ms.getFirstName() != null) {
+									patientName = ms.getFirstName();
+								}
+
+								if (ms.getMiddleName() != null) {
+									patientName = patientName + " "
+											+ ms.getMiddleName();
+								}
+								if (ms.getLastName() != null) {
+									patientName = patientName + " "
+											+ ms.getLastName();
+							 
+									}
+								
+								
+								
+								serviceNo= ms.getServiceNo();
+								empRankId= ms.getMasRank().getRankId();
+								empRank = ms.getMasRank().getRankName();
+								empTradeId= ms.getMasTrade().getTradeId();
+								empTradeName= ms.getMasTrade().getTradeName();
+								empName= patientName;
+								empTotalService= HMSUtil.calculateAgeNoOfYear(ms.getJoinDate());
+								empServiceJoinDate = ms.getJoinDate();
+								
+								empUnitId=ms.getMasUnit2().getUnitId();
+								empUnitName=ms.getMasUnit2().getUnitName();
+								empCommandId=ms.getMasCommand().getCommandId();
+								empCommandName=ms.getMasCommand().getCommandName();
+								empRecordOfficeId=ms.getMasRecordOfficeAddress().getRecordOfficeAddressId();
+								empRecordOfficeName=ms.getMasRecordOfficeAddress().getAddress();
+								empMaritalStatusId=ms.getMasMaritalStatus().getMaritalStatusId();
+								empMaritalStatusName=ms.getMasMaritalStatus().getMaritalStatusName();
+								empReligionId=ms.getMasReligion().getReligionId();
+								empReligion=ms.getMasReligion().getReligionName();
+								
+								
+								// NOK1 related details 
+								
+								nok1Name = ms.getNok1Name();
+								nok1RelationId = ms.getMasRelation().getRelationId();
+								nok1Relation=ms.getMasRelation().getRelationName();
+								nok1ContactNo=ms.getNok1ContactNo();
+								Nok1Address=ms.getNok1Address();
+								nok1PoliceStation=ms.getNok1PoliceStation();
+								nok1Pincode=ms.getNok1Pincode();
+								nok1MobileNo=ms.getNok1MobileNo();
+								nok1EamilId=ms.getNok1EmailId();
+								
+								
+								
+								name = patientName;
+								age = HMSUtil.calculateAgeNoOfYear(ms.getDateOfBirth());
+								gender = ms.getMasAdministrativeSex().getAdministrativeSexName();
+								genderId = ms.getMasAdministrativeSex().getAdministrativeSexId();
+								dateOfBirth = ms.getDateOfBirth();
+								//mobileNumber=ms.getMobileNumber();
+								patientAddress = ms.getLocalAddress();
+								city = ms.getCity();
+								stateId = ms.getMasState2().getStateId();
+								stateName = ms.getMasState2().getStateName();
+								patientPincode = ms.getPincode();
+								patientEmailId=ms.getEmail();
+								patientBloodGroup = ms.getMasBloodGroup().getBloodGroupName();
+								patientBloodGroupId = ms.getMasBloodGroup().getBloodGroupId();
+								
+								
+								responseEmpMap.put("uhidNo", 0);
+								responseEmpMap.put("Id", ms.getEmployeeId());
+								responseEmpMap.put("name", name);
+								responseEmpMap.put("age", age);
+								responseEmpMap.put("gender", gender);
+								responseEmpMap.put("genderId", genderId);
+								responseEmpMap.put("dateOfBirth", dateOfBirth);
+								responseEmpMap.put("relation", relation);
+								responseEmpMap.put("relationId", relationId);
+								responseEmpMap.put("mobileNumber",mobileNumber);
+								responseEmpMap.put("patientAddress",patientAddress);
+								responseEmpMap.put("city",city);
+								responseEmpMap.put("stateId",stateId);
+								responseEmpMap.put("stateName",stateName);
+								responseEmpMap.put("patientPincode",patientPincode);
+								responseEmpMap.put("patientEmailId",patientEmailId);
+								responseEmpMap.put("patientBloodGroup", patientBloodGroup);
+								responseEmpMap.put("patientBloodGroupId", patientBloodGroupId);
+								
+								
+								responseEmpMap.put("serviceNo",serviceNo);
+								responseEmpMap.put("empRankId",empRankId);
+								responseEmpMap.put("empRank",empRank);
+								responseEmpMap.put("empTradeId",empTradeId);
+								responseEmpMap.put("empTradeName",empTradeName);
+								responseEmpMap.put("empName",empName);
+								responseEmpMap.put("empTotalService",empTotalService);
+								responseEmpMap.put("empServiceJoinDate",empServiceJoinDate);
+								responseEmpMap.put("empUnitId",empUnitId);
+								responseEmpMap.put("empUnitName",empUnitName);
+								responseEmpMap.put("empCommandId",empCommandId);
+								responseEmpMap.put("empCommandName",empCommandName);
+								responseEmpMap.put("empRecordOfficeId",empRecordOfficeId);
+								responseEmpMap.put("empRecordOfficeName",empRecordOfficeName);
+								
+								responseEmpMap.put("empMaritalStatusId",empMaritalStatusId);
+								responseEmpMap.put("empMaritalStatusName",empMaritalStatusName);
+								responseEmpMap.put("empReligionId",empReligionId);
+								responseEmpMap.put("empReligion",empReligion);
+								
+								responseEmpMap.put("nok1Name",nok1Name);
+								responseEmpMap.put("nok1RelationId",nok1RelationId);
+								responseEmpMap.put("nok1Relation",nok1Relation);
+								responseEmpMap.put("nok1ContactNo",nok1ContactNo);
+								responseEmpMap.put("Nok1Address",Nok1Address);
+								responseEmpMap.put("nok1PoliceStation",nok1PoliceStation);
+								responseEmpMap.put("nok1Pincode",nok1Pincode);
+								responseEmpMap.put("nok1MobileNo",nok1MobileNo);
+								responseEmpMap.put("nok1EamilId",nok1EamilId);
+								
+								data.put(++rowCount, responseEmpMap);
+							}
+						}
+							map.put("data", data);
+							map.put("count", data.size());
+							map.put("msg","List of Detail");
+							map.put("status", "1");
+							return map;
+							
+					}else {
+						empAndDependentPatientList = (List<MasEmployee>)patientListofEmpAndDependent.get("employeeList");
+						int rowCount=0;
+						for (MasEmployee ms : empAndDependentPatientList) {
+							
+							relation =  HMSUtil.getProperties("adt.properties", "SELF_RELATION");
+							relationId =  Long.parseLong(HMSUtil.getProperties("adt.properties", "SELF_RELATION_ID"));
+							
+							Map<String, Object> responseEmpMap = new HashMap<String, Object>();
+							String patientName = "";
+							if (ms.getFirstName() != null) {
+								patientName = ms.getFirstName();
+							}
+
+							if (ms.getMiddleName() != null) {
+								patientName = patientName + " "
+										+ ms.getMiddleName();
+							}
+							if (ms.getLastName() != null) {
+								patientName = patientName + " "
+										+ ms.getLastName();
+						 
+								}
+							
+							serviceNo= ms.getServiceNo();
+							empRankId= ms.getMasRank().getRankId();
+							empRank = ms.getMasRank().getRankName();
+							empTradeId= ms.getMasTrade().getTradeId();
+							empTradeName= ms.getMasTrade().getTradeName();
+							empName= patientName;
+							empTotalService= HMSUtil.calculateAgeNoOfYear(ms.getJoinDate());
+							
+							
+							empUnitId=ms.getMasUnit2().getUnitId();
+							empUnitName=ms.getMasUnit2().getUnitName();
+							empCommandId=ms.getMasCommand().getCommandId();
+							empCommandName=ms.getMasCommand().getCommandName();
+							empRecordOfficeId=ms.getMasRecordOfficeAddress().getRecordOfficeAddressId();
+							empRecordOfficeName=ms.getMasRecordOfficeAddress().getAddress();
+							empMaritalStatusId=ms.getMasMaritalStatus().getMaritalStatusId();
+							empMaritalStatusName=ms.getMasMaritalStatus().getMaritalStatusName();
+							empReligionId=ms.getMasReligion().getReligionId();
+							empReligion=ms.getMasReligion().getReligionName();
+							
+							
+							// NOK1 related details 
+							
+							nok1Name = ms.getNok1Name();
+							nok1RelationId = ms.getMasRelation().getRelationId();
+							nok1Relation=ms.getMasRelation().getRelationName();
+							nok1ContactNo=ms.getNok1ContactNo();
+							Nok1Address=ms.getNok1Address();
+							nok1PoliceStation=ms.getNok1PoliceStation();
+							nok1Pincode=ms.getNok1Pincode();
+							nok1MobileNo=ms.getNok1MobileNo();
+							nok1EamilId=ms.getNok1EmailId();
+							
+							
+							
+							name = patientName;
+							age = HMSUtil.calculateAgeNoOfYear(ms.getDateOfBirth());
+							gender = ms.getMasAdministrativeSex().getAdministrativeSexName();
+							genderId = ms.getMasAdministrativeSex().getAdministrativeSexId();
+							dateOfBirth = ms.getDateOfBirth();
+							//mobileNumber=ms.getMobileNumber();
+							patientAddress = ms.getLocalAddress();
+							city = ms.getCity();
+							stateId = ms.getMasState2().getStateId();
+							stateName = ms.getMasState2().getStateName();
+							patientPincode = ms.getPincode();
+							patientEmailId=ms.getEmail();
+							patientBloodGroup = ms.getMasBloodGroup().getBloodGroupName();
+							patientBloodGroupId = ms.getMasBloodGroup().getBloodGroupId();
+							
+							
+							
+							responseEmpMap.put("uhidNo", 0);
+							responseEmpMap.put("Id", ms.getEmployeeId());
+							responseEmpMap.put("name", name);
+							responseEmpMap.put("age", age);
+							responseEmpMap.put("gender", gender);
+							responseEmpMap.put("genderId", genderId);
+							responseEmpMap.put("dateOfBirth", dateOfBirth);
+							responseEmpMap.put("relation", relation);
+							responseEmpMap.put("relationId", relationId);
+							responseEmpMap.put("mobileNumber",mobileNumber);
+							responseEmpMap.put("patientAddress",patientAddress);
+							responseEmpMap.put("city",city);
+							responseEmpMap.put("stateId",stateId);
+							responseEmpMap.put("stateName",stateName);
+							responseEmpMap.put("patientPincode",patientPincode);
+							responseEmpMap.put("patientEmailId",patientEmailId);
+							responseEmpMap.put("patientBloodGroup",patientBloodGroup);
+							responseEmpMap.put("patientBloodGroupId",patientBloodGroupId);
+							
+							
+							responseEmpMap.put("serviceNo",serviceNo);
+							responseEmpMap.put("empRankId",empRankId);
+							responseEmpMap.put("empRank",empRank);
+							responseEmpMap.put("empTradeId",empTradeId);
+							responseEmpMap.put("empTradeName",empTradeName);
+							responseEmpMap.put("empName",empName);
+							responseEmpMap.put("empTotalService",empTotalService);
+							responseEmpMap.put("empUnitId",empUnitId);
+							responseEmpMap.put("empUnitName",empUnitName);
+							responseEmpMap.put("empCommandId",empCommandId);
+							responseEmpMap.put("empCommandName",empCommandName);
+							responseEmpMap.put("empRecordOfficeId",empRecordOfficeId);
+							responseEmpMap.put("empRecordOfficeName",empRecordOfficeName);
+							
+							responseEmpMap.put("empMaritalStatusId",empMaritalStatusId);
+							responseEmpMap.put("empMaritalStatusName",empMaritalStatusName);
+							responseEmpMap.put("empReligionId",empReligionId);
+							responseEmpMap.put("empReligion",empReligion);
+							
+							responseEmpMap.put("nok1Name",nok1Name);
+							responseEmpMap.put("nok1RelationId",nok1RelationId);
+							responseEmpMap.put("nok1Relation",nok1Relation);
+							responseEmpMap.put("nok1ContactNo",nok1ContactNo);
+							responseEmpMap.put("Nok1Address",Nok1Address);
+							responseEmpMap.put("nok1PoliceStation",nok1PoliceStation);
+							responseEmpMap.put("nok1Pincode",nok1Pincode);
+							responseEmpMap.put("nok1MobileNo",nok1MobileNo);
+							responseEmpMap.put("nok1EamilId",nok1EamilId);
+							
+							
+							data.put(++rowCount, responseEmpMap);
+
+							List<MasEmployeeDependent> dependentList = ms.getMasEmployeeDependents();
+							if (!dependentList.isEmpty()) {
+
+								for (MasEmployeeDependent depList : dependentList) {
+									Map<String, Object> responseDepMap = new HashMap<String, Object>();
+									String depPatientName = "";
+									if (depList.getEmployeeDependentFName() != null) {
+										depPatientName = depList.getEmployeeDependentFName();
+									}
+
+									if (depList.getEmployeeDependentMName() != null) {
+										depPatientName = depPatientName + " "
+												+ depList.getEmployeeDependentMName();
+									}
+									if (depList.getEmployeeDependentLName()!= null) {
+										depPatientName = depPatientName + " "
+												+ depList.getEmployeeDependentLName();
+								 
+										}
+									
+									
+									name = depPatientName;
+									age = HMSUtil.calculateAgeNoOfYear(depList.getDateOfBirth());
+									gender = depList.getMasAdministrativeSex().getAdministrativeSexName();
+									genderId = depList.getMasAdministrativeSex().getAdministrativeSexId();
+									dateOfBirth = depList.getDateOfBirth();
+									relation = depList.getMasRelation().getRelationName();
+									relationId=depList.getMasRelation().getRelationId();
+									
+									mobileNumber=depList.getContactNo();
+									patientAddress = depList.getAddress();
+									city = depList.getCity();
+									//stateId = depList.getMasState().getStateId();
+									//stateName = depList.getMasState().getStateName();
+									patientPincode = depList.getPincode();
+									patientEmailId = depList.getEmailId();
+									//patientBloodGroup = depList.getMasBloodGroup().getBloodGroupName();
+									//patientBloodGroupId = depList.getMasBloodGroup().getBloodGroupId();
+									
+									//Employee related 
+									
+									serviceNo= depList.getMasEmployee().getServiceNo();
+									empRankId= depList.getMasEmployee().getMasRank().getRankId();
+									empRank = depList.getMasEmployee().getMasRank().getRankName();
+									empTradeId= depList.getMasEmployee().getMasTrade().getTradeId();
+									empTradeName= depList.getMasEmployee().getMasTrade().getTradeName();
+									empName= depList.getMasEmployee().getFirstName(); // full employee name need to be fetch
+									empTotalService= HMSUtil.calculateAgeNoOfYear(depList.getMasEmployee().getJoinDate());
+									empUnitId=depList.getMasEmployee().getMasUnit2().getUnitId();
+									empUnitName=depList.getMasEmployee().getMasUnit2().getUnitName();
+									empCommandId=depList.getMasEmployee().getMasCommand().getCommandId();
+									empCommandName=depList.getMasEmployee().getMasCommand().getCommandName();
+									empRecordOfficeId=depList.getMasEmployee().getMasRecordOfficeAddress().getRecordOfficeAddressId();
+									empRecordOfficeName=depList.getMasEmployee().getMasRecordOfficeAddress().getAddress();
+									empMaritalStatusId=depList.getMasEmployee().getMasMaritalStatus().getMaritalStatusId();
+									empMaritalStatusName=depList.getMasEmployee().getMasMaritalStatus().getMaritalStatusName();
+									empReligionId=depList.getMasEmployee().getMasReligion().getReligionId();
+									empReligion=depList.getMasEmployee().getMasReligion().getReligionName();
+									
+									
+									// NOK1 related details 
+									
+									nok1Name = depList.getMasEmployee().getNok1Name();
+									nok1RelationId = depList.getMasEmployee().getMasRelation().getRelationId();
+									nok1Relation=depList.getMasEmployee().getMasRelation().getRelationName();
+									nok1ContactNo=depList.getMasEmployee().getNok1ContactNo();
+									Nok1Address=depList.getMasEmployee().getNok1Address();
+									nok1PoliceStation=depList.getMasEmployee().getNok1PoliceStation();
+									nok1Pincode=depList.getMasEmployee().getNok1Pincode();
+									nok1MobileNo=depList.getMasEmployee().getNok1MobileNo();
+									nok1EamilId=depList.getMasEmployee().getNok1EmailId();
+									
+									
+									
+									
+									responseDepMap.put("uhidNo", 0);
+									responseDepMap.put("Id", depList.getEmployeeDependentId());
+									responseDepMap.put("name", name);
+									responseDepMap.put("age", age);
+									responseDepMap.put("gender", gender);
+									responseDepMap.put("genderId", genderId);
+									responseDepMap.put("dateOfBirth", dateOfBirth);
+									responseDepMap.put("relation", relation);
+									responseDepMap.put("relationId", relationId);
+									responseDepMap.put("mobileNumber",mobileNumber);
+									responseDepMap.put("patientAddress",patientAddress);
+									responseDepMap.put("city",city);
+									responseDepMap.put("stateId",stateId);
+									responseDepMap.put("stateName",stateName);
+									responseDepMap.put("patientPincode",patientPincode);
+									responseDepMap.put("patientEmailId",patientEmailId);
+									responseDepMap.put("patientBloodGroup", patientBloodGroup);
+									responseDepMap.put("patientBloodGroupId", patientBloodGroupId);
+									
+									responseDepMap.put("serviceNo",serviceNo);
+									responseDepMap.put("empRankId",empRankId);
+									responseDepMap.put("empRank",empRank);
+									responseDepMap.put("empTradeId",empTradeId);
+									responseDepMap.put("empTradeName",empTradeName);
+									responseDepMap.put("empName",empName);
+									responseDepMap.put("empTotalService",empTotalService);
+									responseDepMap.put("empUnitId",empUnitId);
+									responseDepMap.put("empUnitName",empUnitName);
+									responseDepMap.put("empCommandId",empCommandId);
+									responseDepMap.put("empCommandName",empCommandName);
+									responseDepMap.put("empRecordOfficeId",empRecordOfficeId);
+									responseDepMap.put("empRecordOfficeName",empRecordOfficeName);
+									
+									responseDepMap.put("empMaritalStatusId",empMaritalStatusId);
+									responseDepMap.put("empMaritalStatusName",empMaritalStatusName);
+									responseDepMap.put("empReligionId",empReligionId);
+									responseDepMap.put("empReligion",empReligion);
+									
+									responseDepMap.put("nok1Name",nok1Name);
+									responseDepMap.put("nok1RelationId",nok1RelationId);
+									responseDepMap.put("nok1Relation",nok1Relation);
+									responseDepMap.put("nok1ContactNo",nok1ContactNo);
+									responseDepMap.put("Nok1Address",Nok1Address);
+									responseDepMap.put("nok1PoliceStation",nok1PoliceStation);
+									responseDepMap.put("nok1Pincode",nok1Pincode);
+									responseDepMap.put("nok1MobileNo",nok1MobileNo);
+									responseDepMap.put("nok1EamilId",nok1EamilId);
+									
+									
+									data.put(++rowCount, responseDepMap);
+
+								}
+							}
+							map.put("data", data);
+							map.put("count", data.size());
+							map.put("msg","List of Detail");
+							map.put("status", "1");
+							return map;
+						}
+					}
+				}
+			}
+		}
+		map.put("msg","Service No does not exist.");
+		map.put("count", data.size());
+		map.put("status", "0");
+		return map;
+	}
+
+
+	@Override
+	public Map<String, Object> getRecordsFordepartmentBloodGroupAndMedicalCategory() {
+		// TODO Auto-generated method stub
+		Map<String,Object>map = new HashMap<String, Object>();
+		List<MasBloodGroup> bloodGroupList = new ArrayList<MasBloodGroup>();
+		List<MasDepartment> departmentList = new ArrayList<MasDepartment>();
+		List<MasMedicalCategory> medicalCategoryList = new ArrayList<MasMedicalCategory>();
+				
+		bloodGroupList = patientRegistrationDao.geBloodGroupList();
+		departmentList = patientRegistrationDao.geDepartmentList();
+		medicalCategoryList= patientRegistrationDao.getMedicalCategoryList();
+				
+				
+		map.put("bloodGroupList",bloodGroupList);
+		map.put("departmentList", departmentList);
+		map.put("medicalCategoryList",medicalCategoryList);
+		return map;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, Object> getTokenNoForDepartmentMultiVisit(Map<String, Object> requestData) {
+		Map<String, Object> responseMap = new HashMap<String, Object>();
+		Map<String, Object> rosterValueForToken = new HashMap<String, Object>();
+		
+		long departmentId=0;
+		long hospitalId=0;
+		
+		String rowId="";
+		String tokenMsg="";
+
+		List<Map<String,Object>> jsonList = new ArrayList<Map<String,Object>>();
+		List<Map<String,Object>> jsonInput = (List<Map<String,Object>>) requestData.get("arrParam");
+		for(Map<String,Object> json : jsonInput) {
+			
+			 rowId =json.get("rowId").toString();
+			 departmentId = Long.parseLong(json.get("deptId").toString());
+			 hospitalId = Long.parseLong(json.get("hospitalId").toString());
+			 
+			 
+			List<String> appointmentTypeList =(List<String>)json.get("appointmentTypeId");
+			for(int i=0;i<appointmentTypeList.size();i++) {
+				Map<String, Object> map = new HashMap<String, Object>();
+				//long appointmentTypeId = Long.parseLong(appointmentTypeList.get(i).toString());
+				long appointmentTypeId = Long.parseLong((appointmentTypeList.get(i)));
+				System.out.println("appointmentTypeId :" +appointmentTypeId);
+				rosterValueForToken = patientRegistrationDao.getTokenNoForDepartmentMultiVisit(rowId,departmentId,hospitalId,appointmentTypeId);
+				if(!rosterValueForToken.isEmpty() && rosterValueForToken.size()>0) {
+					tokenMsg= (String)rosterValueForToken.get("tokenMsg");
+					appointmentTypeId = (long) rosterValueForToken.get("appointmentTypeId");
+					map.put("tokenMsg",tokenMsg);
+					map.put("appointmentTypeId",appointmentTypeId);
+					map.put("rowId",rowId);
+					map.put("status","1");
+				}else {
+					tokenMsg= "No Data available";
+					map.put("tokenMsg",tokenMsg);
+					map.put("status","0");
+				}
+				jsonList.add(map);
+			}
+			
+		}
+		responseMap.put("jsonList", jsonList);
+		return responseMap; 
+	}
+
+
+	@Override
+	public String submitPatientDetails(String requestData ) {
+		List<Long> visitList = new ArrayList<Long>();
+		JSONObject json = new JSONObject();
+		JSONObject jObject = new JSONObject(requestData);
+		JSONObject jsonObj =jObject.getJSONObject("patientDetailsForm");
+		
+		long hospitalId =1; // HospitalId will come from session
+		long department= jsonObj.getLong("department");
+		int priority= Integer.parseInt((jsonObj.getString("priority")));
+		/* JSONArray checkDiv= jsonObj.getJSONArray("checkDiv1"); */
+		long checkDiv = Long.parseLong(jsonObj.getString("divCount"));
+		
+		long uhidNO=jsonObj.getLong("uhidNo");
+		System.out.println(uhidNO);
+		
+		Patient patient = null;
+		
+		if(uhidNO!=0) {
+			long patientId = patientRegistrationDao.getPatientFromUhidNo(uhidNO);
+			Date date= new Date();
+			Timestamp dateTime = new Timestamp(date.getTime());
+			
+			for(int i=0;i<checkDiv;i++) {
+				
+				Visit visit = new Visit();
+				
+				//visit.setTokenNo(Integer.parseInt(jsonObj.getString("tokenNoId"+i)));
+				visit.setTokenNo(Integer.parseInt(jsonObj.getString("tokenNo")));
+				visit.setVisitDate(dateTime);
+				visit.setPriority(priority);
+				
+				MasAppointmentSession maps = new MasAppointmentSession();
+			//	maps.setId(Long.parseLong((String)checkDiv.get(i))); //this code need to check
+				maps.setId(checkDiv);
+				visit.setMasAppointmentSession(maps);
+				
+				Patient p = new Patient();
+				p.setPatientId(patientId);
+				visit.setPatient(p);
+				
+				MasDepartment md = new MasDepartment();
+				md.setDepartmentId(department);
+				visit.setMasDepartment(md);
+				
+				MasHospital mh = new MasHospital();
+				mh.setHospitalId(hospitalId);
+				visit.setMasHospital(mh);
+				
+				MasAppointmentType appType = new MasAppointmentType();
+				appType.setAppointmentTypeId(checkDiv);
+				visit.setMasAppointmentType(appType);
+				
+				long visitId= patientRegistrationDao.saveVisitForRegisteredPatient(visit);
+				
+				if(visitId!=0) {
+					visitList.add(visitId);
+				}
+			}
+			json.put("visitList",visitList);
+			return json.toString();
+			
+		}else {
+			
+			patient = new Patient();
+			
+			String patientName = jsonObj.getString("patientname");
+			patient.setPatientName(patientName);
+			
+			String empService = jsonObj.getString("empService");
+			patient.setServiceNo(empService);
+			
+			
+			String empName = jsonObj.getString("empName");
+			patient.setEmployeeName(empName);
+			
+			
+			String patientAddress = jsonObj.getString("patientAddress");
+			 patient.setAddress(patientAddress);
+			 
+			 if(!jsonObj.getString("patientPincode").isEmpty()) {
+				 String patientPincode = jsonObj.getString("patientPincode");
+					patient.setPincode(new BigDecimal(patientPincode));
+			 }
+			
+			
+			
+			String patientCity = jsonObj.getString("patientCity");
+			patient.setCity(patientCity);
+			
+			String patientDOB = jsonObj.getString("patientDOB");
+			 try {
+					patient.setDateOfBirth(HMSUtil.dateFormatteryyyymmdd(patientDOB));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
+			
+			String patientEmail = jsonObj.getString("patientEmail");
+			patient.setEmailId(patientEmail);
+			
+			String nok1FirstName= jsonObj.getString("nok1Firstname");
+			patient.setNok1Name(nok1FirstName);
+			
+			String nok1Address =jsonObj.getString("nok1Address");
+			patient.setNok1Address(nok1Address);
+			
+			String nok1PoliceStation=jsonObj.getString("nok1Policestation");
+			patient.setNok1PoliceStation(nok1PoliceStation);
+			
+			String nok1Email =jsonObj.getString("nok1Email");
+			patient.setNok1EmailId(nok1Email);
+			
+			String nok2FirstName=jsonObj.getString("nok2Firstname");
+			patient.setNok2Name(nok2FirstName);
+			
+			String nok2Address=jsonObj.getString("nok2Address");
+			patient.setNok2Address(nok2Address);
+			
+			String nok2PoliceStation=jsonObj.getString("nok2Policestation");
+			patient.setNok2PoliceStation(nok2PoliceStation);
+			
+			String nok2Email=jsonObj.getString("nok2Email");
+			patient.setNok2EmailId(nok2Email);
+			
+			 long rankId=jsonObj.getLong("rankId");
+			 MasRank mr =new MasRank();
+			 mr.setRankId(rankId);
+			 patient.setMasRank(mr);
+			
+			 long tradeId= jsonObj.getLong("tradeId"); // trade/branch
+			
+			 MasTrade mt = new MasTrade();
+			 mt.setTradeId(tradeId);
+			 patient.setMasTrade(mt);
+			
+			 if(!jsonObj.getString("empServiceJoinDate").isEmpty()) {
+				 String  empServiceJoinDate=jsonObj.getString("empServiceJoinDate");
+					try {
+						patient.setServiceJoinDate(HMSUtil.dateFormatteryyyymmdd(empServiceJoinDate));
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			 }
+			
+			
+			
+			long unitId=jsonObj.getLong("unitId");
+			 MasUnit mu = new MasUnit();
+			 mu.setUnitId(unitId);
+			 patient.setMasUnit(mu);
+			 
+			 
+			long regionId=jsonObj.getLong("regionId");
+			MasCommand mCommand = new MasCommand();
+			mCommand.setCommandId(regionId);
+			patient.setMasCommand(mCommand);
+			
+			long  recordofficeId=jsonObj.getLong("recordofficeId");
+			MasRecordOfficeAddress recordOfficeAddress = new MasRecordOfficeAddress();
+			recordOfficeAddress.setRecordOfficeAddressId(recordofficeId);
+			patient.setMasRecordOfficeAddress(recordOfficeAddress);
+			
+			long  religionId=jsonObj.getLong("religionId");
+			MasReligion mreligion = new MasReligion();
+			mreligion.setReligionId(religionId);
+			patient.setMasReligion(mreligion);
+			
+			
+			long patientRelationId=jsonObj.getLong("patientRelationId");
+			MasRelation patientRelation = new MasRelation();
+			patientRelation.setRelationId(patientRelationId);
+			patient.setMasRelation(patientRelation);
+			
+			if(jsonObj.getLong("patientGenderId")!=0) {
+				long patientGenderId=jsonObj.getLong("patientGenderId");
+				MasAdministrativeSex patientGender = new MasAdministrativeSex();
+				patientGender.setAdministrativeSexId(patientGenderId);
+				patient.setMasAdministrativeSex(patientGender);
+			}
+			
+			
+			
+			String patientMoblienumber=jsonObj.getString("patientMoblienumber");
+			patient.setMobileNumber(patientMoblienumber);
+			
+			
+			long  patientStateId=jsonObj.getLong("patientStateId");
+			MasState ms = new MasState();
+			ms.setStateId(patientStateId);
+			patient.setMasState(ms);
+			
+			String  nok1Moblienumber=jsonObj.getString("nok1Moblienumber");
+			patient.setNok1MobileNo(nok1Moblienumber);
+			
+			long  nok1RelationId=jsonObj.getLong("nok1RelationId");
+			MasRelation nok1Relation = new MasRelation();
+			nok1Relation.setRelationId(nok1RelationId);
+			patient.setMasRelationNok1(nok1Relation);
+			
+			
+			String  nok1pincode=jsonObj.getString("nok1pincode");
+			patient.setNok1PinCode(nok1pincode);
+			
+			
+			String  nok1Contactnumber=jsonObj.getString("nok1Contactnumber");
+			patient.setNok1ContactNo(nok1Contactnumber);
+			
+			
+			String nok2Moblienumber=jsonObj.getString("nok2Moblienumber");
+			patient.setNok2MobileNo(nok2Moblienumber);
+			
+			long nok2RelationId=jsonObj.getInt("nok2RelationId");
+			MasRelation nok2Relation = new MasRelation();
+			nok2Relation.setRelationId(nok2RelationId);
+			patient.setMasRelationNok2(nok2Relation);
+			
+			String nok2pincode=jsonObj.getString("nok2pincode");
+			patient.setNok2PinCode(nok2pincode);
+			
+			String nok2Contactnumber=jsonObj.getString("nok2Contactnumber");
+			patient.setNok2ContactNo(nok2Contactnumber);
+			
+			long patientId = patientRegistrationDao.savePatient(patient);
+
+			Date date= new Date();
+			Timestamp dateTime = new Timestamp(date.getTime());
+			
+			for(int i=0;i<checkDiv;i++) {
+				
+				Visit visit = new Visit();
+				
+				visit.setTokenNo(Integer.parseInt(jsonObj.getString("tokenNo")));
+				visit.setVisitDate(dateTime);
+				visit.setPriority(priority);
+				
+				MasAppointmentSession maps = new MasAppointmentSession();
+				maps.setId(checkDiv); //this code need to check
+				visit.setMasAppointmentSession(maps);;
+				
+				Patient p = new Patient();
+				p.setPatientId(patientId);
+				visit.setPatient(p);
+				
+				MasDepartment md = new MasDepartment();
+				md.setDepartmentId(department);
+				visit.setMasDepartment(md);
+				
+				
+				MasHospital mh = new MasHospital();
+				mh.setHospitalId(hospitalId);
+				visit.setMasHospital(mh);
+				
+				MasAppointmentType appType = new MasAppointmentType();
+				appType.setAppointmentTypeId(checkDiv);
+				visit.setMasAppointmentType(appType);
+				
+				long visitId= patientRegistrationDao.saveVisitForRegisteredPatient(visit);
+				
+				if(visitId!=0) {
+					visitList.add(visitId);
+				}
+				
+			}
+		}
+		json.put("visitList",visitList);
+		return json.toString();
+	}
+
+
+	@Override
+	public Map<String, Object> showAppointmentForOthers() {
+		// TODO Auto-generated method stub
+		Map<String,Object>map = new HashMap<String, Object>();
+		List<MasRegistrationType> registrationTypeList = new ArrayList<MasRegistrationType>();
+		List<MasDepartment> departmentList = new ArrayList<MasDepartment>();
+		List<MasAdministrativeSex> genderList = new ArrayList<MasAdministrativeSex>();
+		List<MasIdentificationType> identificationList = new ArrayList<MasIdentificationType>();
+		List<MasServiceType> serviceTypeList = new ArrayList<MasServiceType>();
+				
+		registrationTypeList = patientRegistrationDao.getRegistrationTypeList();
+		departmentList = patientRegistrationDao.geDepartmentList();
+		genderList= patientRegistrationDao.getGenderList();
+		identificationList= patientRegistrationDao.getIdentificationList();
+		serviceTypeList=patientRegistrationDao.getServiceTypeList();	
+				
+		map.put("registrationTypeList",registrationTypeList);
+		map.put("departmentList", departmentList);
+		map.put("genderList",genderList);
+		map.put("identificationList",identificationList);
+		map.put("serviceTypeList",serviceTypeList);
+		
+		return map;
+	}	
+		
+		
+	
+	
+}

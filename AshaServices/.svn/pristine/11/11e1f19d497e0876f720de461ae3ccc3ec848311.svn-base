@@ -1,0 +1,154 @@
+package com.icg.jkt.entity;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import java.util.Date;
+import java.util.List;
+
+
+/**
+ * The persistent class for the MAS_BLOOD_GROUP database table.
+ * 
+ */
+@Entity
+@Table(name="MAS_BLOOD_GROUP")
+@NamedQuery(name="MasBloodGroup.findAll", query="SELECT m FROM MasBloodGroup m")
+public class MasBloodGroup implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 50681676974136779L;
+
+	@Id
+	@SequenceGenerator(name="MAS_BLOOD_GROUP_BLOODGROUPID_GENERATOR", sequenceName="BLOOD_GROUP_ID")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="MAS_BLOOD_GROUP_BLOODGROUPID_GENERATOR")
+	@Column(name="BLOOD_GROUP_ID")
+	private long bloodGroupId;
+
+	@Column(name="BLOOD_GROUP_CODE")
+	private String bloodGroupCode;
+
+	@Column(name="BLOOD_GROUP_NAME")
+	private String bloodGroupName;
+
+	@Column(name="LAST_CHG_BY")
+	private String lastChgBy;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name="LAST_CHG_DATE")
+	private Date lastChgDate;
+
+
+
+	private String status;
+
+	@OneToMany(mappedBy="masBloodGroup")
+	@JsonBackReference
+	private List<MasEmployee> masEmployees;
+
+	//bi-directional many-to-one association to MasEmployeeDependent
+	@OneToMany(mappedBy="masBloodGroup")
+	@JsonBackReference
+	private List<MasEmployeeDependent> masEmployeeDependents;
+
+	public MasBloodGroup() {
+	}
+
+	public long getBloodGroupId() {
+		return this.bloodGroupId;
+	}
+
+	public void setBloodGroupId(long bloodGroupId) {
+		this.bloodGroupId = bloodGroupId;
+	}
+
+	public String getBloodGroupCode() {
+		return this.bloodGroupCode;
+	}
+
+	public void setBloodGroupCode(String bloodGroupCode) {
+		this.bloodGroupCode = bloodGroupCode;
+	}
+
+	public String getBloodGroupName() {
+		return this.bloodGroupName;
+	}
+
+	public void setBloodGroupName(String bloodGroupName) {
+		this.bloodGroupName = bloodGroupName;
+	}
+
+	public String getLastChgBy() {
+		return this.lastChgBy;
+	}
+
+	public void setLastChgBy(String lastChgBy) {
+		this.lastChgBy = lastChgBy;
+	}
+
+	public Date getLastChgDate() {
+		return this.lastChgDate;
+	}
+
+	public void setLastChgDate(Date lastChgDate) {
+		this.lastChgDate = lastChgDate;
+	}
+
+
+	public String getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public List<MasEmployee> getMasEmployees() {
+		return this.masEmployees;
+	}
+
+	public void setMasEmployees(List<MasEmployee> masEmployees) {
+		this.masEmployees = masEmployees;
+	}
+
+	public MasEmployee addMasEmployee(MasEmployee masEmployee) {
+		getMasEmployees().add(masEmployee);
+		masEmployee.setMasBloodGroup(this);
+
+		return masEmployee;
+	}
+
+	public MasEmployee removeMasEmployee(MasEmployee masEmployee) {
+		getMasEmployees().remove(masEmployee);
+		masEmployee.setMasBloodGroup(null);
+
+		return masEmployee;
+	}
+
+	public List<MasEmployeeDependent> getMasEmployeeDependents() {
+		return this.masEmployeeDependents;
+	}
+
+	public void setMasEmployeeDependents(List<MasEmployeeDependent> masEmployeeDependents) {
+		this.masEmployeeDependents = masEmployeeDependents;
+	}
+
+	public MasEmployeeDependent addMasEmployeeDependent(MasEmployeeDependent masEmployeeDependent) {
+		getMasEmployeeDependents().add(masEmployeeDependent);
+		masEmployeeDependent.setMasBloodGroup(this);
+
+		return masEmployeeDependent;
+	}
+
+	public MasEmployeeDependent removeMasEmployeeDependent(MasEmployeeDependent masEmployeeDependent) {
+		getMasEmployeeDependents().remove(masEmployeeDependent);
+		masEmployeeDependent.setMasBloodGroup(null);
+
+		return masEmployeeDependent;
+	}
+
+}

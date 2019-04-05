@@ -1,0 +1,63 @@
+package com.icg.jkt.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONObject;
+import org.springframework.stereotype.Repository;
+
+import com.icg.jkt.entity.MasCommand;
+import com.icg.jkt.entity.MasDepartment;
+import com.icg.jkt.entity.MasEmployee;
+import com.icg.jkt.entity.MasIcd;
+import com.icg.jkt.entity.MasState;
+import com.icg.jkt.entity.MasTrade;
+import com.icg.jkt.entity.MasUOM;
+import com.icg.jkt.entity.MasUnit;
+import com.icg.jkt.entity.MasUnitType;
+
+@Repository
+public interface MasterDao {
+
+	List<MasDepartment> getDepartmentList();
+
+	MasEmployee checkEmp(Long i);
+	List<MasIcd> getIcd();	
+	Map<String, List<MasState>>  getAllStates(JSONObject jsonObject);	
+	MasState checkMasState(String stateCode);
+	
+	MasTrade checkTrade(String tradeName);	
+	List<MasTrade> getTradeDetails(String tradeName);	
+	Map<String,Object> getTradeList();
+	List<MasTrade> validateMasTrade(String tradeName);
+	String addTradeDetails(MasTrade masTrade);
+	
+	List<MasCommand> validateMasCommand(String cmdCode, String cmdName);
+	String addMasCommand(MasCommand masCommand);
+	MasCommand chkCommand(String  cmdName);
+	/*List<MasCommand> getAllCommand(JSONObject jsonObj);*/	
+	Map<String, List<MasCommand>> getAllCommand(JSONObject jsonObj);
+	List<MasCommand> getCommand(String cmdName);	
+	String updateCommand(Long cmdId, String cmdCode, String cmdName, String cmdType);
+	String updateCommandStatus(Long cmdId, String cmdCode,String status);
+	
+	/***************************MAS UOM******************************************/
+	List<MasUOM> validateMasUOM(String UOMCode, String UOMName);
+	String addMasUOM(MasUOM masUnit);
+	Map<String,List<MasUOM>> getAllUOM(JSONObject jsonObject);
+	String updateUOMDetails(Long UOMId, String UOMCode,String UOMName);
+	
+	MasUOM chkMasUnit(String UOMCode);
+	String updateUOMStatus(Long UOMId, String UOMCode,String UOMStatus);
+	
+	/*************************MAS UNIT************************************/
+	Map<String, List<MasUnit>> getAllUnit(JSONObject jsondata);
+	List<MasCommand> getCommandList();
+	List<MasUnit> validateUnit(String unitName);
+	String addMasUnit(MasUnit masUnit);
+	List<MasUnitType> getUnitType();
+	String updateUnit(Long uId, String uName, Long commandId, Long uTypId);
+}

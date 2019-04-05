@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+	<title>Manage Registration</title>
+
+	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+
+
+    <!-- Bootstrap core CSS     -->
+    <link href="${pageContext.request.contextPath}/resources/assets/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Animation library for notifications   -->
+    <link href="${pageContext.request.contextPath}/resources/assets/css/animate.min.css" rel="stylesheet"/>
+
+    <!--  Paper Dashboard core CSS    -->
+    <link href="${pageContext.request.contextPath}/resources/assets/css/paper-dashboard.css" rel="stylesheet"/>
+
+    <!--  CSS for Demo Purpose, don't include it in your project     -->
+    <link href="${pageContext.request.contextPath}/resources/assets/css/demo.css" rel="stylesheet" />
+
+    <!--  Fonts and icons     -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
+    <link href="${pageContext.request.contextPath}/resources/assets/css/themify-icons.css" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+
+<script type="text/javascript">
+	window.history.forward();
+	function preventBack() {
+		window.history.forward(1);
+	}
+</script>
+</head>
+<body>
+
+<div class="wrapper">
+	<div class="sidebar" data-background-color="white" data-active-color="danger">
+
+    <!--
+		Tip 1: you can change the color of the sidebar's background using: data-background-color="white | black"
+		Tip 2: you can change the color of the active button using the data-active-color="primary | info | success | warning | danger"
+	-->
+
+    	<div class="sidebar-wrapper">
+            <div class="logo">
+                <a href="#" class="simple-text">
+                    ADMIN
+                </a>
+            </div>
+
+            <ul class="nav">
+                 <li >
+                   <a href="${pageContext.request.contextPath}/v0.1/dashboard/manageRegistration">
+                        <i class="ti-panel"></i>
+                        <p>Dashboard</p>
+                    </a>
+                </li>
+                <li class="active">
+					<a href="#" data-target="#item1" data-toggle="collapse" data-parent="#stacked-menu"> <i class="ti-user"></i>
+                        <p>LOGS<span class="caret arrow"></span></p>
+                    </a>
+						<ul class="nav child_menu nav-stacked collapse left-submenu" id="item1">
+							<li><a href="#" style="font-weight:900;margin-left: 50px"><span></span>Add New Emp</a></li>
+							<li><a href="#" style="font-weight:900;margin-left: 50px">Logs</a></li>
+						</ul>
+					</li>
+                
+                <%-- <li>
+					<a href="#" data-target="#item2" data-toggle="collapse" data-parent="#stacked-menu"> <i class="ti-view-list-alt"></i>
+							<p>Transactions Logs <span class="caret arrow"></span></p>
+					</a>
+					<ul class="nav child_menu nav-stacked collapse left-submenu" id="item2">
+							<li><a href="${pageContext.request.contextPath}/v0.1/dashboard/authlogs" style="font-weight:900;margin-left: 50px"><span></span>Authentication</a></li>
+							<li><a href="#" style="font-weight:900;margin-left: 50px">Ekyc</a></li>
+						</ul>
+					
+					</li> --%>
+				
+				<li>
+                    <a href="#">
+                        <i class="fa fa-user-plus" aria-hidden="true"></i>
+                        <p>Know Emp ID</p>
+                    </a>
+                </li>
+					
+                <li>
+                    <a href="#">
+                        <i class="ti-text"></i>
+                        <p>Track A Emp</p>
+                    </a>
+                </li>
+                <!-- <li>
+                    <a href="icons.html">
+                        <i class="ti-pencil-alt2"></i>
+                        <p>Icons</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="maps.html">
+                        <i class="ti-map"></i>
+                        <p>Maps</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="notifications.html">
+                        <i class="ti-bell"></i>
+                        <p>Notifications</p>
+                    </a>
+                </li>
+				<li class="active-pro">
+                    <a href="upgrade.html">
+                        <i class="ti-export"></i>
+                        <p>Upgrade to PRO</p>
+                    </a>
+                </li> -->
+            </ul>
+    	</div>
+    </div>
+
+    <div class="main-panel">
+		<nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar bar1"></span>
+                        <span class="icon-bar bar2"></span>
+                        <span class="icon-bar bar3"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">View Registration</a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                           <!--  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="ti-panel"></i>
+								<p>Stats</p>
+                            </a> -->
+                        </li>
+                        <!-- <li class="dropdown">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="ti-bell"></i>
+                                    <p class="notification">5</p>
+									<p>Notifications</p>
+									<b class="caret"></b>
+                              </a>
+                              <ul class="dropdown-menu">
+                                <li><a href="#">Notification 1</a></li>
+                                <li><a href="#">Notification 2</a></li>
+                                <li><a href="#">Notification 3</a></li>
+                                <li><a href="#">Notification 4</a></li>
+                                <li><a href="#">Another notification</a></li>
+                              </ul>
+                        </li> -->
+						<li>
+                            <a href="${pageContext.request.contextPath}/" class="btn btn-info btn-lg">
+									<span class="glyphicon glyphicon-log-out"></span> Log out
+							</a>
+							</li>
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+
+<!-- page content -->
+        <div class="right_col" role="main">
+          <div class="">
+            
+            <div class="clearfix"></div>
+
+            
+              <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                 
+                  <div class="x_content">
+
+                    <table class="table table-striped table-hover jambo_table">
+                      <thead>
+                        
+                        <tr>
+                          <th>#</th>
+                          <th>Employee Name</th>
+                          <th>Email Id</th>
+                          <th>Mobile</th>
+                          <th>User Name</th>
+                          
+                          <th>Activate/DeActivate</th>
+
+                          
+                          <th>View Logs</th>
+                        </tr>
+                      </thead>
+                      <tbody class="table-hover">
+                       <c:forEach items="${registationlistobject}" var="registrationlist" varStatus="loop">
+                       <c:set var="index" value="${loop.index}" />
+						<c:set var="index" value="${index + 1}" />
+						
+                       <tr id="row" class="table-row" data-href="#">
+                          <th scope="row">${index}</th>
+                        
+                          <td>${registrationlist.emp_name}</td>
+                           <td>${registrationlist.email_id}</td>
+                            <td>${registrationlist.mobile_no}</td>
+                             <td>${registrationlist.user_name}</td>
+
+												
+
+												<c:choose>
+													<c:when test="${merchantlist.status=='Active'}">
+     													<td><a href="${pageContext.request.contextPath}/v0.1/dashboard/merStatus?merchantid=${registrationlist.mobile_no}&status=InActive"><button type="button" class="btn btn-danger">DeActivate</button></a></td>
+													</c:when>
+													<c:otherwise>
+       													 <td><a href="${pageContext.request.contextPath}/v0.1/dashboard/merStatus?merchantid=${registrationlist.mobile_no}&status=Active"><button type="button" class="btn btn-success">&nbsp;&nbsp;&nbsp;Activate&nbsp;&nbsp;</button></a></td>
+													</c:otherwise>
+												</c:choose>
+
+
+
+						<%-- <td><a href="${pageContext.request.contextPath}/v0.1/dashboard/getmerchantInfo/${merchantlist.merchantId}" style="text-decoration:underline;">View/Modify</a></td> --%>
+						<td><a href="${pageContext.request.contextPath}/v0.1/dashboard/getmerchantInfo/${registrationlist.mobile_no}" style="text-decoration:underline;">View/Modify</a></td>
+                         <td><a href="${pageContext.request.contextPath}/v0.1/dashboard/getmerchantlogbydate/${merchantlist.merchantId}" style="text-decoration:underline;">View Logs</a></td>
+
+                        </tr>
+                        </c:forEach>
+                        <!-- <tr>
+                          <th scope="row">2</th>
+                          <td>Jacob</td>
+                           <td>lotto</td>
+                          <td><span class="label label-danger">InActive</span></td>
+                          <td><button type="button" class="btn btn-success">Activate</button></td>
+                          <td><button type="button" class="btn btn-primary">DeActivate</button></td>
+                          <td><a href="#" style="text-decoration:underline;">View/Modify</a></td>
+                        </tr>
+                        <tr>
+                          <th scope="row">3</th>
+                          <td>Larry</td>
+                           <td>payworld</td>
+                          <td><span class="label label-danger">InActive</span></td>
+                          <td ><button type="button" class="btn btn-success">Activate</button></td>
+                          <td ><button type="button" class="btn btn-primary">DeActivate</button></td>
+                          <td><a href="#" style="text-decoration:underline;">View/Modify</a></td>
+                        </tr> -->
+                        
+                        
+                      </tbody>
+                    </table>
+
+                  </div>
+                </div>
+              </div>
+
+              
+            </div>
+          </div>
+        </div>
+        <!-- /page content -->
+        
+
+
+        <footer class="footer">
+            <div class="container-fluid">
+                <nav class="pull-left">
+                    <ul>
+
+                        <li>
+                            <a href="https://www.filegstnow.com/">
+                               JKtechnosoft Ltd.
+                            </a>
+                        </li>
+                        <!-- <li>
+                            <a href="http://blog.creative-tim.com">
+                               Blog
+                            </a>
+                        </li>
+                        <li>
+                            <a href="http://www.creative-tim.com/license">
+                                Licenses
+                            </a>
+                        </li> -->
+                    </ul>
+                </nav>
+                <div class="copyright pull-right">
+                    &copy; <script>document.write(new Date().getFullYear())</script>, made with <i class="fa fa-heart heart"></i> by <a href="https://www.filegstnow.com/"> Skill lotto sol pvt Ltd.</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+</div>
+
+
+</body>
+
+    <!--   Core JS Files   -->
+    <script src="${pageContext.request.contextPath}/resources/assets/js/jquery-1.10.2.js" type="text/javascript"></script>
+	<script src="${pageContext.request.contextPath}/resources/assets/js/bootstrap.min.js" type="text/javascript"></script>
+
+	<!--  Checkbox, Radio & Switch Plugins -->
+	<script src="${pageContext.request.contextPath}/resources/assets/js/bootstrap-checkbox-radio.js"></script>
+
+	<!--  Charts Plugin -->
+	<script src="${pageContext.request.contextPath}/resources/assets/js/chartist.min.js"></script>
+
+    <!--  Notifications Plugin    -->
+    <script src="${pageContext.request.contextPath}/resources/assets/js/bootstrap-notify.js"></script>
+
+    <!--  Google Maps Plugin    -->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
+
+    <!-- Paper Dashboard Core javascript and methods for Demo purpose -->
+	<script src="${pageContext.request.contextPath}/resources/assets/js/paper-dashboard.js"></script>
+
+	<!-- Paper Dashboard DEMO methods, don't include it in your project! -->
+	<script src="${pageContext.request.contextPath}/resources/assets/js/demo.js"></script>
+
+</html>

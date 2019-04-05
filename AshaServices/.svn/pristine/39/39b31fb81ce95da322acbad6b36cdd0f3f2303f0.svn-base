@@ -1,0 +1,1369 @@
+package com.icg.jkt.entity;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.sql.Timestamp;
+import java.util.List;
+
+
+/**
+ * The persistent class for the MAS_EMPLOYEE database table.
+ * 
+ */
+@Entity
+@Table(name="MAS_EMPLOYEE")
+@NamedQuery(name="MasEmployee.findAll", query="SELECT m FROM MasEmployee m")
+public class MasEmployee implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@SequenceGenerator(name="MAS_EMPLOYEE_EMPLOYEEID_GENERATOR", sequenceName="EMPLOYEE_ID")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="MAS_EMPLOYEE_EMPLOYEEID_GENERATOR")
+	@Column(name="EMPLOYEE_ID")
+	private long employeeId;
+
+	@Column(name="AADHAR_CARD")
+	private String aadharCard;
+
+	@Column(name="ACCOUNT_HEAD")
+	private String accountHead;
+
+	@Column(name="ACCOUNT_NO")
+	private String accountNo;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name="APPOINTMENT_DATE")
+	private Date appointmentDate;
+
+	@Column(name="ARRIVAL_COMPLETED")
+	private Timestamp arrivalCompleted;
+
+	@Column(name="ARRIVAL_REPORT")
+	private String arrivalReport;
+
+	@Column(name="AUTH_FOR_HIGH_VALUE_MED")
+	private String authForHighValueMed;
+
+	@Column(name="BANK_ACCOUNT_CODE")
+	private String bankAccountCode;
+
+	@Column(name="BANK_ACCOUNT_NUMBER")
+	private String bankAccountNumber;
+
+	@Column(name="BANK_CODE")
+	private String bankCode;
+
+	@Column(name="BANK_NAME")
+	private String bankName;
+
+	@Column(name="CELL_NO_EMERGENCY")
+	private String cellNoEmergency;
+
+	@Column(name="CLASSIFICATION_ID")
+	private BigDecimal classificationId;
+
+	private String communication;
+
+	@Column(name="CONSULTATION_ROOM")
+	private String consultationRoom;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name="CONTRACT_DATE")
+	private Date contractDate;
+
+	@Column(name="COST_CENTER_ID")
+	private BigDecimal costCenterId;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name="CURRENT_DIVISION_JOIN_DATE")
+	private Date currentDivisionJoinDate;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name="DATE_OF_BIRTH")
+	private Date dateOfBirth;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name="DATE_OF_MARRIAGE")
+	private Date dateOfMarriage;
+
+	@Column(name="DEPARTMENT_NO")
+	private String departmentNo;
+
+	@Column(name="DEPENDENT_UNIT")
+	private BigDecimal dependentUnit;
+
+	private String designation;
+
+	@Column(name="DISCIPLINE_PENDING")
+	private String disciplinePending;
+
+	@Column(name="DISCIPLINE_REMARKS")
+	private String disciplineRemarks;
+
+	@Column(name="DIVISION_ID")
+	private BigDecimal divisionId;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name="DUTY_EXEMPTION_FROM")
+	private Date dutyExemptionFrom;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name="DUTY_EXEMPTION_TO")
+	private Date dutyExemptionTo;
+
+	private String email;
+
+	@Column(name="EMPLOYEE_CODE")
+	private String employeeCode;
+
+	@Lob
+	@Column(name="EMPLOYEE_PHOTO")
+	private byte[] employeePhoto;
+
+	@Column(name="EMPLOYEE_STATUS_ID")
+	private BigDecimal employeeStatusId;
+
+	@Column(name="EPH_ISN")
+	private BigDecimal ephIsn;
+
+	@Column(name="EXTENSION_DATE")
+	private Timestamp extensionDate;
+
+	@Column(name="FIRST_NAME")
+	private String firstName;
+
+	@Column(name="JOB_CODE")
+	private String jobCode;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name="JOIN_DATE")
+	private Date joinDate;
+
+	@Column(name="LAST_CHG_DATE")
+	private Timestamp lastChgDate;
+
+	@Column(name="LAST_NAME")
+	private String lastName;
+
+	@Column(name="LEAVE_CHOICE1")
+	private String leaveChoice1;
+
+	@Column(name="LEAVE_CHOICE2")
+	private String leaveChoice2;
+
+	@Column(name="LIVING_IN_DATE")
+	private Timestamp livingInDate;
+
+	@Column(name="LIVING_OUT_DATE")
+	private Timestamp livingOutDate;
+
+	private String livinginout;
+
+	@Column(name="LOCAL_ADDRESS")
+	private String localAddress;
+
+	@Column(name="MESS_ID")
+	private BigDecimal messId;
+
+	@Column(name="MIDDLE_NAME")
+	private String middleName;
+
+	@Column(name="MONEY_DRAWN_FROM")
+	private Timestamp moneyDrawnFrom;
+
+	@Column(name="MOVEMENT_IN_STATUS")
+	private String movementInStatus;
+
+	@Column(name="MOVEMENT_OUT_STATUS")
+	private String movementOutStatus;
+
+	@Column(name="NOK1_ADDRESS")
+	private String nok1Address;
+
+	@Column(name="NOK1_CONTACT_NO")
+	private String nok1ContactNo;
+
+	@Column(name="NOK1_EMAIL_ID")
+	private String nok1EmailId;
+
+	@Column(name="NOK1_MOBILE_NO")
+	private String nok1MobileNo;
+
+	@Column(name="NOK1_NAME")
+	private String nok1Name;
+
+	@Column(name="NOK1_PINCODE")
+	private String nok1Pincode;
+
+	@Column(name="NOK1_POLICE_STATION")
+	private String nok1PoliceStation;
+
+	@Column(name="ON_PRC")
+	private String onPrc;
+
+	@Column(name="PAN_NO")
+	private String panNo;
+
+	private String password;
+
+	@Column(name="PER_ADDRESS")
+	private String perAddress;
+
+	@Column(name="PF_NO")
+	private String pfNo;
+
+	private String porslno;
+
+	@Column(name="POSTED_OUT_ID")
+	private BigDecimal postedOutId;
+
+	@Column(name="POSTED_UNIT_ID")
+	private BigDecimal postedUnitId;
+
+	private Timestamp posteddate;
+
+	@Column(name="\"PREFIX\"")
+	private String prefix;
+
+	@Column(name="RANK_CATEGORY_ID")
+	private BigDecimal rankCategoryId;
+
+	@Column(name="RATION_DRAWN_FROM")
+	private Timestamp rationDrawnFrom;
+
+	@Column(name="RATION_MONEY_DRAWN")
+	private String rationMoneyDrawn;
+
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="RECORD_OFFICE")
+	private MasRecordOfficeAddress masRecordOfficeAddress;
+	
+	
+	@Column(name="REGION_ID")
+	private BigDecimal regionId;
+
+	private String remarks;
+
+	@Column(name="ROOM_NO")
+	private BigDecimal roomNo;
+
+	@Column(name="SERVICE_NO")
+	private String serviceNo;
+
+	@Column(name="SPECIALITY_ID")
+	private BigDecimal specialityId;
+
+	private String status;
+
+	@Column(name="\"SUFFIX\"")
+	private String suffix;
+
+	@Column(name="TEL_NO_EMERGENCY")
+	private String telNoEmergency;
+
+	@Column(name="TEL_NO_OFFICE")
+	private String telNoOffice;
+
+	@Column(name="TEL_NO_RESIDENCE")
+	private String telNoResidence;
+
+	private Timestamp tors;
+
+	private String url;
+
+	private String vide;
+
+	//bi-directional many-to-one association to MasAdministrativeSex
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="GENDER_ID")
+	private MasAdministrativeSex masAdministrativeSex;
+
+	//bi-directional many-to-one association to MasBloodGroup
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="BLOOD_GROUP_ID")
+	private MasBloodGroup masBloodGroup;
+
+	//bi-directional many-to-one association to MasCommand
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="COMMAND_ID")
+	private MasCommand masCommand;
+
+	//bi-directional many-to-one association to MasCountry
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="LOCAL_COUNTRY_ID")
+	private MasCountry masCountry1;
+
+	//bi-directional many-to-one association to MasCountry
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="PER_COUNTRY_ID")
+	private MasCountry masCountry2;
+
+	//bi-directional many-to-one association to MasDepartment
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="DEPARTMENT_ID")
+	private MasDepartment masDepartment;
+
+	//bi-directional many-to-one association to MasDistrict
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="PER_DISTRICT_ID")
+	private MasDistrict masDistrict1;
+
+	//bi-directional many-to-one association to MasDistrict
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="LOCAL_DISTRICT_ID")
+	private MasDistrict masDistrict2;
+
+	//bi-directional many-to-one association to MasEmployeeCategory
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="EMP_CATEGORY_ID")
+	private MasEmployeeCategory masEmployeeCategory;
+
+	//bi-directional many-to-one association to MasEmployeeType
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="EMPLOYEE_TYPE_ID")
+	private MasEmployeeType masEmployeeType;
+
+	//bi-directional many-to-one association to MasGrade
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="GRADE_ID")
+	private MasGrade masGrade;
+
+	//bi-directional many-to-one association to MasHospital
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="HOSPITAL_ID")
+	private MasHospital masHospital;
+
+	//bi-directional many-to-one association to MasMaritalStatus
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="MARITAL_STATUS_ID")
+	private MasMaritalStatus masMaritalStatus;
+
+	//bi-directional many-to-one association to MasRank
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="RANK_ID")
+	private MasRank masRank;
+
+	//bi-directional many-to-one association to MasRelation
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="NOK1_RELATION_ID")
+	private MasRelation masRelation;
+
+	//bi-directional many-to-one association to MasReligion
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="RELIGION_ID")
+	private MasReligion masReligion;
+
+	//bi-directional many-to-one association to MasServiceType
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="SERVICE_TYPE_ID")
+	private MasServiceType masServiceType;
+
+	//bi-directional many-to-one association to MasState
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="PER_STATE_ID")
+	private MasState masState1;
+
+	//bi-directional many-to-one association to MasState
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="LOCAL_STATE_ID")
+	private MasState masState2;
+
+	//bi-directional many-to-one association to MasTitle
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="TITLE_ID")
+	private MasTitle masTitle;
+
+	//bi-directional many-to-one association to MasTrade
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="TRADE_ID")
+	private MasTrade masTrade;
+
+	//bi-directional many-to-one association to MasUnit
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="LOCAL_UNIT")
+	private MasUnit masUnit1;
+
+	//bi-directional many-to-one association to MasUnit
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="UNIT_ID")
+	private MasUnit masUnit2;
+
+	//bi-directional many-to-one association to User
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="LAST_CHG_BY")
+	private Users user;
+
+	//bi-directional many-to-one association to User
+	@OneToMany(mappedBy="masEmployee")
+	@JsonBackReference
+	private List<MasEmployeeDepartment> masEmployeeDepartments;
+
+	@OneToMany(mappedBy="masEmployee")
+	@JsonBackReference
+	private List<MasEmployeeDependent> masEmployeeDependents;
+
+	@OneToMany(mappedBy="masEmployee")
+	@JsonBackReference
+	private List<Patient> patients;
+	
+	@Column(name = "CITY")
+	private String city;
+	
+
+	private BigDecimal pincode;
+	
+	
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public BigDecimal getPincode() {
+		return pincode;
+	}
+
+	public void setPincode(BigDecimal pincode) {
+		this.pincode = pincode;
+	}
+
+	public List<MasEmployeeDepartment> getMasEmployeeDepartments() {
+		return masEmployeeDepartments;
+	}
+
+	public void setMasEmployeeDepartments(List<MasEmployeeDepartment> masEmployeeDepartments) {
+		this.masEmployeeDepartments = masEmployeeDepartments;
+	}
+
+	public List<MasEmployeeDependent> getMasEmployeeDependents() {
+		return masEmployeeDependents;
+	}
+
+	public void setMasEmployeeDependents(List<MasEmployeeDependent> masEmployeeDependents) {
+		this.masEmployeeDependents = masEmployeeDependents;
+	}
+
+	public List<Patient> getPatients() {
+		return patients;
+	}
+
+	public void setPatients(List<Patient> patients) {
+		this.patients = patients;
+	}
+
+	@OneToMany(mappedBy="masEmployee")
+	@JsonBackReference
+	private List<Users> users;
+
+	public MasEmployee() {
+	}
+
+	public long getEmployeeId() {
+		return this.employeeId;
+	}
+
+	public void setEmployeeId(long employeeId) {
+		this.employeeId = employeeId;
+	}
+
+	public String getAadharCard() {
+		return this.aadharCard;
+	}
+
+	public void setAadharCard(String aadharCard) {
+		this.aadharCard = aadharCard;
+	}
+
+	public String getAccountHead() {
+		return this.accountHead;
+	}
+
+	public void setAccountHead(String accountHead) {
+		this.accountHead = accountHead;
+	}
+
+	public String getAccountNo() {
+		return this.accountNo;
+	}
+
+	public void setAccountNo(String accountNo) {
+		this.accountNo = accountNo;
+	}
+
+	public Date getAppointmentDate() {
+		return this.appointmentDate;
+	}
+
+	public void setAppointmentDate(Date appointmentDate) {
+		this.appointmentDate = appointmentDate;
+	}
+
+	public Timestamp getArrivalCompleted() {
+		return this.arrivalCompleted;
+	}
+
+	public void setArrivalCompleted(Timestamp arrivalCompleted) {
+		this.arrivalCompleted = arrivalCompleted;
+	}
+
+	public String getArrivalReport() {
+		return this.arrivalReport;
+	}
+
+	public void setArrivalReport(String arrivalReport) {
+		this.arrivalReport = arrivalReport;
+	}
+
+	public String getAuthForHighValueMed() {
+		return this.authForHighValueMed;
+	}
+
+	public void setAuthForHighValueMed(String authForHighValueMed) {
+		this.authForHighValueMed = authForHighValueMed;
+	}
+
+	public String getBankAccountCode() {
+		return this.bankAccountCode;
+	}
+
+	public void setBankAccountCode(String bankAccountCode) {
+		this.bankAccountCode = bankAccountCode;
+	}
+
+	public String getBankAccountNumber() {
+		return this.bankAccountNumber;
+	}
+
+	public void setBankAccountNumber(String bankAccountNumber) {
+		this.bankAccountNumber = bankAccountNumber;
+	}
+
+	public String getBankCode() {
+		return this.bankCode;
+	}
+
+	public void setBankCode(String bankCode) {
+		this.bankCode = bankCode;
+	}
+
+	public String getBankName() {
+		return this.bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+	public String getCellNoEmergency() {
+		return this.cellNoEmergency;
+	}
+
+	public void setCellNoEmergency(String cellNoEmergency) {
+		this.cellNoEmergency = cellNoEmergency;
+	}
+
+	public BigDecimal getClassificationId() {
+		return this.classificationId;
+	}
+
+	public void setClassificationId(BigDecimal classificationId) {
+		this.classificationId = classificationId;
+	}
+
+	public String getCommunication() {
+		return this.communication;
+	}
+
+	public void setCommunication(String communication) {
+		this.communication = communication;
+	}
+
+	public String getConsultationRoom() {
+		return this.consultationRoom;
+	}
+
+	public void setConsultationRoom(String consultationRoom) {
+		this.consultationRoom = consultationRoom;
+	}
+
+	public Date getContractDate() {
+		return this.contractDate;
+	}
+
+	public void setContractDate(Date contractDate) {
+		this.contractDate = contractDate;
+	}
+
+	public BigDecimal getCostCenterId() {
+		return this.costCenterId;
+	}
+
+	public void setCostCenterId(BigDecimal costCenterId) {
+		this.costCenterId = costCenterId;
+	}
+
+	public Date getCurrentDivisionJoinDate() {
+		return this.currentDivisionJoinDate;
+	}
+
+	public void setCurrentDivisionJoinDate(Date currentDivisionJoinDate) {
+		this.currentDivisionJoinDate = currentDivisionJoinDate;
+	}
+
+	public Date getDateOfBirth() {
+		return this.dateOfBirth;
+	}
+
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public Date getDateOfMarriage() {
+		return this.dateOfMarriage;
+	}
+
+	public void setDateOfMarriage(Date dateOfMarriage) {
+		this.dateOfMarriage = dateOfMarriage;
+	}
+
+	public String getDepartmentNo() {
+		return this.departmentNo;
+	}
+
+	public void setDepartmentNo(String departmentNo) {
+		this.departmentNo = departmentNo;
+	}
+
+	public BigDecimal getDependentUnit() {
+		return this.dependentUnit;
+	}
+
+	public void setDependentUnit(BigDecimal dependentUnit) {
+		this.dependentUnit = dependentUnit;
+	}
+
+	public String getDesignation() {
+		return this.designation;
+	}
+
+	public void setDesignation(String designation) {
+		this.designation = designation;
+	}
+
+	public String getDisciplinePending() {
+		return this.disciplinePending;
+	}
+
+	public void setDisciplinePending(String disciplinePending) {
+		this.disciplinePending = disciplinePending;
+	}
+
+	public String getDisciplineRemarks() {
+		return this.disciplineRemarks;
+	}
+
+	public void setDisciplineRemarks(String disciplineRemarks) {
+		this.disciplineRemarks = disciplineRemarks;
+	}
+
+	public BigDecimal getDivisionId() {
+		return this.divisionId;
+	}
+
+	public void setDivisionId(BigDecimal divisionId) {
+		this.divisionId = divisionId;
+	}
+
+	public Date getDutyExemptionFrom() {
+		return this.dutyExemptionFrom;
+	}
+
+	public void setDutyExemptionFrom(Date dutyExemptionFrom) {
+		this.dutyExemptionFrom = dutyExemptionFrom;
+	}
+
+	public Date getDutyExemptionTo() {
+		return this.dutyExemptionTo;
+	}
+
+	public void setDutyExemptionTo(Date dutyExemptionTo) {
+		this.dutyExemptionTo = dutyExemptionTo;
+	}
+
+	public String getEmail() {
+		return this.email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getEmployeeCode() {
+		return this.employeeCode;
+	}
+
+	public void setEmployeeCode(String employeeCode) {
+		this.employeeCode = employeeCode;
+	}
+
+	public byte[] getEmployeePhoto() {
+		return this.employeePhoto;
+	}
+
+	public void setEmployeePhoto(byte[] employeePhoto) {
+		this.employeePhoto = employeePhoto;
+	}
+
+	public BigDecimal getEmployeeStatusId() {
+		return this.employeeStatusId;
+	}
+
+	public void setEmployeeStatusId(BigDecimal employeeStatusId) {
+		this.employeeStatusId = employeeStatusId;
+	}
+
+	public BigDecimal getEphIsn() {
+		return this.ephIsn;
+	}
+
+	public void setEphIsn(BigDecimal ephIsn) {
+		this.ephIsn = ephIsn;
+	}
+
+	public Timestamp getExtensionDate() {
+		return this.extensionDate;
+	}
+
+	public void setExtensionDate(Timestamp extensionDate) {
+		this.extensionDate = extensionDate;
+	}
+
+	public String getFirstName() {
+		return this.firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getJobCode() {
+		return this.jobCode;
+	}
+
+	public void setJobCode(String jobCode) {
+		this.jobCode = jobCode;
+	}
+
+	public Date getJoinDate() {
+		return this.joinDate;
+	}
+
+	public void setJoinDate(Date joinDate) {
+		this.joinDate = joinDate;
+	}
+
+	public Timestamp getLastChgDate() {
+		return this.lastChgDate;
+	}
+
+	public void setLastChgDate(Timestamp lastChgDate) {
+		this.lastChgDate = lastChgDate;
+	}
+
+	public String getLastName() {
+		return this.lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getLeaveChoice1() {
+		return this.leaveChoice1;
+	}
+
+	public void setLeaveChoice1(String leaveChoice1) {
+		this.leaveChoice1 = leaveChoice1;
+	}
+
+	public String getLeaveChoice2() {
+		return this.leaveChoice2;
+	}
+
+	public void setLeaveChoice2(String leaveChoice2) {
+		this.leaveChoice2 = leaveChoice2;
+	}
+
+	public Timestamp getLivingInDate() {
+		return this.livingInDate;
+	}
+
+	public void setLivingInDate(Timestamp livingInDate) {
+		this.livingInDate = livingInDate;
+	}
+
+	public Timestamp getLivingOutDate() {
+		return this.livingOutDate;
+	}
+
+	public void setLivingOutDate(Timestamp livingOutDate) {
+		this.livingOutDate = livingOutDate;
+	}
+
+	public String getLivinginout() {
+		return this.livinginout;
+	}
+
+	public void setLivinginout(String livinginout) {
+		this.livinginout = livinginout;
+	}
+
+	public String getLocalAddress() {
+		return this.localAddress;
+	}
+
+	public void setLocalAddress(String localAddress) {
+		this.localAddress = localAddress;
+	}
+
+	public BigDecimal getMessId() {
+		return this.messId;
+	}
+
+	public void setMessId(BigDecimal messId) {
+		this.messId = messId;
+	}
+
+	public String getMiddleName() {
+		return this.middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
+
+	public Timestamp getMoneyDrawnFrom() {
+		return this.moneyDrawnFrom;
+	}
+
+	public void setMoneyDrawnFrom(Timestamp moneyDrawnFrom) {
+		this.moneyDrawnFrom = moneyDrawnFrom;
+	}
+
+	public String getMovementInStatus() {
+		return this.movementInStatus;
+	}
+
+	public void setMovementInStatus(String movementInStatus) {
+		this.movementInStatus = movementInStatus;
+	}
+
+	public String getMovementOutStatus() {
+		return this.movementOutStatus;
+	}
+
+	public void setMovementOutStatus(String movementOutStatus) {
+		this.movementOutStatus = movementOutStatus;
+	}
+
+	public String getNok1Address() {
+		return this.nok1Address;
+	}
+
+	public void setNok1Address(String nok1Address) {
+		this.nok1Address = nok1Address;
+	}
+
+	public String getNok1ContactNo() {
+		return this.nok1ContactNo;
+	}
+
+	public void setNok1ContactNo(String nok1ContactNo) {
+		this.nok1ContactNo = nok1ContactNo;
+	}
+
+	public String getNok1EmailId() {
+		return this.nok1EmailId;
+	}
+
+	public void setNok1EmailId(String nok1EmailId) {
+		this.nok1EmailId = nok1EmailId;
+	}
+
+	public String getNok1MobileNo() {
+		return this.nok1MobileNo;
+	}
+
+	public void setNok1MobileNo(String nok1MobileNo) {
+		this.nok1MobileNo = nok1MobileNo;
+	}
+
+	public String getNok1Name() {
+		return this.nok1Name;
+	}
+
+	public void setNok1Name(String nok1Name) {
+		this.nok1Name = nok1Name;
+	}
+
+	public String getNok1Pincode() {
+		return this.nok1Pincode;
+	}
+
+	public void setNok1Pincode(String nok1Pincode) {
+		this.nok1Pincode = nok1Pincode;
+	}
+
+	public String getNok1PoliceStation() {
+		return this.nok1PoliceStation;
+	}
+
+	public void setNok1PoliceStation(String nok1PoliceStation) {
+		this.nok1PoliceStation = nok1PoliceStation;
+	}
+
+	public String getOnPrc() {
+		return this.onPrc;
+	}
+
+	public void setOnPrc(String onPrc) {
+		this.onPrc = onPrc;
+	}
+
+	public String getPanNo() {
+		return this.panNo;
+	}
+
+	public void setPanNo(String panNo) {
+		this.panNo = panNo;
+	}
+
+	public String getPassword() {
+		return this.password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getPerAddress() {
+		return this.perAddress;
+	}
+
+	public void setPerAddress(String perAddress) {
+		this.perAddress = perAddress;
+	}
+
+	public String getPfNo() {
+		return this.pfNo;
+	}
+
+	public void setPfNo(String pfNo) {
+		this.pfNo = pfNo;
+	}
+
+	public String getPorslno() {
+		return this.porslno;
+	}
+
+	public void setPorslno(String porslno) {
+		this.porslno = porslno;
+	}
+
+	public BigDecimal getPostedOutId() {
+		return this.postedOutId;
+	}
+
+	public void setPostedOutId(BigDecimal postedOutId) {
+		this.postedOutId = postedOutId;
+	}
+
+	public BigDecimal getPostedUnitId() {
+		return this.postedUnitId;
+	}
+
+	public void setPostedUnitId(BigDecimal postedUnitId) {
+		this.postedUnitId = postedUnitId;
+	}
+
+	public Timestamp getPosteddate() {
+		return this.posteddate;
+	}
+
+	public void setPosteddate(Timestamp posteddate) {
+		this.posteddate = posteddate;
+	}
+
+	public String getPrefix() {
+		return this.prefix;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
+	public BigDecimal getRankCategoryId() {
+		return this.rankCategoryId;
+	}
+
+	public void setRankCategoryId(BigDecimal rankCategoryId) {
+		this.rankCategoryId = rankCategoryId;
+	}
+
+	public Timestamp getRationDrawnFrom() {
+		return this.rationDrawnFrom;
+	}
+
+	public void setRationDrawnFrom(Timestamp rationDrawnFrom) {
+		this.rationDrawnFrom = rationDrawnFrom;
+	}
+
+	public String getRationMoneyDrawn() {
+		return this.rationMoneyDrawn;
+	}
+
+	public void setRationMoneyDrawn(String rationMoneyDrawn) {
+		this.rationMoneyDrawn = rationMoneyDrawn;
+	}
+
+	
+
+	public MasRecordOfficeAddress getMasRecordOfficeAddress() {
+		return masRecordOfficeAddress;
+	}
+
+	public void setMasRecordOfficeAddress(MasRecordOfficeAddress masRecordOfficeAddress) {
+		this.masRecordOfficeAddress = masRecordOfficeAddress;
+	}
+
+	public BigDecimal getRegionId() {
+		return this.regionId;
+	}
+
+	public void setRegionId(BigDecimal regionId) {
+		this.regionId = regionId;
+	}
+
+	public String getRemarks() {
+		return this.remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+
+	public BigDecimal getRoomNo() {
+		return this.roomNo;
+	}
+
+	public void setRoomNo(BigDecimal roomNo) {
+		this.roomNo = roomNo;
+	}
+
+	public String getServiceNo() {
+		return this.serviceNo;
+	}
+
+	public void setServiceNo(String serviceNo) {
+		this.serviceNo = serviceNo;
+	}
+
+	public BigDecimal getSpecialityId() {
+		return this.specialityId;
+	}
+
+	public void setSpecialityId(BigDecimal specialityId) {
+		this.specialityId = specialityId;
+	}
+
+	public String getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getSuffix() {
+		return this.suffix;
+	}
+
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
+	}
+
+	public String getTelNoEmergency() {
+		return this.telNoEmergency;
+	}
+
+	public void setTelNoEmergency(String telNoEmergency) {
+		this.telNoEmergency = telNoEmergency;
+	}
+
+	public String getTelNoOffice() {
+		return this.telNoOffice;
+	}
+
+	public void setTelNoOffice(String telNoOffice) {
+		this.telNoOffice = telNoOffice;
+	}
+
+	public String getTelNoResidence() {
+		return this.telNoResidence;
+	}
+
+	public void setTelNoResidence(String telNoResidence) {
+		this.telNoResidence = telNoResidence;
+	}
+
+	public Timestamp getTors() {
+		return this.tors;
+	}
+
+	public void setTors(Timestamp tors) {
+		this.tors = tors;
+	}
+
+	public String getUrl() {
+		return this.url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getVide() {
+		return this.vide;
+	}
+
+	public void setVide(String vide) {
+		this.vide = vide;
+	}
+
+	public MasAdministrativeSex getMasAdministrativeSex() {
+		return this.masAdministrativeSex;
+	}
+
+	public void setMasAdministrativeSex(MasAdministrativeSex masAdministrativeSex) {
+		this.masAdministrativeSex = masAdministrativeSex;
+	}
+
+	public MasBloodGroup getMasBloodGroup() {
+		return this.masBloodGroup;
+	}
+
+	public void setMasBloodGroup(MasBloodGroup masBloodGroup) {
+		this.masBloodGroup = masBloodGroup;
+	}
+
+	public MasCommand getMasCommand() {
+		return this.masCommand;
+	}
+
+	public void setMasCommand(MasCommand masCommand) {
+		this.masCommand = masCommand;
+	}
+
+	public MasCountry getMasCountry1() {
+		return this.masCountry1;
+	}
+
+	public void setMasCountry1(MasCountry masCountry1) {
+		this.masCountry1 = masCountry1;
+	}
+
+	public MasCountry getMasCountry2() {
+		return this.masCountry2;
+	}
+
+	public void setMasCountry2(MasCountry masCountry2) {
+		this.masCountry2 = masCountry2;
+	}
+
+	public MasDepartment getMasDepartment() {
+		return this.masDepartment;
+	}
+
+	public void setMasDepartment(MasDepartment masDepartment) {
+		this.masDepartment = masDepartment;
+	}
+
+	public MasDistrict getMasDistrict1() {
+		return this.masDistrict1;
+	}
+
+	public void setMasDistrict1(MasDistrict masDistrict1) {
+		this.masDistrict1 = masDistrict1;
+	}
+
+	public MasDistrict getMasDistrict2() {
+		return this.masDistrict2;
+	}
+
+	public void setMasDistrict2(MasDistrict masDistrict2) {
+		this.masDistrict2 = masDistrict2;
+	}
+
+	public MasEmployeeCategory getMasEmployeeCategory() {
+		return this.masEmployeeCategory;
+	}
+
+	public void setMasEmployeeCategory(MasEmployeeCategory masEmployeeCategory) {
+		this.masEmployeeCategory = masEmployeeCategory;
+	}
+
+	public MasEmployeeType getMasEmployeeType() {
+		return this.masEmployeeType;
+	}
+
+	public void setMasEmployeeType(MasEmployeeType masEmployeeType) {
+		this.masEmployeeType = masEmployeeType;
+	}
+
+	public MasGrade getMasGrade() {
+		return this.masGrade;
+	}
+
+	public void setMasGrade(MasGrade masGrade) {
+		this.masGrade = masGrade;
+	}
+
+	public MasHospital getMasHospital() {
+		return this.masHospital;
+	}
+
+	public void setMasHospital(MasHospital masHospital) {
+		this.masHospital = masHospital;
+	}
+
+	public MasMaritalStatus getMasMaritalStatus() {
+		return this.masMaritalStatus;
+	}
+
+	public void setMasMaritalStatus(MasMaritalStatus masMaritalStatus) {
+		this.masMaritalStatus = masMaritalStatus;
+	}
+
+	public MasRank getMasRank() {
+		return this.masRank;
+	}
+
+	public void setMasRank(MasRank masRank) {
+		this.masRank = masRank;
+	}
+
+	public MasRelation getMasRelation() {
+		return this.masRelation;
+	}
+
+	public void setMasRelation(MasRelation masRelation) {
+		this.masRelation = masRelation;
+	}
+
+	public MasReligion getMasReligion() {
+		return this.masReligion;
+	}
+
+	public void setMasReligion(MasReligion masReligion) {
+		this.masReligion = masReligion;
+	}
+
+	public MasServiceType getMasServiceType() {
+		return this.masServiceType;
+	}
+
+	public void setMasServiceType(MasServiceType masServiceType) {
+		this.masServiceType = masServiceType;
+	}
+
+	public MasState getMasState1() {
+		return this.masState1;
+	}
+
+	public void setMasState1(MasState masState1) {
+		this.masState1 = masState1;
+	}
+
+	public MasState getMasState2() {
+		return this.masState2;
+	}
+
+	public void setMasState2(MasState masState2) {
+		this.masState2 = masState2;
+	}
+
+	public MasTitle getMasTitle() {
+		return this.masTitle;
+	}
+
+	public void setMasTitle(MasTitle masTitle) {
+		this.masTitle = masTitle;
+	}
+
+	public MasTrade getMasTrade() {
+		return this.masTrade;
+	}
+
+	public void setMasTrade(MasTrade masTrade) {
+		this.masTrade = masTrade;
+	}
+
+	public MasUnit getMasUnit1() {
+		return this.masUnit1;
+	}
+
+	public void setMasUnit1(MasUnit masUnit1) {
+		this.masUnit1 = masUnit1;
+	}
+
+	public MasUnit getMasUnit2() {
+		return this.masUnit2;
+	}
+
+	public void setMasUnit2(MasUnit masUnit2) {
+		this.masUnit2 = masUnit2;
+	}
+
+	public Users getUser() {
+		return this.user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
+	}
+
+	public List<Users> getUsers() {
+		return this.users;
+	}
+
+	public void setUsers(List<Users> users) {
+		this.users = users;
+	}
+
+	public Users addUser(Users user) {
+		getUsers().add(user);
+		user.setMasEmployee(this);
+
+		return user;
+	}
+
+	public Users removeUser(Users user) {
+		getUsers().remove(user);
+		user.setMasEmployee(null);
+
+		return user;
+	}
+
+	
+
+	
+
+}

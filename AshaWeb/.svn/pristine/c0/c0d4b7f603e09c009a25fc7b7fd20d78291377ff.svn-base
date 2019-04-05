@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.5">
+    <title>REGISTRATION & APPOINTMENT OF OTHERS</title>
+
+    <!-- <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/checkout/"> -->
+	
+	
+   <!-- Jquery for Toggle Show on Button(Token Show)  -->
+	<script src="js/3.3.1/jquery.min.js"></script>
+	 
+		
+		
+    <!-- Bootstrap core CSS -->
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css" rel="stylesheet"  crossorigin="anonymous">    
+	<link href="${pageContext.request.contextPath}/resources/css/style.css" rel="stylesheet" type="text/css" />
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="${pageContext.request.contextPath}/resources/css/form-validation.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap-grid.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap-grid.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap-reboot.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap-reboot.min.css" rel="stylesheet"> 
+	<script>
+	
+	$(document).ready(function() {
+    var brand = document.getElementById('logo-id');
+    brand.className = 'attachment_upload';
+    brand.onchange = function() {
+        document.getElementById('fakeUploadLogo').value = this.value.substring(12);
+    };
+
+    // Source: http://stackoverflow.com/a/4459419/6396981
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function(e) {
+                $('.img-preview').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    $("#logo-id").change(function() {
+        readURL(this);
+    });
+});
+ 
+	</script>
+
+</head>
+
+<!-- <body class="bg-light"> -->
+<body>
+<br>
+    <div class="container"> 
+		         <div class="row">		
+					<div class="col-md-9">					
+					<h6> REGISTRATION & APPOINTMENT  OF ICG EMPLOYEES AND DEPENDENTS</h6>
+					 </div>			 
+					 
+					 <div class="col-md-3">	
+						    
+							<div class="form-group">
+										<div class="row" style="padding-bottom:10px;"> 
+												  <div class="col-md-3">	
+														  
+												  </div>									
+												  <div class="col-md-6">	
+														  <div class="main-img-preview" style="width: 60%;    height: 60%;">
+															<img class="img-responsive thumbnail img-preview" src="images/user.png" title="Preview Logo">
+														  </div>
+												  </div> 
+												  <div class="col-md-3"> 
+												  </div>
+												  
+												  </div>
+												  <div class="row">
+												  <div class="col-md-1">	
+														  
+												  </div>									
+												  <div class="col-md-10">	
+														  	
+													  <div class="input-group">
+														<input id="fakeUploadLogo" class="form-control fake-shadow" placeholder="Choose File" disabled="disabled">
+														<div class="input-group-btn">
+														  <div class="fileUpload btn btn-danger fake-shadow">
+															<span><i class="glyphicon glyphicon-upload"></i> Upload Logo</span>
+															<input id="logo-id" name="logo" type="file" class="attachment_upload">
+														  </div>
+														</div>
+													  </div>
+												  </div> 
+												  <div class="col-md-1"> 
+												  </div>
+												  
+										</div>  
+							</div>
+							  
+					 </div>
+				 </div>
+	
+	 
+	
+	<h6 style="text-decoration:underline">Service Details</h6>
+	<form>
+        <div class="row">		
+            <div class="col-md-4">
+                
+                    <div class="form-group row">
+                        <label for="service" class="col-sm-5 col-form-label">Service No.</label>
+                        <div class="col-sm-7">
+                            <input type="service" class="form-control" id="service" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                 
+                    <div class="form-group row">
+                        <label for="First Name" class="col-sm-5 col-form-label">First Name</label>
+                        <div class="col-sm-7">
+                            <input type="firstname" class="form-control" id="firstname" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                 
+                    <div class="form-group row">
+                        <label for="service" class="col-sm-5 col-form-label">Total Service</label>
+                        <div class="col-sm-7">
+                            <input type="totalservice" class="form-control" id="totalservice" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                 
+                    <div class="form-group row">
+                        <label for="recordoffice" class="col-sm-5 col-form-label">Record Office</label>
+                        <div class="col-sm-7">
+                            <input type="service" class="form-control" id="recordoffice" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                            
+            </div>
+            <div class="col-md-4">
+                
+                    <div class="form-group row">
+                        <label for="rank" class="col-sm-5 col-form-label">Rank</label>
+                        <div class="col-sm-7">
+                            <input type="rank" class="form-control" id="rank" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                
+                    <div class="form-group row">
+                        <label for="middlename" class="col-sm-5 col-form-label">Middle Name</label>
+                        <div class="col-sm-7">
+                            <input type="middlename" class="form-control" id="middlename" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                
+                    <div class="form-group row">
+                        <label for="unit" class="col-sm-5 col-form-label">Unit</label>
+                        <div class="col-sm-7">
+                            <input type="unit" class="form-control" id="unit" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                 
+                    <div class="form-group row">
+                        <label for="marital status" class="col-sm-5 col-form-label">Marital Status</label>
+                        <div class="col-sm-7">
+                            <input type="status" class="form-control" id="maritalstarus" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                               
+            </div>
+            <div class="col-md-4">
+                
+                    <div class="form-group row">
+                        <label for="trade_branch" class="col-sm-5 col-form-label">Trade/Branch</label>
+                        <div class="col-sm-7">
+                            <input type="Trade/Branch" class="form-control" id="trade_branch" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                 
+                    <div class="form-group row">
+                        <label for="lastname" class="col-sm-5 col-form-label">Last Name</label>
+                        <div class="col-sm-7">
+                            <input type="lastname" class="form-control" id="lastname" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                 
+                    <div class="form-group row">
+                        <label for="region" class="col-sm-5 col-form-label">Region/Command</label>
+                        <div class="col-sm-7">
+                            <input type="region" class="form-control" id="region" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                 
+                    <div class="form-group row">
+                        <label for="religion" class="col-sm-5 col-form-label">Religion</label>
+                        <div class="col-sm-7">
+                            <input type="religion" class="form-control" id="religion" placeholder="Auto Populated">
+                        </div>
+                    </div>
+               
+            </div>
+        </div>
+		 </form> 
+		
+		<br>
+		
+		<h6 style="text-decoration:underline">Patient Details</h6>
+		 <form>
+        <div class="row">		
+            <div class="col-md-4">
+			
+                    <div class="form-group row">
+                        <label for="First Name" class="col-sm-5 col-form-label">First Name</label>
+                        <div class="col-sm-7">
+                            <input type="firstname" class="form-control" id="firstname" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                 
+                    <div class="form-group row">
+                        <label for="service" class="col-sm-5 col-form-label">Relation</label>
+                        <div class="col-sm-7">
+                            <input type="service" class="form-control" id="relation" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                 
+                    <div class="form-group row">
+                        <label for="service" class="col-sm-5 col-form-label">Age</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control" id="age" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                 
+                    <div class="form-group row">
+                        <label for="recordoffice" class="col-sm-5 col-form-label">Address</label>
+                        <div class="col-sm-7">
+                            <input type="service" class="form-control" id="address" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                 
+					<div class="form-group row">
+						<label for="recordoffice" class="col-sm-5 col-form-label">Pin Code</label>
+						<div class="col-sm-7">
+							<input type="number" class="form-control" id="pincode" placeholder="Auto Populated">
+						</div>
+					</div>
+				   				
+            </div>
+            <div class="col-md-4">
+			  
+                    <div class="form-group row">
+                        <label for="middlename" class="col-sm-5 col-form-label">Middle Name</label>
+                        <div class="col-sm-7">
+                            <input type="middlename" class="form-control" id="middlename" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                
+                    <div class="form-group row">
+                        <label for="rank" class="col-sm-5 col-form-label">Gender</label>
+                        <div class="col-sm-7">
+                            <input type="rank" class="form-control" id="gender" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                
+                    <div class="form-group row">
+                        <label for="unit" class="col-sm-5 col-form-label">Mobile Number</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control" id="moblienumber" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                 
+                    <div class="form-group row">
+                        <label for="marital status" class="col-sm-5 col-form-label">City</label>
+                        <div class="col-sm-7">
+                            <input type="status" class="form-control" id="city" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                                
+            </div>
+            <div class="col-md-4">
+		 
+                    <div class="form-group row">
+                        <label for="lastname" class="col-sm-5 col-form-label">Last Name</label>
+                        <div class="col-sm-7">
+                            <input type="lastname" class="form-control" id="lastname" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                
+                    <div class="form-group row">
+                        <label for="trade_branch" class="col-sm-5 col-form-label">DOB</label>
+                        <div class="col-sm-7">
+                            <input type="date" class="form-control" id="dob" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                
+                    <div class="form-group row">
+                        <label for="region" class="col-sm-5 col-form-label">Email Address</label>
+                        <div class="col-sm-7">
+                            <input type="email" class="form-control" id="email" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                
+                    <div class="form-group row">
+                        <label for="state" class="col-sm-5 col-form-label">State</label>
+                        <div class="col-sm-7">
+                            <input type="state" class="form-control" id="state" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                
+            </div>
+        </div>
+		</form> 
+		 
+		<br>
+		<h5 style="text-decoration:underline">NOK Details</h5>		
+		<h6 style="text-decoration:underline">NOK Details1</h6>
+		<form>
+        <div class="row">		
+            <div class="col-md-4">
+			    
+                    <div class="form-group row">
+                        <label for="First Name" class="col-sm-5 col-form-label">Name</label>
+                        <div class="col-sm-7">
+                            <input type="firstname" class="form-control" id="firstname" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                
+                    <div class="form-group row">
+                        <label for="recordoffice" class="col-sm-5 col-form-label">Address</label>
+                        <div class="col-sm-7">
+                            <input type="service" class="form-control" id="address" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                
+                    <div class="form-group row">
+                        <label for="unit" class="col-sm-5 col-form-label">Mobile Number</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control" id="moblienumber" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                 				 				
+            </div>
+			
+            <div class="col-md-4">			
+			 
+                    <div class="form-group row">
+                        <label for="service" class="col-sm-5 col-form-label">Relation</label>
+                        <div class="col-sm-7">
+                            <input type="service" class="form-control" id="relation" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                 
+                    <div class="form-group row">
+                        <label for="policestation" class="col-sm-5 col-form-label">Police Station</label>
+                        <div class="col-sm-7">
+                            <input type="middlename" class="form-control" id="policestation" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                
+                    <div class="form-group row">
+                        <label for="region" class="col-sm-5 col-form-label">Email Address</label>
+                        <div class="col-sm-7">
+                            <input type="email" class="form-control" id="email" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                			               
+            </div>
+			
+            <div class="col-md-4">			
+			     
+					<div class="form-group row">
+						<label for="recordoffice" class="col-sm-5 col-form-label">Pin Code</label>
+						<div class="col-sm-7">
+							<input type="number" class="form-control" id="pincode" placeholder="Auto Populated">
+						</div>
+					</div>
+				 
+                    <div class="form-group row">
+                        <label for="contactnumber" class="col-sm-5 col-form-label">Contact Number</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control" id="contactnumber" placeholder="Auto Populated">
+                        </div>
+                    </div>
+                               
+            </div>
+        </div>
+			
+		 </form> 
+		
+		<br>
+		
+		
+		<h6 style="text-decoration:underline">NOK Details2</h6>
+		 <form>
+        <div class="row">		
+            <div class="col-md-4">
+			   
+                    <div class="form-group row">
+                        <label for="First Name" class="col-sm-5 col-form-label">Name</label>
+                        <div class="col-sm-7">
+                            <input type="firstname" class="form-control" id="firstname" placeholder="Enterable Update">
+                        </div>
+                    </div>
+                
+                    <div class="form-group row">
+                        <label for="recordoffice" class="col-sm-5 col-form-label">Address</label>
+                        <div class="col-sm-7">
+                            <input type="service" class="form-control" id="address"  placeholder="Enterable Update">
+                        </div>
+                    </div>
+                
+                    <div class="form-group row">
+                        <label for="unit" class="col-sm-5 col-form-label">Mobile Number</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control" id="moblienumber"  placeholder="Enterable Update">
+                        </div>
+                    </div>
+                				 				
+            </div>
+			
+            <div class="col-md-4">			
+			 
+                    <div class="form-group row">
+                        <label for="service" class="col-sm-5 col-form-label">Relation</label>
+                        <div class="col-sm-7">
+                            <input type="service" class="form-control" id="relation"  placeholder="Enterable Update">
+                        </div>
+                    </div>
+                 
+                    <div class="form-group row">
+                        <label for="policestation" class="col-sm-5 col-form-label">Police Station</label>
+                        <div class="col-sm-7">
+                            <input type="middlename" class="form-control" id="policestation"  placeholder="Enterable Update">
+                        </div>
+                    </div>
+                
+                    <div class="form-group row">
+                        <label for="region" class="col-sm-5 col-form-label">Email Address</label>
+                        <div class="col-sm-7">
+                            <input type="email" class="form-control" id="email"  placeholder="Enterable Update">
+                        </div>
+                    </div>
+                 			               
+            </div>
+			
+            <div class="col-md-4">			
+			   
+					<div class="form-group row">
+						<label for="recordoffice" class="col-sm-5 col-form-label">Pin Code</label>
+						<div class="col-sm-7">
+							<input type="number" class="form-control" id="pincode"  placeholder="Enterable Update">
+						</div>
+					</div>
+				 
+                    <div class="form-group row">
+                        <label for="contactnumber" class="col-sm-5 col-form-label">Contact Number</label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control" id="contactnumber"  placeholder="Enterable Update">
+                        </div>
+                    </div>
+                               
+            </div>
+        </div>
+		
+		  </form>
+		<div class="clearfix"> </div>
+		<br> 
+		<h6 style="text-decoration:underline">Medical Detail</h6>
+		 <form>
+        <div class="row">		
+            <div class="col-md-3">
+			   
+                    <div class="form-group row">
+                        <label for="First Name" class="col-sm-5 col-form-label">Blood Group</label>
+                        <div class="col-sm-7">
+                            <input type="firstname" class="form-control" id="firstname" placeholder="Enterable Update">
+                        </div>
+                    </div>
+                 				
+            </div> 
+            <div class="col-md-3">			
+			    
+                    <div class="form-group row">
+                        <label for="service" class="col-sm-5 col-form-label">Present Medical Category </label>
+                        <!-- <div class="col-sm-7"> -->
+                            <!-- <input type="service" class="form-control" id="presentmedicalcategory"  placeholder="Enterable Update"> -->
+                        <!-- </div> -->						
+						<div class="col-md-7">  
+							<select class="form-control">
+								<option value="0" selected="selected">Select</option>
+								<option value="1">Category 1</option>
+								<option value="2">Category 2</option>								 
+							</select> 
+		                </div>
+                    </div>
+                	               
+            </div> 
+            <div class="col-md-3">			
+			    
+					<div class="form-group row">
+						<label for="date" class="col-sm-2 col-form-label">Date</label>
+						<div class="col-sm-10">
+							<input type="date" class="form-control" id="date"  placeholder="E/A">
+						</div>
+					</div>
+				      
+            </div> 
+			 <div class="col-md-3">			
+			    
+					<div class="form-group row">
+						<label for="recordoffice" class="col-sm-5 col-form-label">Duration</label>
+						<div class="col-md-7">  
+							<select class="form-control">
+								<option value="0" selected="selected">Select</option>
+								<option value="1">Year</option>
+								<option value="2">Month</option> 
+							</select> 
+		                </div>
+					</div>
+				     
+            </div>
+        </div>
+		</form>  
+	 
+	 <div class="clearfix"> </div>
+	      <br> 
+		<h6 style="text-decoration:underline">Visit Detail</h6>
+			 <br> 
+       <form>
+        <div class="row">		
+            <div class="col-md-3">			
+			    
+                    <div class="form-group row">
+                        <label for="service" class="col-sm-4 col-form-label">Department </label> 
+						<div class="col-md-8">   
+							<select class="form-control">
+                                <option value="0" selected="selected">Select</option>
+								<option value="1">General OPD 1</option>
+								<option value="2">General OPD 2</option>								 
+							</select> 
+		                </div>
+                    </div>
+                                
+            </div> 
+            <div class="col-md-2">			
+			     
+                    <div class="form-group row">
+                        <label for="service" class="col-sm-4 col-form-label">Priority</label> 
+						<div class="col-md-8">  
+							<select class="form-control">
+								<option value="0" selected="selected">Select</option>
+								<option value="1"> 1</option>
+								<option value="2"> 2</option>								 
+							</select> 
+		                </div>
+                    </div>
+                	               
+            </div> 
+            <div class="col-md-2">			
+			    
+					<div class="form-group row">
+						<div class="form-check">
+								<input type="checkbox" class="form-check-input" id="exampleCheck1">
+								<label class="form-check-label" for="exampleCheck1">OPD Consultation</label>
+							  </div>
+					    </div>
+				     
+            </div> 
+			 <div class="col-md-2">			
+			     
+					<div class="form-group row">
+						 
+						<div class="col-md-12">  
+							<select class="form-control">
+								<option value="0" selected="selected">Select</option>
+								<option value="1">ME</option>
+								<option value="2">PME1</option> 
+							</select> 
+		                </div>
+					</div>
+				   
+            </div>
+			<div class="col-md-2">			
+			    
+					<div class="form-group  row">
+						<div class="form-check">
+								<input type="checkbox" class="form-check-input" id="exampleCheck1">
+								<label class="form-check-label" for="exampleCheck1">Medical<br> Board</label>
+							  </div>
+					    </div>
+				  
+            </div>
+			<div class="col-md-1">			
+			     
+					<div class="form-group  row">
+						<div class="form-check">
+								<input type="checkbox" class="form-check-input" id="exampleCheck1">
+								<label class="form-check-label" for="exampleCheck1">Initiate ME</label>
+							  </div>
+					    </div>
+				    
+				</div>
+			</div>
+		</form>  
+				 <div class="row">		
+					<div class="col-md-12">			
+
+					<button class="button btn-primary" type="button">Show Token</button>
+						<div id="div1">Display Token
+						</div> 
+					
+					 </div>
+				 </div>
+		 
+		 
+		 <br>
+		 
+		  <div class="row">		
+					<div class="col-md-12">			
+
+					<button class="btn btn-primary" type="button">Submit</button>
+						
+					
+					 </div>
+				 </div>
+		
+		
+			<script>
+			$(document).ready(function(){
+			  $(".button").click(function(){
+				$("#div1").fadeToggle();				 
+			  });
+			});
+			</script>
+
+       
+    </div>
+    <script src="${pageContext.request.contextPath}/resources/js/jquery-3.3.1.slim.min.js"  crossorigin="anonymous"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.min.js"  crossorigin="anonymous"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/form-validation.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/bootstrap.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/bootstrap.min.js"></script>
+	
+	
+</body>
+
+</html>

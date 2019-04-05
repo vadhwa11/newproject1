@@ -1,0 +1,129 @@
+package com.icg.jkt.entity;
+
+import java.io.Serializable;
+import java.sql.Timestamp;
+
+import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.List;
+
+
+/**
+ * The persistent class for the MAS_EMPLOYEE_TYPE database table.
+ * 
+ */
+@Entity
+@Table(name="MAS_EMPLOYEE_TYPE")
+@NamedQuery(name="MasEmployeeType.findAll", query="SELECT m FROM MasEmployeeType m")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class MasEmployeeType implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6765944929958251617L;
+
+	@Id
+	@SequenceGenerator(name="MAS_EMPLOYEE_TYPE_EMPLOYEETYPEID_GENERATOR" )
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="MAS_EMPLOYEE_TYPE_EMPLOYEETYPEID_GENERATOR")
+	@Column(name="EMPLOYEE_TYPE_ID")
+	private long employeeTypeId;
+
+	@Column(name="EMPLOYEE_TYPE_CODE")
+	private String employeeTypeCode;
+
+	@Column(name="EMPLOYEE_TYPE_NAME")
+	private String employeeTypeName;
+
+	@Column(name="LAST_CHG_DATE")
+	private Timestamp lastChgDate;
+
+	private String status;
+
+	//bi-directional many-to-one association to MasEmployee
+	@OneToMany(mappedBy="masEmployeeType")
+	@JsonBackReference
+	private List<MasEmployee> masEmployees;
+
+	//bi-directional many-to-one association to User
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="LAST_CHG_BY")
+	private Users user;
+
+	public MasEmployeeType() {
+	}
+
+	public long getEmployeeTypeId() {
+		return this.employeeTypeId;
+	}
+
+	public void setEmployeeTypeId(long employeeTypeId) {
+		this.employeeTypeId = employeeTypeId;
+	}
+
+	public String getEmployeeTypeCode() {
+		return this.employeeTypeCode;
+	}
+
+	public void setEmployeeTypeCode(String employeeTypeCode) {
+		this.employeeTypeCode = employeeTypeCode;
+	}
+
+	public String getEmployeeTypeName() {
+		return this.employeeTypeName;
+	}
+
+	public void setEmployeeTypeName(String employeeTypeName) {
+		this.employeeTypeName = employeeTypeName;
+	}
+
+	public Timestamp getLastChgDate() {
+		return this.lastChgDate;
+	}
+
+	public void setLastChgDate(Timestamp lastChgDate) {
+		this.lastChgDate = lastChgDate;
+	}
+
+	public String getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public List<MasEmployee> getMasEmployees() {
+		return this.masEmployees;
+	}
+
+	public void setMasEmployees(List<MasEmployee> masEmployees) {
+		this.masEmployees = masEmployees;
+	}
+
+	public MasEmployee addMasEmployee(MasEmployee masEmployee) {
+		getMasEmployees().add(masEmployee);
+		masEmployee.setMasEmployeeType(this);
+
+		return masEmployee;
+	}
+
+	public MasEmployee removeMasEmployee(MasEmployee masEmployee) {
+		getMasEmployees().remove(masEmployee);
+		masEmployee.setMasEmployeeType(null);
+
+		return masEmployee;
+	}
+
+	public Users getUser() {
+		return this.user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
+	}
+
+}

@@ -1,0 +1,7 @@
+eclipse.preferences.version=1
+oracle.eclipse.tools.common.services\:collection.enablement\:javawebapp3.1=false
+oracle.eclipse.tools.common.services\:collection.enablement\:jsf2.2=false
+oracle.eclipse.tools.common.services\:collection.enablement\:jsp2.2=false
+oracle.eclipse.tools.common.services\:discovery.enablement\:javawebapp3.1=false
+oracle.eclipse.tools.common.services\:discovery.enablement\:jsf2.2=false
+oracle.eclipse.tools.common.services\:discovery.enablement\:jsp2.2=false

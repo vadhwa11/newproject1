@@ -1,0 +1,28 @@
+#REST URL
+#addCommand = http://localhost:8083/AshaServices/v0.1/master/addCommand
+#getAllCommand = http://localhost:8083/AshaServices/v0.1/master/getAllCommand
+#updateCommand = http://localhost:8083/AshaServices/v0.1/master/updateCommand
+#updateStatus = http://localhost:8083/AshaServices/v0.1/master/StatusCommand
+#restCommandStatus = http://localhost:8083/AshaServices/v0.1/master/statusCommand
+
+#OSB URL
+#Mas command
+
+addCommandDetails = http://192.168.10.59:7003/AshaMasterAddCommand/RestProxyService/AddCommand
+getCommand = http://localhost:8083/AshaServices/v0.1/master/getAllCommand
+updateCommand = http://192.168.10.59:7003/AshaMasterUpdateCommand/RestService/Update
+statusCommand = http://192.168.10.59:7003/AshaMasterStatusCommand/RestService/StatusCommand
+
+#UOM MASTER
+getAllUOM = http://localhost:8083/AshaServices/v0.1/master/getAllUOM
+updateUOMDetails = http://localhost:8083/AshaServices/v0.1/master/updateUOMDetails
+
+#UNIT MASTER
+getUnitType = http://localhost:8083/AshaServices/v0.1/master/getUnitType
+getCmdList = http://localhost:8083/AshaServices/v0.1/master/getCommandList
+
+#Self Relation code
+SELF_RELATION_ID=8
+REGISTRATION_TYPE_NAME=ICG
+REGISTRATION_TYPE_OTHER_DEFENCE_ID=2
+REGISTRATION_TYPE_OTHER_CIVIL_ID=3

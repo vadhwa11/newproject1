@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svn-repositories xmlns="http://xmlns.oracle.com/jdeveloper/1013/svn/repositories">
+   <svn-repository>
+      <url>https://192.168.10.16/svn/ICGServices/trunk</url>
+      <alias>OSB</alias>
+      <user-name>krishna.majjari</user-name>
+      <password>BU7hNZJ01ayyh5ztNlBIdV4OVixr2nNYNg==</password>
+   </svn-repository>
+</svn-repositories>

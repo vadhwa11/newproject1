@@ -1,0 +1,44 @@
+package com.asha.icgweb.service;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Repository;
+
+import com.asha.icgweb.model.OpdModel;
+
+@Repository
+public interface OpdService {
+
+	String preConsPatientWatingWeb(String payload, HttpServletRequest request, HttpServletResponse response);
+
+	String saveVitailsPatientdetails(String payload, HttpServletRequest request, HttpServletResponse response);
+
+	String getIdealWeight(String payload, HttpServletRequest request, HttpServletResponse response);
+
+	String getOpdWaitingList(String payload, HttpServletRequest request, HttpServletResponse response);
+
+	String getIcdList(String payload, HttpServletRequest request, HttpServletResponse response);
+
+	//String getOpdPatinetDetails(String payload, HttpServletRequest request, HttpServletResponse response);
+
+	String getFamilyPatientHistory(String payload, HttpServletRequest request, HttpServletResponse response);
+
+	String getOpdPatientDetailModel(String payload,HttpServletRequest request,
+			HttpServletResponse response);
+
+	String saveOpdPatientdetails(String payload, HttpServletRequest request, HttpServletResponse response);
+
+	String saveOpdTemplates(String payload, HttpServletRequest request, HttpServletResponse response);
+
+	String getIinvestigationList(String payload, HttpServletRequest request, HttpServletResponse response);
+
+	String getMasStoreItemList(String payload, HttpServletRequest request, HttpServletResponse response);
+	
+	String obesityWaitingList(String payload);
+	
+	String getObesityDetail(String payload, HttpServletRequest request, HttpServletResponse response);
+	
+}

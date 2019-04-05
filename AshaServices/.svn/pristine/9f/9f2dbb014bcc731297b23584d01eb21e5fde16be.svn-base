@@ -1,0 +1,63 @@
+package com.icg.jkt.utils;
+
+import java.net.URL;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Properties;
+
+import org.springframework.web.bind.ServletRequestUtils;
+
+import com.icg.jkt.entity.MasEmployee;
+
+
+public class HMSUtil extends ServletRequestUtils {
+	
+ public static int calculateAgeNoOfYear(Date dob ) {
+		 
+		 Calendar lCal = Calendar.getInstance();
+		    lCal.setTime(dob);
+		    int yr=lCal.get(Calendar.YEAR);
+		    int mn=lCal.get(Calendar.MONTH) + 1;
+		    int dt=lCal.get(Calendar.DATE);
+		    LocalDate today = LocalDate.now();
+		    
+		//System.out.println("today"+today);//Today's date
+		LocalDate birthday = LocalDate.of(yr,mn,dt) ; //Birth date
+		//System.out.println("birthday"+birthday);
+		Period p = Period.between(birthday, today);
+		//System.out.println("Period : "+p);
+		return p.getYears();
+	 }
+ 
+ public static String getFullName(MasEmployee emp) {
+	 String patientName = "";
+		if (emp.getFirstName() != null) {
+			patientName = emp.getFirstName();
+		}
+
+		if (emp.getMiddleName() != null) {
+			patientName = patientName + " "
+					+ emp.getMiddleName();
+		}
+		if (emp.getLastName() != null) {
+			patientName = patientName + " "
+					+ emp.getLastName();
+	 
+			}
+		return patientName;
+ 	}
+ 
+ public static String getProperties(String fileName, String propName){
+		String propertyValue = null;
+		try{
+			URL resourcePath = Thread.currentThread().getContextClassLoader()
+					.getResource(fileName);
+			Properties properties= new Properties();
+			properties.load(resourcePath.openStream());
+			propertyValue = properties.getProperty(propName);
+		}catch(Exception e){e.printStackTrace();}
+		return propertyValue;
+	}
+}

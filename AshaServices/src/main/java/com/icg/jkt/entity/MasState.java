@@ -1,0 +1,223 @@
+package com.icg.jkt.entity;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+
+/**
+ * The persistent class for the MAS_STATE database table.
+ * 
+ */
+@Entity
+@Table(name="MAS_STATE")
+@NamedQuery(name="MasState.findAll", query="SELECT m FROM MasState m")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class MasState implements Serializable {
+	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4594046566142347491L;
+
+	@Id
+	@SequenceGenerator(name="MAS_STATE_STATEID_GENERATOR", sequenceName="STATE_ID")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="MAS_STATE_STATEID_GENERATOR")
+	@Column(name="STATE_ID")
+	private long stateId;
+
+	@Column(name="LAST_CHG_DATE")
+	private Date lastChgDate;
+
+	@Column(name="STATE_CODE")
+	private String stateCode;
+
+	@Column(name="STATE_NAME")
+	private String stateName;
+
+	private String status;
+
+	//bi-directional many-to-one association to MasEmployee
+	@OneToMany(mappedBy="masState1")
+	@JsonBackReference
+	private List<MasEmployee> masEmployees1;
+
+	//bi-directional many-to-one association to MasEmployee
+	@OneToMany(mappedBy="masState2")
+	@JsonBackReference
+	private List<MasEmployee> masEmployees2;
+
+	//bi-directional many-to-one association to MasCountry
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="COUNTRY_ID")
+	private MasCountry masCountry;
+
+	//bi-directional many-to-one association to User
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="LAST_CHG_BY")
+	private Users user;
+
+	//bi-directional many-to-one association to Patient
+	@OneToMany(mappedBy="masState")
+	@JsonBackReference
+	private List<Patient> patients;
+
+	
+	@OneToMany(mappedBy="masState")
+	@JsonBackReference
+	private List<MasEmployeeDependent> masEmployeeDependent;
+	
+	
+
+	public MasState() {
+	}
+
+	public long getStateId() {
+		return this.stateId;
+	}
+
+	public void setStateId(long stateId) {
+		this.stateId = stateId;
+	}
+
+	public Date getLastChgDate() {
+		return this.lastChgDate;
+	}
+
+	public void setLastChgDate(Date lastChgDate) {
+		this.lastChgDate = lastChgDate;
+	}
+
+	public String getStateCode() {
+		return this.stateCode;
+	}
+
+	public void setStateCode(String stateCode) {
+		this.stateCode = stateCode;
+	}
+
+	public String getStateName() {
+		return this.stateName;
+	}
+
+	public void setStateName(String stateName) {
+		this.stateName = stateName;
+	}
+
+	public String getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public List<MasEmployee> getMasEmployees1() {
+		return this.masEmployees1;
+	}
+
+	public void setMasEmployees1(List<MasEmployee> masEmployees1) {
+		this.masEmployees1 = masEmployees1;
+	}
+
+	public MasEmployee addMasEmployees1(MasEmployee masEmployees1) {
+		getMasEmployees1().add(masEmployees1);
+		masEmployees1.setMasState1(this);
+
+		return masEmployees1;
+	}
+
+	public MasEmployee removeMasEmployees1(MasEmployee masEmployees1) {
+		getMasEmployees1().remove(masEmployees1);
+		masEmployees1.setMasState1(null);
+
+		return masEmployees1;
+	}
+
+	public List<MasEmployee> getMasEmployees2() {
+		return this.masEmployees2;
+	}
+
+	public void setMasEmployees2(List<MasEmployee> masEmployees2) {
+		this.masEmployees2 = masEmployees2;
+	}
+
+	public MasEmployee addMasEmployees2(MasEmployee masEmployees2) {
+		getMasEmployees2().add(masEmployees2);
+		masEmployees2.setMasState2(this);
+
+		return masEmployees2;
+	}
+
+	public MasEmployee removeMasEmployees2(MasEmployee masEmployees2) {
+		getMasEmployees2().remove(masEmployees2);
+		masEmployees2.setMasState2(null);
+
+		return masEmployees2;
+	}
+
+	public MasCountry getMasCountry() {
+		return this.masCountry;
+	}
+
+	public void setMasCountry(MasCountry masCountry) {
+		this.masCountry = masCountry;
+	}
+
+	public Users getUser() {
+		return this.user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
+	}
+
+	public List<Patient> getPatients() {
+		return this.patients;
+	}
+
+	public void setPatients(List<Patient> patients) {
+		this.patients = patients;
+	}
+
+	public Patient addPatient(Patient patient) {
+		getPatients().add(patient);
+		patient.setMasState(this);
+
+		return patient;
+	}
+
+	public Patient removePatient(Patient patient) {
+		getPatients().remove(patient);
+		patient.setMasState(null);
+
+		return patient;
+	}
+	
+
+	public List<MasEmployeeDependent> getMasEmployeeDependent() {
+		return masEmployeeDependent;
+	}
+
+	public void setMasEmployeeDependent(List<MasEmployeeDependent> masEmployeeDependent) {
+		this.masEmployeeDependent = masEmployeeDependent;
+	}
+
+}

@@ -1,0 +1,468 @@
+package com.icg.jkt.service.impl;
+
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.json.JSONObject;
+import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import com.icg.jkt.utils.RequestConstants;
+import com.icg.jkt.utils.ValidateUtils;
+import com.icg.jkt.dao.OpdDao;
+import com.icg.jkt.entity.MasEmployee;
+import com.icg.jkt.entity.MasEmployeeDepartment;
+import com.icg.jkt.entity.MasGender;
+import com.icg.jkt.entity.MasRelation;
+import com.icg.jkt.entity.MasSession;
+import com.icg.jkt.entity.OpdObesityDt;
+import com.icg.jkt.entity.OpdObesityHd;
+import com.icg.jkt.entity.OpdPatientDetail;
+import com.icg.jkt.entity.Patient;
+import com.icg.jkt.entity.Registration;
+import com.icg.jkt.entity.Visit;
+import com.icg.jkt.hibernateutils.GetHibernateUtils;
+import com.icg.jkt.service.OpdService;
+import com.icg.jkt.utils.DateTimeUtil;
+import com.icg.jkt.utils.ICGUtils;
+import com.icg.jkt.utils.ProjectUtils;
+import lombok.*;
+
+
+@Repository
+public class OpdServiceImpl implements OpdService {
+
+	@Autowired
+	GetHibernateUtils getHibernateUtils;
+
+	@Autowired
+	SessionFactory sessionFactory;
+
+	@Autowired
+	OpdDao od;
+
+	@Override
+	@SuppressWarnings({ "unused", "unchecked" })
+	public Map<String, Object> getWaitingPatientList(Map mapForDS) {
+		// Session session = (Session) getSession();
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		List<Visit> patientList = new ArrayList<Visit>();
+		List<MasEmployee> doctorList = new ArrayList<MasEmployee>();
+		List<MasSession> sessionList = new ArrayList<MasSession>();
+		Map<String, Object> map = new HashMap<String, Object>();
+		String deptName = "";
+		Map<String, Object> utilMap = new HashMap<String, Object>();
+		utilMap = (Map) DateTimeUtil.getCurrentDateAndTime();
+		String currentDate = (String) utilMap.get("currentDate");
+		Date date = new Date();
+		String category = "Doctor";
+
+		String reportingDept[] = { "OPD", "FollowUp" };
+
+		int deptId = 0;
+		int sessionId = 0;
+		int hospitalId = 0;
+		String serviceNo = "";
+		String flag = "";
+		int tokenNo = 0;
+		String patientName = "";
+		String visitDate = null;
+
+		if (mapForDS.get(RequestConstants.SESSION_ID) != null) {
+			sessionId = (Integer) mapForDS.get(RequestConstants.SESSION_ID);
+
+		}
+
+		if (mapForDS.get("flag") != null) {
+			flag = (String) mapForDS.get("flag");
+		}
+
+		if (mapForDS.get("deptId") != null) {
+			deptId = (Integer) mapForDS.get("deptId");
+		}
+
+		if (mapForDS.get("hospitalId") != null) {
+			hospitalId = (Integer) mapForDS.get("hospitalId");
+		}
+		if (mapForDS.get("visitDate") != null) {
+			visitDate = (String) mapForDS.get("visitDate");
+		}
+
+		String currentTime = DateTimeUtil.getCurrentTimeWithoutSecond().get("currentTime") != null
+				? DateTimeUtil.getCurrentTimeWithoutSecond().get("currentTime").toString() : "";
+		try {
+
+			if (mapForDS.get("serviceNo") != null) {
+				serviceNo = (String) mapForDS.get("serviceNo");
+			}
+
+			if (mapForDS.get(RequestConstants.PATIENT_NAME) != null) {
+				patientName = (String) mapForDS.get(RequestConstants.PATIENT_NAME);
+			}
+
+			if (mapForDS.get("empId") != null && (Integer) mapForDS.get("empId") > 0) {
+				int empId = (Integer) mapForDS.get("empId");
+
+				Criteria crit = session.createCriteria(Visit.class)
+
+						.add(Restrictions.eq("Doctor.Id", empId)).add(Restrictions.eq("Department.Id", deptId))
+						.createAlias("Hospital", "h").add(Restrictions.eq("h.Id", hospitalId))
+						.createAlias("Session", "ses").add(Restrictions.in("ReportingFor", reportingDept));
+				if (visitDate != null)
+					date = DateTimeUtil.convertStringTypeDateToDateType(visitDate);
+
+				if (flag.equalsIgnoreCase("rc")) {
+					crit.add(Restrictions.or(
+							Restrictions.and(Restrictions.eq("VisitStatus", "c"), Restrictions.eq("VisitDate", date)),
+							Restrictions.and(Restrictions.eq("TokenNo", 0), Restrictions.eq("AddEditDate", date))));
+
+				} else {
+					crit.add(Restrictions.or(Restrictions.eq("VisitStatus", "w").ignoreCase(),
+							Restrictions.eq("VisitStatus", "r").ignoreCase()))
+							.add(Restrictions.eq("VisitDate", new Date()));
+
+				}
+
+				if (!serviceNo.equals("")) {
+					crit = crit.createAlias("Hin", "hin").add(Restrictions.eq("hin.ServiceNo", serviceNo));
+				}
+				if (!patientName.equals("")) {
+					crit = crit.createAlias("Hin", "hin").add(Restrictions.like("hin.PFirstName", patientName + "%"));
+				}
+
+				if (sessionId != 0) {
+					crit.add(Restrictions.eq("Session.Id", sessionId));
+				}
+				patientList = crit.addOrder(Order.desc("VisitDate")).addOrder(Order.asc("VisitTime")).list();
+				map.put("empId", empId);
+				if (patientList.size() > 0) {
+					String dentalDepartmentCode = null;
+					try {
+						dentalDepartmentCode = ICGUtils.getValuesFromPropertiesFile("adt.properties",
+								"departmentCodeForDental");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+					map.put("dentalCode", dentalDepartmentCode);
+
+				}
+
+			}
+
+			sessionList = session.createCriteria(MasSession.class).add(Restrictions.eq("Status", "y")).list();
+			String empCategoryCodeForDoctor = "";
+
+			try {
+
+				empCategoryCodeForDoctor = ICGUtils.getValuesFromPropertiesFile("adt.properties",
+						"empCategoryCodeForDoctor");
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			doctorList = session.createCriteria(MasEmployeeDepartment.class).createAlias("Employee", "emp")
+					.createAlias("emp.EmpCategory", "ec").add(Restrictions.eq("Status", "y").ignoreCase())
+					.add(Restrictions.eq("Department.Id", deptId))
+					.add(Restrictions.eq("ec.EmpCategoryCode", empCategoryCodeForDoctor))
+					.addOrder(Order.asc("emp.FirstName")).list();
+		} catch (HibernateException e) {
+			e.printStackTrace();
+		}
+		map.put("patientList", patientList);
+		map.put("deptName", deptName);
+		map.put("doctorList", doctorList);
+		map.put("sessionList", sessionList);
+
+		return map;
+	}
+
+	
+	
+	
+	@Override
+	public String PreConsPatientWatingList(HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		JSONObject json = new JSONObject();
+		try {
+			if (jsondata.get("employeeId") == null || jsondata.get("employeeId").toString().trim().equals("")) {
+				return "{\"status\":\"0\",\"msg\":\"json is not contain EMPLOYEE_ID as a  key or value or it is null\"}";
+			} else {
+				
+				MasEmployee checkEmp = od.checkEmp(Long.parseLong(jsondata.get("employeeId").toString()));
+				
+				if (checkEmp != null) {
+					
+					List<Visit> getvisit = od.getVisit();
+					List<Patient> getPatinet = od.getPatinet();
+					
+
+					if (getvisit.size() == 0) {
+						return "{\"status\":\"0\",\"msg\":\"Data not found\"}";
+					}
+
+					else {
+
+						List<HashMap<String, Object>> c = new ArrayList<HashMap<String, Object>>();
+						
+						for (Visit v : getvisit) {
+							
+							Patient p = od.checkPatient(v.getPatientId());
+						
+							for(Patient p1 : getPatinet)
+							{
+                          	 MasGender ms=od.checkGender(p1.getAdministrativeSexId());
+                          	 MasRelation mr=od.checkRelation(p1.getRelationId());
+							 
+							if (p!= null ) {
+								HashMap<String, Object> pt = new HashMap<String, Object>();
+								pt.put("visitStatus", v.getVisitStatus());
+								pt.put("tokenNo", v.getTokenNo());
+								pt.put("employeeName", p.getEmployeeName());
+								pt.put("serviceNo", p.getServiceNo());
+								pt.put("patientName", p.getPatientName());
+								pt.put("dateOfBirth", p.getDateOfBirth());
+								pt.put("administrativeSexName", ms.getAdministrativeSexName());
+								pt.put("relationName", mr.getRelationName());
+								c.add(pt);
+							}
+							}
+
+						}
+
+						json.put("Visit List", c);
+						// json.put("Visit List", getvisit);
+						json.put("msg", "Visit List  get  sucessfull... ");
+						json.put("status", "1");
+
+					}
+
+				} else {
+					return "{\"status\":\"0\",\"msg\":\"json is not contain EMPLOYEE_ID Not Found\"}";
+
+				}
+
+				return json.toString();
+			}
+		} finally {
+			System.out.println("Exception Occured");
+		}
+	}
+
+	@Override
+	public String addVitalPreConsulataionDetails(HashMap<String, Object> payload, HttpServletRequest request,
+			HttpServletResponse response) {
+
+		// TODO Auto-generated method stub
+		JSONObject json = new JSONObject();
+		OpdPatientDetail opddetails = new OpdPatientDetail();
+		try {
+			if (!payload.isEmpty()) {
+
+				JSONObject nullbalankvalidation = null;
+				nullbalankvalidation = ValidateUtils.addVitalPreConsulataionDetailsvalidation(payload);
+				if (nullbalankvalidation.optString("status").equals("0")) {
+					return nullbalankvalidation.toString();
+				} else {
+
+					opddetails.setUhidNo(Long.parseLong(payload.get("uhidNo").toString()));
+					opddetails.setPatientId(Long.parseLong(payload.get("patientId").toString()));
+					opddetails.setHeight(payload.get("height").toString());
+					opddetails.setWeight(payload.get("weight").toString());
+					opddetails.setIdealWeight(payload.get("idealWeight").toString());
+					opddetails.setVarationInWeight(Long.parseLong(payload.get("varationInWeight").toString()));
+					opddetails.setTemperature(payload.get("temperature").toString());
+					opddetails.setBp(payload.get("bp").toString());
+					opddetails.setPulse(payload.get("pulse").toString());
+					opddetails.setSpo2(payload.get("spo2").toString());
+					opddetails.setBmi(payload.get("bmi").toString());
+					opddetails.setRr(payload.get("rr").toString());
+
+					String resp = od.opdVitalDetails(opddetails);
+
+					if (resp != null && resp.equalsIgnoreCase("200")) {
+						json.put("msg", " Vitals Details Insert successfully ");
+						json.put("status", "1");
+					} else if (resp != null && resp.equalsIgnoreCase("403")) {
+						json.put("msg", " you are not authorized for this activity ");
+						json.put("status", "0");
+					} else {
+						json.put("msg", resp);
+						json.put("status", "0");
+					}
+				}
+			} else {
+				json.put("status", "0");
+				json.put("msg", "json not contain any object");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return json.toString();
+	}
+	
+	@Override
+	public String getObesityWaitingList(HashMap<String, Object> jsondata){
+		Map<String, Object> map = new HashMap<>();
+		map = od.getObesityWaitingList(jsondata);		
+		JSONObject json = new JSONObject();
+		if(map.isEmpty()) {
+			json.put("status", "0");
+			json.put("msg", "No Record found");
+		}else {
+			json.put("status", "1");
+			json.put("msg", "Obesity Waiting List got successfull");
+			json.put("count", map.get("count"));			
+			List<HashMap<String,Object>> patientObesityList = new ArrayList<>();
+			List<OpdObesityHd> patientList = (List<OpdObesityHd>)map.get("patientList");
+			
+			
+			for(int i=0;i<patientList.size();i++) {
+				HashMap<String, Object> jsonData = new HashMap<>();
+				
+				long Id= patientList.get(i).getObesityHdId() !=0?patientList.get(i).getObesityHdId():0;
+				jsonData.put("Id",Id);
+				String serviceNo="";
+				if(patientList.get(i).getPatient() != null) {
+					serviceNo = patientList.get(i).getPatient().getServiceNo();
+				}
+				jsonData.put("serviceNo",serviceNo);
+				
+				String patientName = "";
+				if(patientList.get(i).getPatient() != null) {
+					patientName = patientList.get(i).getPatient().getPatientName();
+				}
+				jsonData.put("patientName",patientName);
+				
+				String age = "";
+				if(patientList.get(i).getPatient() != null) {
+					Date date = patientList.get(i).getPatient().getDateOfBirth();
+					Period p = ProjectUtils.getDOB(date);
+					jsonData.put("age", p.getYears());
+				}else {
+					jsonData.put("age", age);
+				}
+				String gender = "";				
+				if(patientList.get(i).getPatient().getMasAdministrativeSex() != null) {
+					gender = patientList.get(i).getPatient().getMasAdministrativeSex().getAdministrativeSexName();
+				}
+				jsonData.put("gender", gender);
+				
+				String DeptName = "";
+				if(patientList.get(i).getVisit().getMasDepartment() != null) {
+					DeptName = patientList.get(i).getVisit().getMasDepartment().getDepartmentName();
+				}
+				jsonData.put("DeptName", DeptName);
+				
+				jsonData.put("variation",patientList.get(i).getVariation());
+				
+				patientObesityList.add(jsonData);
+			}
+			json.put("patientObesityList", patientObesityList);
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String getObesityDetails(HashMap<String, Object> jsondata){
+		Map<String, Object> map = new HashMap<>();
+		map = od.getObesityDetails(jsondata);		
+		JSONObject json = new JSONObject();
+		List<OpdObesityHd> obesityList1 = (List<OpdObesityHd>) map.get("obesityList");
+		List<OpdObesityDt> obesityDetailList1 = (List<OpdObesityDt>) map.get("obesityDetailList");
+		List<Map<String,Object>> obesityList = new ArrayList<>();
+		List<Map<String,Object>> obsesityDetailList = new ArrayList<>();
+		
+		for(OpdObesityHd list1 : obesityList1) {
+			Map<String,Object> map1 = new HashMap<>();
+			map1.put("serviceNo", list1.getPatient().getServiceNo());
+			map1.put("patientName", list1.getPatient().getPatientName());
+			
+			Date date = (Date) list1.getPatient().getDateOfBirth();
+			Period period = ProjectUtils.getDOB(date);
+			map1.put("age", period.getYears());
+			map1.put("gender", list1.getPatient().getMasAdministrativeSex().getAdministrativeSexName());
+			map1.put("header_id", list1.getObesityHdId());
+			obesityList.add(map1);
+		}
+		for(OpdObesityDt list2 : obesityDetailList1) {
+			Map<String,Object> map2 = new HashMap<>();
+			map2.put("headerId", list2.getOpdObesityHd().getObesityHdId());
+			map2.put("date", list2.getObesityDate());
+			map2.put("month", list2.getMonth());
+			map2.put("height", list2.getHeight());
+			map2.put("weight", list2.getWeight());
+			map2.put("idealWeight", list2.getIdealWeight());
+			map2.put("variation", list2.getVariation());
+			map2.put("bmi", list2.getBmi());
+			obsesityDetailList.add(map2);
+		}
+		
+		json.put("obesityList", obesityList);
+		json.put("obsesityDetailList", obsesityDetailList);
+		return json.toString();
+	}
+	
+	@Override
+	public String idealWeight(HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<HashMap<String, Object>> c = new ArrayList<HashMap<String, Object>>();
+		if (!jsondata.isEmpty()) {
+
+			JSONObject nullbalankvalidation = null;
+			nullbalankvalidation = ValidateUtils.checkIdealWeight(jsondata);
+			if (nullbalankvalidation.optString("status").equals("0")) {
+				return nullbalankvalidation.toString();
+			} else {
+				List<String> idealWeight = od.getIdealWeight(Long.parseLong(jsondata.get("height").toString()),
+						jsondata.get("age"));
+				if (idealWeight != null && !CollectionUtils.isEmpty(idealWeight)) {
+					try {
+						HashMap<String, Object> iw = new HashMap<String, Object>();
+						iw.put("idealWeight", idealWeight.get(0));
+						c.add(iw);
+						json.put("data", c);
+						json.put("msg", "data get sucessfully......");
+						json.put("status", 1);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				} else {
+					try {
+						json.put("msg", "data not found");
+						json.put("status", 0);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return json.toString();
+	}
+	
+	public String saveObesityDetails(HashMap<String, Object> jsondata){
+		Map<String,Object> map = new HashMap<String,Object>();
+		JSONObject  obj = new JSONObject();
+		String msg = od.saveObesityDetails(jsondata);
+		obj.put("msg", msg);
+		return obj.toString();
+	}
+
+}

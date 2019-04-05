@@ -1,0 +1,42 @@
+package com.icg.jkt.dao;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.icg.jkt.entity.MasDepartment;
+import com.icg.jkt.entity.MasEmployee;
+import com.icg.jkt.entity.MasGender;
+import com.icg.jkt.entity.MasRelation;
+import com.icg.jkt.entity.OpdPatientDetail;
+import com.icg.jkt.entity.Patient;
+import com.icg.jkt.entity.Patient;
+import com.icg.jkt.entity.Visit;
+
+@Repository
+public interface OpdDao {
+
+	String opdVitalDetails(OpdPatientDetail ob);
+
+	MasEmployee checkEmp(Long i);
+
+	List<Visit> getVisit();
+
+	Patient checkPatient(Long i);
+
+	MasGender checkGender(Long i);
+
+	List<Patient> getPatinet();
+
+	MasRelation checkRelation(Long i);
+	
+	Map<String, Object> getObesityWaitingList(HashMap<String, Object> jsondata);
+	
+	Map<String,Object> getObesityDetails(HashMap<String, Object> jsondata);
+	
+	List<String> getIdealWeight(Long height,String age);
+	
+	String saveObesityDetails(HashMap<String, Object> jsondata);
+	}

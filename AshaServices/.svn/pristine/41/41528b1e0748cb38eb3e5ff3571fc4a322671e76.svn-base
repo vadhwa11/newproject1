@@ -1,0 +1,195 @@
+package com.icg.jkt.entity;
+
+import java.io.Serializable;
+import java.sql.Timestamp;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+
+/**
+ * The persistent class for the DG_ORDERHD database table.
+ * 
+ */
+@Entity
+@Table(name="DG_ORDER_HD")
+@NamedQuery(name="DgOrderhd.findAll", query="SELECT d FROM DgOrderhd d")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class DgOrderhd implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2397507978933832757L;
+
+	@Id
+	@SequenceGenerator(name="DG_ORDERHD_SEQ", sequenceName="DG_ORDERHD_SEQ")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="DG_ORDERHD_SEQ")
+	@Column(name="ORDERHD_ID")
+	private Long orderhdId;
+
+	/*@Column(name="BILLING_STATUS")
+	private String billingStatus;*/
+
+	@Column(name="DEPARTMENT_ID")
+	private Long departmentId;
+
+	@Column(name="HOSPITAL_ID")
+	private Long hospitalId;
+
+	@Column(name="INPATIENT_ID")
+	private Long inpatientId;
+
+	@Column(name="LAST_CHG_BY")
+	private Long lastChgBy;
+
+	@Column(name="LAST_CHG_DATE")
+	private Timestamp lastChgDate;
+
+	@Column(name="ORDER_DATE")
+	private Timestamp orderDate;
+
+	@Column(name="ORDER_NO")
+	private String orderNo;
+
+	@Column(name="ORDER_STATUS")
+	private String orderStatus;
+
+	@Column(name="OTHER_INVESTIGATION")
+	private String otherInvestigation;
+
+	@Column(name="PATIENT_ID")
+	private Long patientId;
+
+	@Column(name="PATIENT_TYPE")
+	private String patientType;
+
+	@Column(name="TEST_TYPE")
+	private String testType;
+
+	@Column(name="VISIT_ID")
+	private Long visitId;
+
+	public Long getOrderhdId() {
+		return orderhdId;
+	}
+
+	public void setOrderhdId(Long orderhdId) {
+		this.orderhdId = orderhdId;
+	}
+
+	public Long getDepartmentId() {
+		return departmentId;
+	}
+
+	public void setDepartmentId(Long departmentId) {
+		this.departmentId = departmentId;
+	}
+
+	public Long getHospitalId() {
+		return hospitalId;
+	}
+
+	public void setHospitalId(Long hospitalId) {
+		this.hospitalId = hospitalId;
+	}
+
+	public Long getInpatientId() {
+		return inpatientId;
+	}
+
+	public void setInpatientId(Long inpatientId) {
+		this.inpatientId = inpatientId;
+	}
+
+	public Long getLastChgBy() {
+		return lastChgBy;
+	}
+
+	public void setLastChgBy(Long lastChgBy) {
+		this.lastChgBy = lastChgBy;
+	}
+
+	public Timestamp getLastChgDate() {
+		return lastChgDate;
+	}
+
+	public void setLastChgDate(Timestamp lastChgDate) {
+		this.lastChgDate = lastChgDate;
+	}
+
+	public Timestamp getOrderDate() {
+		return orderDate;
+	}
+
+	public void setOrderDate(Timestamp orderDate) {
+		this.orderDate = orderDate;
+	}
+
+	public String getOrderNo() {
+		return orderNo;
+	}
+
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+
+	public String getOrderStatus() {
+		return orderStatus;
+	}
+
+	public void setOrderStatus(String orderStatus) {
+		this.orderStatus = orderStatus;
+	}
+
+	public String getOtherInvestigation() {
+		return otherInvestigation;
+	}
+
+	public void setOtherInvestigation(String otherInvestigation) {
+		this.otherInvestigation = otherInvestigation;
+	}
+
+	public Long getPatientId() {
+		return patientId;
+	}
+
+	public void setPatientId(Long patientId) {
+		this.patientId = patientId;
+	}
+
+	public String getPatientType() {
+		return patientType;
+	}
+
+	public void setPatientType(String patientType) {
+		this.patientType = patientType;
+	}
+
+	public String getTestType() {
+		return testType;
+	}
+
+	public void setTestType(String testType) {
+		this.testType = testType;
+	}
+
+	public Long getVisitId() {
+		return visitId;
+	}
+
+	public void setVisitId(Long visitId) {
+		this.visitId = visitId;
+	}
+
+	
+
+}

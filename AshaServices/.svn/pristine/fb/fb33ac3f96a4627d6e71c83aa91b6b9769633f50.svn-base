@@ -1,0 +1,120 @@
+package com.icg.jkt.entity;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+
+/**
+ * The persistent class for the MAS_MEDICAL_CATEGORY database table.
+ * 
+ */
+@Entity
+@Table(name="MAS_MEDICAL_CATEGORY")
+@NamedQuery(name="MasMedicalCategory.findAll", query="SELECT m FROM MasMedicalCategory m")
+public class MasMedicalCategory implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@SequenceGenerator(name="MAS_MEDICAL_CATEGORY_MEDICALCATEGORYID_GENERATOR", sequenceName="MEDICAL_CATEGORY_ID")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="MAS_MEDICAL_CATEGORY_MEDICALCATEGORYID_GENERATOR")
+	@Column(name="MEDICAL_CATEGORY_ID")
+	private long medicalCategoryId;
+
+	@Column(name="LAST_CHG_BY")
+	private BigDecimal lastChgBy;
+
+	@Column(name="LAST_CHG_DATE")
+	private Date lastChgDate;
+
+	@Column(name="MEDICAL_CATEGORY_CODE")
+	private BigDecimal medicalCategoryCode;
+
+	@Column(name="MEDICAL_CATEGORY_NAME")
+	private String medicalCategoryName;
+
+	private String status;
+
+	@OneToMany(mappedBy="masMedicalCategory")
+	@JsonBackReference
+	private List<Patient> patients;
+
+	public MasMedicalCategory() {
+	}
+
+	public long getMedicalCategoryId() {
+		return this.medicalCategoryId;
+	}
+
+	public void setMedicalCategoryId(long medicalCategoryId) {
+		this.medicalCategoryId = medicalCategoryId;
+	}
+
+	public BigDecimal getLastChgBy() {
+		return this.lastChgBy;
+	}
+
+	public void setLastChgBy(BigDecimal lastChgBy) {
+		this.lastChgBy = lastChgBy;
+	}
+
+	public Date getLastChgDate() {
+		return this.lastChgDate;
+	}
+
+	public void setLastChgDate(Date lastChgDate) {
+		this.lastChgDate = lastChgDate;
+	}
+
+	public BigDecimal getMedicalCategoryCode() {
+		return this.medicalCategoryCode;
+	}
+
+	public void setMedicalCategoryCode(BigDecimal medicalCategoryCode) {
+		this.medicalCategoryCode = medicalCategoryCode;
+	}
+
+	public String getMedicalCategoryName() {
+		return this.medicalCategoryName;
+	}
+
+	public void setMedicalCategoryName(String medicalCategoryName) {
+		this.medicalCategoryName = medicalCategoryName;
+	}
+
+	public String getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public List<Patient> getPatients() {
+		return this.patients;
+	}
+
+	public void setPatients(List<Patient> patients) {
+		this.patients = patients;
+	}
+
+	public Patient addPatient(Patient patient) {
+		getPatients().add(patient);
+		patient.setMasMedicalCategory(this);
+
+		return patient;
+	}
+
+	public Patient removePatient(Patient patient) {
+		getPatients().remove(patient);
+		patient.setMasMedicalCategory(null);
+
+		return patient;
+	}
+
+}

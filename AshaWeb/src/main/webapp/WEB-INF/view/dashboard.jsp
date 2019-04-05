@@ -1,0 +1,375 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<%@include file="..//view/leftMenu.jsp"%>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Coast Guard</title>
+    <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+    <meta content="Coderthemes" name="author" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- App favicon -->
+    <link rel="icon" type="images/favicon-32x32.png" sizes="32x32" href="${pageContext.request.contextPath}/resources/images/favicon.ico">
+   
+    <script src="${pageContext.request.contextPath}/resources/js/canvasjs.min.js"></script>
+	<%@include file="..//view/commonJavaScript.jsp"%>
+</head>
+
+<body>
+
+    <!-- Begin page -->
+    <div id="wrapper">
+
+        <!-- Top Bar Start -->
+        <div class="topbar">
+
+            <!-- LOGO -->
+            <div class="topbar-left">
+                <a href="index.html" class="logo">
+                    <span>
+                        <img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="" height="100%">
+                    </span>
+                </a>
+            </div>
+
+            <nav class="navbar-custom">
+                <ul class="list-inline float-right mb-0">
+
+                    <li class="list-inline-item dropdown notification-list">
+                        <a class="nav-link dropdown-toggle nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                            <i class="noti-icon"><img src="${pageContext.request.contextPath}/resources/images/users/avatar-1.jpg" alt="user" class="img-fluid rounded-circle"></i>
+                            <span class="profile-username ml-2 text-dark">Username </span> <span class="mdi mdi-menu-down text-dark"></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-animated dropdown-menu-right profile-dropdown ">
+                            <!-- item-->
+                            <div class="dropdown-item noti-title">
+                                <h5 class="text-overflow"><small>Welcome ! Lorem Ipsum</small> </h5>
+                            </div>
+
+                            <!-- item-->
+                            <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <i class="mdi mdi-account-circle"></i> <span>Profile</span>
+                            </a>
+
+                            <!-- item-->
+                            <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <i class="mdi mdi-settings"></i> <span>Settings</span>
+                            </a>
+
+                            <!-- item-->
+                            <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <i class="mdi mdi-lock-open"></i> <span>Lock Screen</span>
+                            </a>
+
+                            <!-- item-->
+                            <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <i class="mdi mdi-power"></i> <span>Logout</span>
+                            </a>
+
+                        </div>
+                    </li>
+
+                </ul>
+
+                <ul class="list-inline menu-left mb-0">
+                    <li class="float-left">
+                        <button class="button-menu-mobile open-left waves-light waves-effect">
+                            <i class="mdi mdi-menu"></i>
+                        </button>
+                    </li>
+                    
+                </ul>
+
+            </nav>
+
+        </div>
+        
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <div class="content-page">
+            <!-- Start content -->
+            <div class="">
+                <div class="container-fluid">
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <h4 class="page-title float-left"></h4>
+
+                                <ol class="breadcrumb float-right">
+                                    <li class="breadcrumb-item active"><a href="#">Dashboard</a></li>
+                                   
+                                </ol>
+
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end row -->
+
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6">
+                            <div class="widget-panel widget-style-2 bg-pink">
+                                <i class="ion-md-eye"></i>
+                                <h2 class="m-0 text-white" data-plugin="counterup">225</h2>
+                                <div>Today OPD</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="widget-panel widget-style-2 bg-purple">
+                                <i class="ion-md-paper-plane"></i>
+                                <h2 class="m-0 text-white" data-plugin="counterup">15</h2>
+                                <div>Today Att'c</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="widget-panel widget-style-2 bg-info">
+                                <i class="ion-ios-pricetag"></i>
+                                <h2 class="m-0 text-white" data-plugin="counterup">25</h2>
+                                <div>Today Medical Exam</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="widget-panel widget-style-2 bg-primary">
+                                <i class="ion-md-contacts"></i>
+                                <h2 class="m-0 text-white" data-plugin="counterup">30</h2>
+                                <div>Today Medical Board</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end row -->
+
+                    <div class="row">
+                        
+
+                        <div class="col-xl-12 col-sm-12">
+                            <div class="portlet">
+                                <div id="portlet1" class="panel-collapse collapse show">
+                                    <div class="portlet-body">
+                                        <script>
+                                            window.onload = function() {
+											
+											CanvasJS.addColorSet("greenShades",
+															[//colorSet Array
+
+															"#fd5621",
+															"#7441bc",
+															"#2095f2",
+															"#01957e",
+															"#90EE90"                
+															]);
+
+                                                var chart = new CanvasJS.Chart("chartContainer", {
+												 colorSet: "greenShades",
+                                                    animationEnabled: true,
+													dataPointWidth: 20,
+                                                    title: {
+                                                        text: "Generate Report for OPD Statistics (District Wise)"
+                                                    },
+                                                    axisY: {
+                                                        title: "No. of Patient",
+                                                        titleFontColor: "#4F81BC",
+                                                        lineColor: "#4F81BC",
+                                                        labelFontColor: "#4F81BC",
+                                                        tickColor: "#4F81BC"
+                                                    },
+                                                    
+                                                    toolTip: {
+                                                        shared: true
+                                                    },
+                                                    legend: {
+                                                        cursor: "pointer",
+                                                        itemclick: toggleDataSeries
+                                                    },
+                                                    data: [{
+                                                        type: "column",
+                                                        name: "OPD",
+                                                        legendText: "OPD",
+                                                        showInLegend: true,
+                                                        dataPoints: [{
+                                                                label: "C1",
+                                                                y: 266.21
+                                                            }, {
+                                                                label: "C2",
+                                                                y: 202.25
+                                                            }, {
+                                                                label: "C3",
+                                                                y: 187.20
+                                                            }, {
+                                                                label: "C4",
+                                                                y: 148.77
+                                                            },
+
+                                                        ]
+                                                    }, {
+                                                        type: "column",
+                                                        name: "Referral",
+                                                        legendText: "Referral",
+                                                        axisYType: "secondary",
+                                                        showInLegend: true,
+                                                        dataPoints: [{
+                                                                label: "C1",
+                                                                y: 111.46
+                                                            }, {
+                                                                label: "C2",
+                                                                y: 90.27
+                                                            }, {
+                                                                label: "C3",
+                                                                y: 38.99
+                                                            }, {
+                                                                label: "C4",
+                                                                y: 89.45
+                                                            },
+
+                                                        ]
+                                                    }, {
+                                                        type: "column",
+                                                        name: "Referral",
+                                                        legendText: "Referral",
+                                                        axisYType: "secondary",
+                                                        showInLegend: true,
+                                                        dataPoints: [{
+                                                                label: "C1",
+                                                                y: 60.46
+                                                            }, {
+                                                                label: "C2",
+                                                                y: 45.27
+                                                            }, {
+                                                                label: "C3",
+                                                                y: 30.99
+                                                            }, {
+                                                                label: "C4",
+                                                                y: 15.45
+                                                            },
+
+                                                        ]
+                                                    }, 							 
+													
+													
+													{
+                                                        type: "column",
+                                                        name: "Other",
+                                                        legendText: "Other",
+                                                        axisYType: "secondary",
+                                                        showInLegend: true,
+                                                        dataPoints: [{
+                                                                label: "C1",
+                                                                y: 110.46
+                                                            }, {
+                                                                label: "C2",
+                                                                y:92.27
+                                                            }, {
+                                                                label: "C3",
+                                                                y: 30.99
+                                                            }, {
+                                                                label: "C4",
+                                                                y: 64.45
+                                                            },
+															
+															
+															
+															
+															
+															
+
+                                                        ]
+                                                    }]
+                                                });
+                                                chart.render();
+
+                                                function toggleDataSeries(e) {
+                                                    if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                                                        e.dataSeries.visible = false;
+                                                    } else {
+                                                        e.dataSeries.visible = true;
+                                                    }
+                                                    chart.render();
+                                                }
+
+                                            }
+                                        </script>
+
+                                        <div id="chartContainer" style="height: 370px; max-width: 920px; margin: 0px auto;"></div>
+                                       
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- /Portlet -->
+
+                        </div>
+						s					
+						</div>
+						
+						 
+                    <!-- End row -->
+
+                    <!-- end row -->
+                    <!-- end row -->
+
+                </div>
+                <!-- container -->
+
+            </div>
+            <!-- content -->
+
+            <footer class="footer">
+                Dashboard
+            </footer>
+
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- End Right content here -->
+        <!-- ============================================================== -->
+
+    </div>
+    <!-- END wrapper -->
+
+    <!-- jQuery  -->
+    <!-- <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/metisMenu.min.js"></script>
+    <script src="js/waves.js"></script>
+    <script src="js/jquery.slimscroll.js"></script>
+
+    <script src="js/jquery.scrollTo.min.js"></script>
+
+    Counter js 
+    <script src="../plugins/waypoints/jquery.waypoints.min.js"></script>
+    <script src="../plugins/counterup/jquery.counterup.min.js"></script>
+
+    sparkline
+    <script src="../plugins/jquery-sparkline/jquery.sparkline.min.js"></script>
+
+    sweet alerts
+    <script src="../plugins/sweet-alert2/sweetalert2.min.js"></script>
+
+    Morris Chart
+    <script src="../plugins/morris/morris.min.js"></script>
+    <script src="../plugins/raphael/raphael.min.js"></script>
+
+    Chat
+    <script src="../plugins/moment/moment.js"></script>
+    <script src="../pages/jquery.chat.js"></script>
+
+    Dashboard
+    <script src="../pages/jquery.dashboard.js"></script>
+
+    Todoapp
+    <script src="../pages/jquery.todo.js"></script>
+
+    App js
+    <script src="js/jquery.core.js"></script>
+    <script src="js/jquery.app.js"></script> -->
+
+</body>
+
+</html>

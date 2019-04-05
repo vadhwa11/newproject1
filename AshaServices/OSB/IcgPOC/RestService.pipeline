@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:pipelineEntry xmlns:con="http://www.bea.com/wli/sb/pipeline/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:con1="http://www.bea.com/wli/sb/stages/transform/config" xmlns:con2="http://www.bea.com/wli/sb/stages/config" xmlns:con3="http://www.bea.com/wli/sb/stages/logging/config" xmlns:con4="http://www.bea.com/wli/sb/stages/publish/config" xmlns:con5="http://www.bea.com/wli/sb/stages/routing/config">
+    <con:coreEntry>
+        <con:binding type="Native REST" xsi:type="con:NativeRestBindingType">
+            <con:wadl ref="IcgPOC/Resources/RestService"/>
+        </con:binding>
+        <con:xqConfiguration>
+            <con:snippetVersion>1.0</con:snippetVersion>
+        </con:xqConfiguration>
+    </con:coreEntry>
+    <con:router errorHandler="error-N3f57341c.N672dbd16.0.1683209136d.N7aac">
+        <con:pipeline type="request" name="request-N3f57341c.N672dbd16.0.1683209136d.N7b09">
+            <con:stage id="_StageId-N3f57341c.N672dbd16.0.1683209136d.N7b07" name="Stage1">
+                <con:context/>
+                <con:actions>
+                    <con1:assign varName="Request">
+                        <con2:id>_ActionId-N3f57341c.N672dbd16.0.1683209136d.N7b03</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="UUID">
+                        <con2:id>_ActionId-N3f57341c.N672dbd16.0.1683209136d.N7b00</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>fn-bea:uuid()</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                    <con1:assign varName="TimeStamp">
+                        <con2:id>_ActionId-N3f57341c.N672dbd16.0.1683209136d.N7afd</con2:id>
+                        <con1:expr>
+                            <con2:xqueryText>fn:current-dateTime()</con2:xqueryText>
+                        </con1:expr>
+                    </con1:assign>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="response" name="response-N3f57341c.N672dbd16.0.1683209136d.N7b08">
+            <con:stage id="_StageId-N3f57341c.N672dbd16.0.1683209136d.N7aee" name="Stage2">
+                <con:context/>
+                <con:actions>
+                    <con3:log>
+                        <con2:id>_ActionId-N3f57341c.N672dbd16.0.1683209136d.N7ae8</con2:id>
+                        <con3:logLevel>error</con3:logLevel>
+                        <con3:expr>
+                            <con2:xqueryText>$body</con2:xqueryText>
+                        </con3:expr>
+                        <con3:message>+++++++++++++++++++++++++++++response+++++++++++++++++++++++==</con3:message>
+                    </con3:log>
+                    <con1:replace varName="body">
+                        <con2:id>_ActionId-N3f57341c.N672dbd16.0.1683209136d.N7aeb</con2:id>
+                        <con1:location>
+                            <con2:xpathText>.</con2:xpathText>
+                        </con1:location>
+                        <con1:expr>
+                            <con2:xqueryText>$Response</con2:xqueryText>
+                        </con1:expr>
+                    </con1:replace>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57341c.N672dbd16.0.1683209136d.N7b06" name="Stage1">
+                <con:context>
+                    <con2:userNsDecl prefix="ns1" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/OsbInstances"/>
+                </con:context>
+                <con:actions>
+                    <con4:route>
+                        <con2:id>_ActionId-N3f57341c.N672dbd16.0.1683209136d.N7af5</con2:id>
+                        <con4:service ref="IcgPOC/Resources/OsbInstances_db" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con4:operation>insert</con4:operation>
+                        <con4:outboundTransform>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-N3f57341c.N672dbd16.0.1683209136d.N7af2</con2:id>
+                                <con1:location>
+                                    <con2:xpathText>.</con2:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[<ns1:OsbInstancesCollection xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/top/OsbInstances">
+        <ns1:OsbInstances>
+            <ns1:messageid>name</ns1:messageid>
+            <ns1:uuid>UUID</ns1:uuid>
+            <ns1:timestamp>TimeStamp</ns1:timestamp>
+            <ns1:body>Request</ns1:body>
+            <ns1:status>SUCCESS</ns1:status>
+        </ns1:OsbInstances>
+    </ns1:OsbInstancesCollection>]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                        </con4:outboundTransform>
+                    </con4:route>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57341c.N672dbd16.0.1683209136d.N7aac">
+            <con:stage id="_StageId-N3f57341c.N672dbd16.0.1683209136d.N7a73" name="Stage2">
+                <con:context/>
+                <con:actions>
+                    <con3:log>
+                        <con2:id>_ActionId-N3f57341c.N672dbd16.0.1683209136d.N7a3c</con2:id>
+                        <con3:logLevel>error</con3:logLevel>
+                        <con3:expr>
+                            <con2:xqueryText>$fault</con2:xqueryText>
+                        </con3:expr>
+                        <con3:message>++++++++++++++++++++++++++++++fault++++++++++++++++++++++++++++++===</con3:message>
+                    </con3:log>
+                    <con1:Error>
+                        <con2:id>_ActionId-N3f57341c.N672dbd16.0.1683209136d.N7a3f</con2:id>
+                        <con2:disabled>true</con2:disabled>
+                        <con1:errCode>400</con1:errCode>
+                        <con1:message>service error</con1:message>
+                    </con1:Error>
+                </con:actions>
+            </con:stage>
+            <con:stage id="_StageId-N3f57341c.N672dbd16.0.1683209136d.N7aab" name="Stage1">
+                <con:context/>
+                <con:actions>
+                    <con4:route>
+                        <con2:id>_ActionId-N3f57341c.N672dbd16.0.1683209136d.N7aa8</con2:id>
+                        <con4:service ref="IcgPOC/Resources/OsbInstances_db" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con4:operation>insert</con4:operation>
+                        <con4:outboundTransform>
+                            <con1:replace varName="body" contents-only="true">
+                                <con2:id>_ActionId-N3f57341c.N672dbd16.0.1683209136d.N7a74</con2:id>
+                                <con1:location>
+                                    <con2:xpathText>.</con2:xpathText>
+                                </con1:location>
+                                <con1:expr>
+                                    <con2:xqueryText><![CDATA[<ns1:OsbInstancesCollection xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/top/OsbInstances">
+        <ns1:OsbInstances>
+            <ns1:messageid>{$messageID}</ns1:messageid>
+            <ns1:uuid>{$UUID}</ns1:uuid>
+            <ns1:timestamp>{$TimeStamp}</ns1:timestamp>
+            <ns1:body>bodyReq</ns1:body>
+            <ns1:status>SUCCESS</ns1:status>
+        </ns1:OsbInstances>
+    </ns1:OsbInstancesCollection>]]></con2:xqueryText>
+                                </con1:expr>
+                            </con1:replace>
+                        </con4:outboundTransform>
+                    </con4:route>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:pipeline type="error" name="error-N3f57341c.N672dbd16.0.1683209136d.N7a0a">
+            <con:stage id="_StageId-N3f57341c.N672dbd16.0.1683209136d.N7a09" name="Stage1">
+                <con:context/>
+                <con:actions>
+                    <con1:Error>
+                        <con2:id>_ActionId-N3f57341c.N672dbd16.0.1683209136d.N79d5</con2:id>
+                        <con1:errCode>400</con1:errCode>
+                        <con1:message>route error</con1:message>
+                    </con1:Error>
+                    <con2:reply>
+                        <con2:id>_ActionId-N3f57341c.N672dbd16.0.1683209136d.N79d2</con2:id>
+                        <con2:disabled>true</con2:disabled>
+                    </con2:reply>
+                    <con2:resume>
+                        <con2:id>_ActionId-N3f57341c.N672dbd16.0.1683209136d.N79cf</con2:id>
+                    </con2:resume>
+                </con:actions>
+            </con:stage>
+        </con:pipeline>
+        <con:flow>
+            <con:pipeline-node name="Pipeline Pair Node">
+                <con:request>request-N3f57341c.N672dbd16.0.1683209136d.N7b09</con:request>
+                <con:response>response-N3f57341c.N672dbd16.0.1683209136d.N7b08</con:response>
+            </con:pipeline-node>
+            <con:route-node name="RouteNode1" error-handler="error-N3f57341c.N672dbd16.0.1683209136d.N7a0a">
+                <con:context/>
+                <con:actions>
+                    <con5:route>
+                        <con2:id>_ActionId-N3f57341c.N672dbd16.0.1683209136d.N7af9</con2:id>
+                        <con5:service ref="AASHA_POC/RestReference" xsi:type="ref:BusinessServiceRef" xmlns:ref="http://www.bea.com/wli/sb/reference"/>
+                        <con5:operation>Method1</con5:operation>
+                        <con5:outboundTransform/>
+                        <con5:responseTransform>
+                            <con1:assign varName="Response">
+                                <con2:id>_ActionId-N3f57341c.N672dbd16.0.1683209136d.N7aef</con2:id>
+                                <con1:expr>
+                                    <con2:xqueryText>$body</con2:xqueryText>
+                                </con1:expr>
+                            </con1:assign>
+                        </con5:responseTransform>
+                    </con5:route>
+                </con:actions>
+            </con:route-node>
+        </con:flow>
+    </con:router>
+</con:pipelineEntry>

@@ -1,0 +1,528 @@
+<%@page import="java.util.HashMap"%>
+<%@page import="java.util.Map"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+    
+    
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.common.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common.js"></script>
+<script type="text/javascript" language="javascript" src="${pageContext.request.contextPath}/resources/js/ajax.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/pops_global.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/pops_menu.js"></script>
+<script type="text/javascript" language="javascript" src="${pageContext.request.contextPath}/resources/js/controls.js"></script>
+
+<link href='https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css rel='stylesheet' type='text/css'/>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+<!--
+
+//-->
+</script>
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Masters</title>
+
+<!-- Bootstrap core CSS     -->
+    <link href="${pageContext.request.contextPath}/resources/assets/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Animation library for notifications   -->
+    <link href="${pageContext.request.contextPath}/resources/assets/css/animate.min.css" rel="stylesheet"/>
+
+    <!--  Paper Dashboard core CSS    --> <!-- left menu dashboard -->
+    <link href="${pageContext.request.contextPath}/resources/assets/css/paper-dashboard.css" rel="stylesheet"/>
+
+    <!--  CSS for Demo Purpose, don't include it in your project     -->
+    <link href="${pageContext.request.contextPath}/resources/assets/css/demo.css" rel="stylesheet" />
+
+    <!--  Fonts and icons     -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
+    <link href="${pageContext.request.contextPath}/resources/assets/css/themify-icons.css" rel="stylesheet">
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+</head>
+	<div id="msg">
+		<p style="text-align: center; color: green;">${message}</p> 
+	</div>
+<body bgcolor="">
+
+<div class="wrapper">
+	<div class="sidebar" data-background-color="white" data-active-color="danger">
+    <div class="sidebar-wrapper">
+            <div class="logo">
+                <a href="#" class="simple-text">
+                    MASTERS
+                </a>
+            </div>
+
+            <ul class="nav">
+                <li >
+                   <a href="${pageContext.request.contextPath}/v0.1/dashboard/manageRegistration">
+                        <i class="ti-panel"></i>
+                        <p>Dashboard</p>
+                    </a>
+                </li>
+                <li>
+					<a href="${pageContext.request.contextPath}/v0.1/master/showCommand" data-target="#item1" data-toggle="collapse" data-parent="#stacked-menu"> 
+					<i class="ti-user"></i>
+                        <p>Command Master<span class="caret arrow"></span></p>
+                    </a>
+						
+					</li>
+                
+				<li>
+                    <a href="${pageContext.request.contextPath}/v0.1/master/tradeMaster">
+                        <i class="fa fa-user-plus" aria-hidden="true"></i>
+                        <p>Trade Master</p>
+                    </a>
+                </li>
+                <li>
+                  <a href="${pageContext.request.contextPath}/v0.1/master/stateMaster">
+                        <i class="ti-text"></i>
+                        <p>State Master</p>
+                    </a>
+                </li>
+                
+                <li>
+                  <a href="${pageContext.request.contextPath}/v0.1/master/uomMaster">
+                        <i class="ti-text"></i>
+                        <p>UOM Master</p>
+                    </a>
+                    <a href="${pageContext.request.contextPath}/v0.1/master/unitMaster">
+                        <i class="ti-text"></i>
+                        <p>UNIT Master</p>
+                    </a>
+                </li>
+                
+            </ul>
+    	</div>	
+    </div>
+<!-- main div starts i.e Body rajdeo -->
+    <div class="main-panel">
+		<nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar bar1"></span>
+                        <span class="icon-bar bar2"></span>
+                        <span class="icon-bar bar3"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Command Master</a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                          
+						
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    
+                    <div class="col-lg-12 col-md-7">
+                        <div class="card">
+                            
+                            <div class="content">
+                            <form id="searchCommandForm" name="searchCommandForm" action="" method="POST"> 
+                            
+                             <!-- searchcommand div  -->
+                                   <div class="row">
+                                   <div class="row">
+                                   
+                                        <!-- <div class="col-md-2">                                         
+                                             <div class="form-group">
+                                                <label>Command Code</label>
+                                                <input type="radio" id="searchCommandRadio"/>
+                                           </div>
+                                           </div> -->
+                                              <div class="col-md-2">  
+                                              <div class="form-group">   
+                                                <label>Command Name</label>
+                                               
+                                                </div>
+                                            </div> 
+                                        
+                                         <div class="col-md-4">
+                                             <div class="form-group">
+                                                
+                                         <input name="searchCommand" id="searchCommand" type="text" class="form-control border-input" placeholder="command" value="">
+                                            
+                                            </div> 
+                                        </div>
+                                   <div class="col-md-2">  
+                                    <div class="text-right">
+                                     <button type="button" class="btn" id="button" onclick="searchCommandList();">Search</button>                                    
+                                     </div> 
+                                     </div>
+                                     
+                                     <div class="col-md-2">
+                                     <div class="text-right">
+                                     <button type="button" class="btn" id="button" onclick="GetCommandList('ALL');">Show ALL</button>                                    
+                                     </div>
+                                    </div>
+                                        
+                                </div>
+                            
+                            </div>
+                            
+                            </form>
+ <!-- Data Grid -->
+<div class="right_col" role="main">
+   <div class="">
+         <div class="clearfix"></div>
+              <div class="col-md-12 col-sm-12 col-xs-12, col-xs-12">
+                <div class="x_panel">                 
+                  <!-- <div class="x_content"> -->
+                   <div class="content table-responsive table-full-width">
+					
+                   <!-- <table class="table table-striped table-hover jambo_table"> -->
+                   <table class="tblSearchActions" cellspacing="0" cellpadding="0" border="0" >
+			<tr>
+				<td class="SearchStatus" style="font-size: 13px;" align="left">Search Results</td>
+				<td>
+				<div id=resultnavigation></div>
+				
+				</td>
+				</tr>
+		</table>
+                    <table class="table table-bordered ">
+                    
+                      <thead bgcolor="00FFFF">                        
+                        <tr>                          
+                          <th id="th1">Command Code</th>
+                          <th id="th2">Command Name.</th>
+                          <th id="th3">Status</th>
+                          <th id="th3">Command Type</th>
+                                                    
+                        </tr>
+                      </thead>
+                      <tbody id="tblListOfCommand">
+                       
+                    
+                      </tbody>
+                    </table>
+
+                  </div>
+                </div>
+              </div>
+
+              
+            </div>
+          </div>
+          <%-- <%=request.getContextPath()%>/v0.1/master/addCommandDetails --%>
+    <form id="addCommandForm" name="addCommandForm" action="<%=request.getContextPath()%>/v0.1/master/addCommandDetails" method="POST"> 
+               <div class="row">
+                           <div class="col-md-4">
+                                   <div class="form-group">
+                                                <label>Command Code</label>
+                                                <input name="cmdCode" id="cmdCode" type="text" class="form-control border-input" placeholder="Command Code" value="" required />
+                                            </div> 
+                                        </div>
+                                        <div class="col-md-4">
+                                             <div class="form-group">
+                                                <label>Command Name</label>
+                                                <input name="cmdName" id="cmdName" type="text" class="form-control border-input" placeholder="Command Name" value="" required>
+                                            </div> 
+                                        </div>
+                                        <div class="col-md-4">
+                                             <div class="form-group">
+                                                <label>Command Type</label>
+                                                <select id="cmdType" name="cmdType" required>
+                                                	<option value="0"> select </option>
+                                                	<option value="Delhi HQ" selected="selected">Delhi HQ</option>
+                                                	<option value="Noida HQ">Noida HQ</option>                                                
+                                                </select>                                                
+                                            </div> 
+                                        </div>                                        
+                                    </div>						
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                           
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <input type="submit" id="btnAddCmd" class="btn btn-info btn-fill btn-wd" value="Add" onclick="addCmdDetails();">
+                                        <button type="button" class="btn" onclick="updateCmdDetails();">Update</button>
+                                      	<button type="button" class="btn" onclick="updateStatus();">Active</button>
+                                      	<button type="button" class="btn" onclick="Reset();">Reset</button>
+                                       
+                                      
+                                    </div>
+                                
+                                    <div class="clearfix"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+ 
+<script type="text/javascript" language="javascript">
+var nPageNo=1;
+var $j = jQuery.noConflict();
+
+$j(document).ready(function()
+		{
+			GetCommandList('ALL');
+			
+		});
+		
+		
+ function searchCommandList()
+{
+	 if(document.getElementById('searchCommand').value == "" || document.getElementById('searchCommand') == null){
+		 alert("Plese Enter the Command Name");
+		 return false;
+	 }
+		 
+	 /* if($(searchCommand).val() == 'search') {
+	        $(textBox).val() = '';
+	   } 
+	   return false; */
+	 
+	var cmdName= jQuery("#searchCommand").attr("checked", true).val().toUpperCase();
+		
+	var nPageNo=1;
+	var url = "getAllCommandDetails";
+	var data =  {"PN":nPageNo, "cmdName":cmdName};//"PN="+nPageNo+"cmdName="+cmdName;
+	var bClickable = true;
+	GetJsonData('tblListOfCommand',data,url,bClickable);
+}
+ 
+ 
+function GetCommandList(MODE)
+{
+	
+	
+	var cmdId=0;
+	
+
+	 if(MODE == 'ALL')
+		{
+			var data = {"PN":nPageNo};
+			
+		}
+	else
+		{
+		var data = {"PN":nPageNo};
+		} 
+	var url = "getAllCommandDetails";
+		
+	var bClickable = true;
+	GetJsonData('tblListOfCommand',data,url,bClickable);
+}
+
+
+function makeTable(jsonData)
+{	
+	var htmlTable = "";	
+	var data = jsonData.count;
+	
+	
+	var pageSize = 5;
+
+	
+	var dataList = jsonData.data;
+	
+	for(i=0;i<dataList.length;i++)
+		{		
+		
+		 if(dataList[i].status == 'y')
+				{
+					var Status='Active'
+				}
+			else
+				{
+					var Status='InActive'
+				}
+		 
+		
+				
+			htmlTable = htmlTable+"<tr id='"+dataList[i].cmdId+"' >";			
+			htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].cmdCode+"</td>";
+			htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].cmdName+"</td>";
+			htmlTable = htmlTable +"<td style='width: 100px;'>"+Status+"</td>";
+			htmlTable = htmlTable +"<td style='width: 100px;'>"+dataList[i].cmdType+"</td>";
+			
+			htmlTable = htmlTable+"</tr>";
+			
+		}
+	if(dataList.length == 0)
+		{
+		htmlTable = htmlTable+"<tr ><td colspan='4'><h6>No Record Found</h6></td></tr>";
+		   //alert('No Record Found');
+		}			
+	
+	//alert("tblListOfCommand ::" +htmlTable)
+	$j("#tblListOfCommand").html(htmlTable);	
+	
+	
+}
+var commandId;
+var cmdCode;
+var cmdName;
+var cmdStatus;
+var cmdType;
+function executeClickEvent(cmdId,data)
+{
+	
+	for(j=0;j<data.data.length;j++){
+		if(cmdId == data.data[j].cmdId){
+			commandId = data.data[j].cmdId;
+			cmdCode = data.data[j].cmdCode;
+			cmdName = data.data[j].cmdName;
+			cmdStatus = data.data[j].status;
+			cmdType = data.data[j].cmdType;
+			
+		}
+	}
+	rowClick(commandId,cmdCode,cmdName,cmdStatus,cmdType);
+}
+
+function rowClick(cmdId,cmdCode, cmdName, cmdStatus){	
+	
+	document.getElementById("cmdCode").value = cmdCode;
+	document.getElementById("cmdName").value = cmdName;
+	
+	
+	
+}
+function updateCmdDetails()
+{	
+	if(document.getElementById('cmdCode').value == "" || document.getElementById('cmdCode').value == null ){
+		alert("please enter the cmdCode");
+		return false;
+	}
+	if(document.getElementById('cmdName').value == "" || document.getElementById('cmdName').value == null ){
+		alert("please enter the cmdName");
+		return false;
+	}
+	//alert("commandcode: "+jQuery('#cmdCode').val()+" cmdname "+jQuery('#cmdName').val()); 	
+	var params = {
+			 'cmdId':commandId,
+			 'cmdCode':jQuery('#cmdCode').val(),
+			 'cmdName':jQuery('#cmdName').val(),
+			 'cmdType':jQuery('#cmdType').val()
+	 } 
+	//alert("params: "+JSON.stringify(params)); 	
+ 		jQuery.ajax({
+		 crossOrigin: true,
+		    method: "POST",
+		    header:{
+		    	'Access-Control-Allow-Origin': '*'
+		    	},
+		    	crossDomain:true,
+		    url: "updateCommandDetails",
+		    data: JSON.stringify(params),
+		    contentType: "application/json; charset=utf-8",
+		    dataType: "json",
+		    success: function(result){
+		        //alert("result" +result);
+		        console.log(result);
+		        if(result.status==1){
+		        	
+		        	//location.reload();
+		        	
+		        	GetCommandList('ALL')
+		        }else{
+		        	alert(result.status)
+		        }
+		    }
+		    
+		    
+		});	  
+	
+}
+
+function updateStatus(){
+	if(document.getElementById('cmdCode').value == "" || document.getElementById('cmdCode').value == null ){
+		alert("Please Select the Command");
+		return false;
+	}
+	/* if(document.getElementById('cmdName').value == "" || document.getElementById('cmdName').value == null ){
+		alert("please enter the cmdName");
+		return false;
+	} */
+	
+	 var params = {
+		 'cmdId':commandId,
+		 'cmdCode':cmdCode,
+		 'status':cmdStatus
+		 
+	}  
+	 
+	 jQuery.ajax({
+		 crossOrigin: true,
+		    method: "POST",
+		    header:{
+		    	'Access-Control-Allow-Origin': '*'
+		    	},
+		    	crossDomain:true,
+		    url: "updateCommandStatus",
+		    data: JSON.stringify(params),
+		    contentType: "application/json; charset=utf-8",
+		    dataType: "json",
+		    success: function(result){
+		       // alert("result" +result);
+		        console.log(result);
+		        if(result.status==1){
+		        	
+		        	//location.reload();
+		        	
+		        	GetCommandList('ALL')
+		        }else{
+		        	alert(result.status)
+		        }
+		    }
+		    
+		    
+		});	 
+}
+
+function Reset(){
+	document.getElementById("addCommandForm").reset();
+	document.getElementById("searchCommandForm").reset();
+	document.getElementById('searchCommand').value = "";
+	
+}
+
+
+function showResultPage(pageNo)
+{
+	
+	
+	nPageNo = pageNo;	
+	GetCommandList('FILTER');
+	
+}
+
+</script>
+
+
+ 
+ 
+</body>
+</html>

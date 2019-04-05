@@ -1,0 +1,12 @@
+<wsdl:definitions targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/AASHA_Poc/IcgPOC/OsbInstances" name="OsbInstances_db-concrete" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <wsdl:import location="OsbInstances.wsdl" namespace="http://xmlns.oracle.com/pcbpel/adapter/db/AASHA_Poc/IcgPOC/OsbInstances"/>
+    <wsdl:binding name="OsbInstances_ptt-binding" type="osb:OsbInstances_ptt" xmlns:osb="http://xmlns.oracle.com/pcbpel/adapter/db/AASHA_Poc/IcgPOC/OsbInstances">
+        <soap:binding style="document" transport="http://www.bea.com/wli/sb/transports/jca"/>
+        <wsdl:operation name="insert">
+            <soap:operation soapAction="insert"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+</wsdl:definitions>

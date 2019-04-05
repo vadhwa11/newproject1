@@ -1,0 +1,870 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@page import="com.asha.icgweb.utils.HMSUtil"%>
+<%@include file="..//view/leftMenu.jsp"%>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.5">
+    <title>REGISTRATION & APPOINTMENT OF OTHERS</title>
+
+    <script src="${pageContext.request.contextPath}/resources/js/jquery.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/jquery.common.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/common.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.min.js" ></script>
+    <script src="${pageContext.request.contextPath}/resources/js/form-validation.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/bootstrap.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/bootstrap.min.js"></script>
+    <!-- Bootstrap core CSS -->
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css" rel="stylesheet" >
+   <%--  <link href="${pageContext.request.contextPath}/resources/css/style.css" rel="stylesheet" type="text/css" /> --%>
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="${pageContext.request.contextPath}/resources/css/form-validation.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap-grid.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap-grid.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap-reboot.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap-reboot.min.css" rel="stylesheet">
+    <script>
+    
+    <% String APPOINTMENTTYPE =HMSUtil.getProperties("urlextension.properties", "APPOINTMENT_TYPE"); %>
+    <% int REGISTRATION_TYPE_OTHER_CIVIL_ID = Integer.parseInt(HMSUtil.getProperties("urlextension.properties", "REGISTRATION_TYPE_OTHER_CIVIL_ID")); %>
+    <% int REGISTRATION_TYPE_OTHER_DEFENCE_ID = Integer.parseInt(HMSUtil.getProperties("urlextension.properties", "REGISTRATION_TYPE_OTHER_DEFENCE_ID")); %>
+    <% String REGISTRATION_TYPE_NAME = HMSUtil.getProperties("urlextension.properties", "REGISTRATION_TYPE_NAME"); %>
+    
+        $j(document).ready(function() {
+            var brand = document.getElementById('logo-id');
+            brand.className = 'attachment_upload';
+            brand.onchange = function() {
+                document.getElementById('fakeUploadLogo').value = this.value.substring(12);
+            };
+
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        $j('.img-preview').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            $j("#logo-id").change(function() {
+                readURL(this);
+            });
+            
+          
+            
+            $j(function() {
+                var $radios = $j('input:radio[name=radiobtn]');
+                if($radios.is(':checked') === false) {
+                    $radios.filter('[value=NEW]').prop('checked', true);
+                }
+            });
+            
+            
+            
+            $j('input[type="radio"]').click(function(){
+                var inputValue = $j(this).attr("value");
+                
+                if(inputValue=="ALREADY"){
+                	$j('#searchDiv').show();
+                	$j('#lblService').hide();
+                	$j('#serviceNo').hide();
+                	$j('#registrationTypeId').val("<%=REGISTRATION_TYPE_OTHER_DEFENCE_ID%>");
+                }else{
+                	$j('#searchDiv').hide();
+                	$j('#lblService').show();
+                	$j('#serviceNo').show();
+                }
+            });   
+            
+            
+            
+            var dictionary = ${data}; 
+            var registrationTypeList=dictionary.registrationTypeList;
+          	var registrationValues = "";
+          	 for(registration in registrationTypeList){
+          		if(registrationTypeList[registration].registrationTypeName!="<%=REGISTRATION_TYPE_NAME%>"){
+          			registrationValues += '<option value='+registrationTypeList[registration].registrationTypeId+'>'
+						+ registrationTypeList[registration].registrationTypeName
+						+ '</option>';
+          		}
+          	 }
+          	 $j('#registrationTypeId').append(registrationValues); 
+            
+          
+          	 var genderList=dictionary.genderList;
+          	 var genderValues = "";
+          	 for(gender in genderList){
+          		genderValues += '<option value='+genderList[gender].administrativeSexId+'>'
+          						+ genderList[gender].administrativeSexName
+          						+ '</option>';
+          	 }
+          	 $j('#genderId').append(genderValues); 
+            
+          	 
+        	 var serviceTypeList=dictionary.serviceTypeList;
+          	 var serviceTypeValues = "";
+          	 for(serviceType in serviceTypeList){
+          		serviceTypeValues += '<option value='+serviceTypeList[serviceType].serviceTypeId+'>'
+          						+ serviceTypeList[serviceType].serviceTypeName
+          						+ '</option>';
+          	 }
+          	 $j('#serviceTypeId').append(serviceTypeValues); 
+             
+          	 
+          	
+            
+          	 var identificationList=dictionary.identificationList;
+          	 var identificationValues = "";
+          	 for(identification in identificationList){
+          		identificationValues += '<option value='+identificationList[identification].identificationTypeId+'>'
+          						+ identificationList[identification].identificationName
+          						+ '</option>';
+          	 }
+          	 $j('#identificationId').append(identificationValues); 
+                    
+            
+            
+         var deptList=dictionary.departmentList;
+       	 var deptValues = "";
+       	 for(dept in deptList){
+       			deptValues += '<option value='+deptList[dept].departmentId+'>'
+       						+ deptList[dept].departmentName
+       						+ '</option>';
+       	 }
+       	 $j('#departmentId').append(deptValues); 
+            
+            
+        });
+    </script>
+
+</head>
+
+<!-- <body class="bg-light"> -->
+
+<body>
+	<div class="wrapper">
+		<div class="content-page">
+			<div class="content">
+				<div class="container-fluid">
+					<form id="patientDetailsFormOthers" name="patientDetailsFormOthers"
+						action="" method="POST">
+
+						<div class="row">
+							<div class="col-md-9">
+								<div class="internal_Htext">CREATE REGISTRATION &amp; APPOINTMENT  OF OTHERS</div>
+							</div>
+
+							<div class="col-md-3">
+								<div class="form-group">
+									<div class="row" style="padding-bottom: 10px;">
+										<div class="col-md-3"></div>
+										<div class="col-md-6">
+											<div class="main-img-preview"
+												style="width: 60%; height: 60%;">
+												<!--  <img class="img-responsive thumbnail img-preview" src="images/user.png" title="Preview Logo"> -->
+											</div>
+										</div>
+										<div class="col-md-3"></div>
+
+									</div>
+									<div class="row">
+										<div class="col-md-1"></div>
+										<div class="col-md-10">
+
+											<div class="input-group">
+												<input id="fakeUploadLogo" class="form-control fake-shadow"
+													placeholder="Choose File" disabled="disabled">
+												<div class="input-group-btn">
+													<div class="fileUpload btn btn-danger fake-shadow">
+														<span><i class="glyphicon glyphicon-upload"></i>
+															Upload Image</span> <input id="logo-id" name="logo" type="file"
+															class="attachment_upload">
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-1"></div>
+
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+
+						
+								<div class="row">
+
+									<div class="col-md-6">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" name="radiobtn"
+												id="radiobtn1" value="NEW"> <label
+												class="form-check-label" for="radiobtn1">New
+												Registration</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" name="radiobtn"
+												id="radiobtn2" value="ALREADY"> <label
+												class="form-check-label" for="radiobtn2">Already
+												Registered</label>
+										</div>
+									</div>
+									<div class="col-md-6"></div>
+
+									<br> <br>
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-4 col-form-label">Registration
+												Type</label>
+											<div class="col-sm-6">
+												<select class="form-control" id="registrationTypeId"
+													name="registrationType" onchange="changeFields();">
+												</select>
+											</div>
+										</div>
+									</div>
+
+									<!------------------ Adding search part in between ---------->
+									<br> <br>
+
+									<div class="row" id="searchDiv" style="display: none">
+										<div class="col-md-4">
+
+											<div class="form-group row">
+												<label id="lbluhino" class="col-sm-4 col-form-label">UHID
+													NO.</label>
+												<div class="col-sm-6">
+													<input type="text" class="form-control" id="UhidNoId"
+														name="UhidNo" placeholder="Enterable">
+												</div>
+
+												<label id="lblName" class="col-sm-4 col-form-label">Name.</label>
+												<div class="col-sm-6">
+													<input type="text" class="form-control" id="patientName"
+														name="patientName" placeholder="Enterable">
+												</div>
+
+
+												<label id="searchlblService" class="col-sm-4 col-form-label">Service
+													No.</label>
+												<div class="col-sm-6">
+													<input type="text" class="form-control"
+														id="searchServiceNo" name="searchServiceNo"
+														placeholder="Enterable">
+												</div>
+
+												<label id="mobileNo" class="col-sm-4 col-form-label">Mobile
+													No.</label>
+												<div class="col-sm-6">
+													<input type="text" class="form-control" id="searchMobileNo"
+														name="searchMobileNo" placeholder="Enterable">
+												</div>
+											</div>
+											<div class="col-sm-5">
+												<button class="button btn-primary" type="button"
+													onClick="searchPatientDetail()">Search</button>
+											</div>
+										</div>
+									</div>
+
+									<div id="tblPatientList" style="display: none">
+										<table class="table table-striped table-bordered  ">
+											<thead>
+												<tr>
+													<th id="th1">Registration No</th>
+													<th id="th2">Service No</th>
+													<th id="th3">Name</th>
+													<th id="th4">Age</th>
+													<th id="th5">Gender</th>
+													<th id="th6">Mobile No</th>
+													<th id="th7">Other Category</th>
+												</tr>
+											</thead>
+											<tbody id="tblPatientDetails">
+											</tbody>
+										</table>
+									</div>
+
+
+									<!------------------ Adding search part in between ---------->
+
+
+
+
+									<div class="col-md-6"></div>
+
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label id="lblService" class="col-sm-4 col-form-label"><span
+												style="color: #0aabeb;"><sup>&#35;</sup></span>Service No.</label>
+											<div class="col-sm-6">
+												<input type="text" class="form-control" id="serviceNo"
+													name="serviceNo" placeholder="Enterable">
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6"></div>
+
+								</div>
+
+								<br>
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group row">
+											<label class="col-sm-4 col-form-label"><span
+												style="color: red"><sup>&#9733;</sup></span>First Name</label>
+											<div class="col-sm-6">
+												<input type="text" class="form-control" id="firstname"
+													name="firstname" placeholder="Enterable">
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group row">
+											<label class="col-sm-4 col-form-label">Middle Name</label>
+											<div class="col-sm-6">
+												<input type="text" class="form-control" id="middlename"
+													name="middlename" placeholder="Enterable">
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group row">
+											<label class="col-sm-4 col-form-label"><span
+												style="color: red"><sup>&#9733;</sup></span>Last Name</label>
+											<div class="col-sm-6">
+												<input type="text" class="form-control" id="lastname"
+													name="lastname" placeholder="Enterable">
+											</div>
+										</div>
+									</div>
+
+									<div class="col-md-4">
+										<div class="form-group row">
+											<label class="col-sm-4 col-form-label"><span
+												style="color: red"><sup>&#9733;</sup></span>Gender</label>
+											<div class="col-sm-6">
+												<select class="form-control" id="genderId" name="gender">
+													<option value="0" selected="selected">Select</option>
+													<!-- <option value="1">Male</option>
+                                        <option value="2">Female</option> -->
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group row">
+											<label class="col-sm-4 col-form-label"><span
+												style="color: red"><sup>&#9733;</sup></span>DOB</label>
+											<div class="col-sm-6">
+												<input type="date" class="form-control" id="dataOfBirthId"
+													name="dataOfBirth" placeholder="DOB"
+													onblur="calculateAge()">
+											</div>
+
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group row">
+											<label class="col-sm-4 col-form-label"><span
+												style="color: red"><sup>&#9733;</sup></span>Age</label>
+											<div class="col-sm-6">
+												<input type="number" class="form-control" id="age"
+													name="age" placeholder="E/A">
+											</div>
+										</div>
+									</div>
+
+									<div class="col-md-4">
+										<div class="form-group row">
+											<label id="lblServiceType" class="col-sm-4 col-form-label"><span
+												style="color: #0aabeb;"><sup>&#35;</sup></span>Type of
+												Service</label>
+											<div class="col-sm-6">
+												<select id="serviceTypeId" name="serviceTypeId"
+													class="form-control">
+													<option value="0" selected="selected">Select</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group row">
+											<label id="lblRank" class="col-sm-4 col-form-label"><span
+												style="color: #0aabeb;"><sup>&#35;</sup></span>Rank</label>
+											<div class="col-sm-6">
+												<input type="text" class="form-control" id="rankId"
+													name="rank" placeholder="Enterable">
+											</div>
+
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group row">
+											<label class="col-sm-4 col-form-label">Mobile Number</label>
+											<div class="col-sm-6">
+												<input type="number" class="form-control" id="mobilenumber"
+													name="mobilenumber" placeholder="Enterable">
+											</div>
+										</div>
+									</div>
+
+									<div class="col-md-4">
+										<div class="form-group row">
+											<label class="col-sm-4 col-form-label"> ID Type</label>
+											<div class="col-sm-6">
+												<select class="form-control" id="identificationId"
+													name="identification">
+													<option value="0" selected="selected">Select</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group row">
+											<label class="col-sm-4 col-form-label">ID Number</label>
+											<div class="col-sm-6">
+												<input type="text" class="form-control" id="idnumber"
+													name="idnumber" placeholder="Enterable">
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4"></div>
+
+								</div>
+						<!-- 	</div>
+						</div> -->
+
+
+						<h6 style="text-decoration: underline">Visit Details</h6>
+
+						<div class="row">
+							<div class="col-md-12">
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group row">
+											<label class="col-sm-4 col-form-label">Department</label>
+											<div class="col-sm-6">
+												<select class="form-control" id="departmentId"
+													name="department" onchange="getAppointmentType()">
+													<option value="0" selected="selected">Select</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-check">
+											<div class="form-group row">
+												<table border="0" cellspacing="0" cellpadding="0"
+													width="50%" id="appTypeTable"></table>
+											</div>
+											<!-- <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                <label class="form-check-label" for="exampleCheck1">OPD</label> -->
+										</div>
+									</div>
+									<div class="col-md-4"></div>
+
+									<div class="col-md-4">
+										<div class="form-group row">
+											<label class="col-sm-4 col-form-label">Priority</label>
+											<div class="col-sm-6">
+												<select id="priority" name="priority" class="form-control">
+													<option value="1">1</option>
+													<option value="2">2</option>
+													<option value="3" selected="selected">3</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group row">
+											<div class="col-sm-5">
+												<button class="button btn-primary" type="button"
+													onClick="validateDivToken()">Show Token</button>
+											</div>
+											<div class="col-sm-5">
+												<div id="displayToken">Display Token</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4"></div>
+
+								</div>
+							</div>
+						</div>
+
+
+						<br>
+
+						<div class="row">
+							<div class="col-md-12">
+
+								<button class="btn btn-primary" type="button"
+									onclick="submitFormData()">Submit</button>
+
+							</div>
+						</div>
+
+
+
+
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<script>
+    function getAppointmentType(){
+    	
+		var deptId = $j('#departmentId').find('option:selected').val();
+		var params = {
+				"deptId":deptId
+		}
+		$j.ajax({
+			type : "POST",
+			contentType : "application/json",
+			url : '${pageContext.request.contextPath}/appointment/getLocationWiseAppointmentType',
+			data : JSON.stringify(params),
+			dataType : "json",
+			cache : false,
+			success : function(data) {
+				if (data.status == '1') {
+					var checkboxorder = [];
+					var labelId = [];
+					var idandType = [];
+					var checkboxLength = data.appointmentTypeList.length;
+					for(var a = 0;a< checkboxLength;a++){
+						checkboxorder[a] = data.appointmentTypeList[a].masAppointmentType.appointmentTypeName;
+						labelId[a] = data.appointmentTypeList[a].masAppointmentType.appointmentTypeId;
+						idandType[a] = checkboxorder[a]+'@'+ labelId[a];
+						
+					}
+					var tablebody = '<tr>';
+					var tokenDisplay = '';
+					x=0;
+					for(var z=0;z<checkboxLength;z++){
+						tablebody += '<td>';
+						var checkBoxIdandValue = idandType[z].split("@");
+						if(checkBoxIdandValue[0]=="<%=APPOINTMENTTYPE%>"){
+						tablebody += '<input type="checkbox"  id ="td'+checkBoxIdandValue[0]+'" name="checkDiv" value="'+checkBoxIdandValue[1]+'"><span id="td'+z+'">'+checkBoxIdandValue[0]+'</span></br>';
+						}}
+					$j('#appTypeTable').append(tablebody);	
+				}else{
+					$j('#appTypeTable').empty();	
+				}
+			},
+			error : function(msg) {
+				alert("An error has occurred while contacting the server");
+			}
+		});
+    	
+    	
+    	
+    }
+    
+    
+     function changeFields(){
+ 		
+    	var radioValue = $j("input[name='radiobtn']:checked").val();
+    	if(radioValue=="ALREADY"){
+    		if($j('#registrationTypeId').val()==<%=REGISTRATION_TYPE_OTHER_CIVIL_ID%> ){
+    			$j('#searchlblService').hide();
+        		$j('#searchServiceNo').hide();
+    		}else{
+    			$j('#searchlblService').show();
+        		$j('#searchServiceNo').show();
+    		}
+    	}
+    	 
+    	 
+    	 
+    	if($j('#registrationTypeId').val()==<%=REGISTRATION_TYPE_OTHER_CIVIL_ID%>){
+    		$j('#lblService').hide();
+    		$j('#serviceNo').hide();
+    		$j('#lblServiceType').hide();
+    		$j('#serviceTypeId').hide();
+    		$j('#lblRank').hide();
+    		$j('#rankId').hide();
+    	}else{
+    		$j('#lblService').show();
+    		$j('#serviceNo').show();
+    		$j('#lblServiceType').show();
+    		$j('#serviceTypeId').show();
+    		$j('#lblRank').show();
+    		$j('#rankId').show();
+    	}
+    	 
+     }
+     
+     
+    function validateDivToken(){
+    	if(validateDeptAndAppointment()){
+   		 var deptId = $j('#departmentId').find('option:selected').val();
+   		 var appointmentTypeId =$j("input[name='checkDiv']:checked").val();
+   		 var hospitalId = "1"; //Hospiatl id will fetch from session
+   			var params = {
+   				"deptId":deptId,
+   				"appointmentTypeId":appointmentTypeId,
+   				"hospitalId" : hospitalId
+   			}
+   		$j.ajax({
+   				type : "POST",
+   				contentType : "application/json",
+   				url : 'tokenNoOfDepartmentForOthers',
+   				data : JSON.stringify(params),
+   				dataType : "json",
+   				cache : false,
+   				success : function(msg) {
+   					console.log(msg.tokenMsg);
+   					var displayToken = '';
+   					displayToken += '<input readonly type="text" name="tokenNo" id="tokenNoId" value="'+msg.tokenMsg+'" style="left-margin:10px">'; 
+   					$j('#displayToken').html(displayToken);
+   				}, 
+   				error : function(msg) {
+   					alert("An error has occurred while contacting the server");
+   				}
+   			});
+    } 
+   }
+    
+    function validateDeptAndAppointment(){
+		var deptId = document.getElementById("departmentId").value;
+		if(deptId == 0){
+			alert("Please select Department");
+		}else{
+			if(!$j("input[name='checkDiv']:checked").is(':checked')){
+				alert("Please select Appointment Type");
+				return false;
+			}
+			return true;
+		}
+	}    
+     
+    function submitFormData(){
+    	
+    	var value =validateformData();
+    	var tokenValue =checkTokenValue();
+    	
+    	if(value==true && tokenValue){
+    		 var params = {
+    				 "patientDetailsFormOthers":$j('#patientDetailsFormOthers').serializeObject() 
+    				}
+    	 
+         $j.ajax({
+       	  type : "POST",
+    		  contentType : "application/json",
+    		  url : 'submitPatientDetailsForOthers',
+    		  data : JSON.stringify(params),
+    		  dataType : "json",
+    		  cache : false,
+            success : function(response) {
+            	console.log(response);
+            	 var visitId = response.visitId;
+            	window.location.href="showVisitTokenForOthers?visitId="+visitId+""; 
+            }
+         });
+    	}else{
+    		return false;
+    	}
+    
+    } 
+   
+    $j.fn.serializeObject = function()
+    {
+        var o = {};
+        var a = this.serializeArray();
+        $j.each(a, function() {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+    
+   
+    function validateformData(){
+    	
+    	var registrationTypeId = $j('#registrationTypeId').find('option:selected').val();
+    	if(registrationTypeId==<%=REGISTRATION_TYPE_OTHER_DEFENCE_ID%>){
+    		if($j('#serviceNo').val()==""){
+    			alert("Please Enter the Service No");
+    			return false;
+    		}
+    		else if($j('#serviceTypeId').val()==0){
+    			alert("Please Select the Service Type");
+    			return false;
+    		}else if($j('#rankId').val()==""){
+    			alert("Please Enter the Rank");
+    			return false;
+    		}
+    	}
+    	
+    	if($j('#firstname').val()==""){
+			alert("Please Enter the First Name");
+			return false;
+		}
+		else if($j('#lastname').val()==""){
+			alert("Please Enter the Last Name");
+			return false;
+		}
+    	
+		else if($j('#genderId').val()=="0"){
+			alert("Please Select the Gender");
+			return false;
+		}
+		else if($j('#dataOfBirthId').val()==""){
+			alert("Please Enter the DOB");
+			return false;
+		}
+		else if($j('#age').val()==""){
+			alert("Age can not be blank");
+			return false;
+		}
+    	
+    	
+    	var b=validateDeptAndAppointment();
+    	
+    	if(b==true){
+    		return true;
+    	}else{
+    		return false;
+    	}
+    }
+    
+    
+    function checkTokenValue(){
+    
+    	if($j('#tokenNoId').val()){
+    		if(isNaN($j('#tokenNoId').val())){
+        		return false;
+        		alert($j('#tokenNoId').val());
+        	}else{
+        		return true;
+        	}
+    	}else{
+    		alert("Please check the token number");
+    		return false;
+    	}
+    }
+    
+   function calculateAge(){
+	  var Bdate= $j('#dataOfBirthId').val()
+	  var Bday = +new Date(Bdate);
+	  var age =  parseInt(((Date.now() - Bday) / (31557600000)),10);
+	   $j('#age').val(age);
+   }
+   
+   
+  function searchPatientDetail(){
+	  if(validateSearchFields()){
+		  var  UhidNoId=$j('#UhidNoId').val();
+			 var patientName=$j('#patientName').val();
+			 var searchServiceNo=$j('#searchServiceNo').val();
+			 var searchMobileNo=$j('#searchMobileNo').val();
+		   			var params = {
+		   				"UhidNoId":UhidNoId,
+		   			 	"patientName":patientName,
+		   			    "searchServiceNo":searchServiceNo,
+		   			    "searchMobileNo":searchMobileNo
+		   			}
+	               var data = params;
+	               var url = 'searchOthersRegisteredPatient';
+	               var bClickable = true;
+	                 GetJsonData('tblPatientDetails', data, url, bClickable);
+	             }
+	
+  } 
+  function makeTable(jsonData) {
+	     var htmlTable = "";
+	     if(jsonData.status==1){
+	    var data = jsonData.count;
+	    var dataList = jsonData.data;
+	    console.log(dataList);
+			 for(item in dataList){
+		    	  htmlTable = htmlTable + "<tr id='" + dataList[item].Id + "'>";
+		    	  htmlTable = htmlTable + "<td style='width: 150px;'>" + dataList[item].uhinNo + "</td>";
+		    	  htmlTable = htmlTable + "<td style='width: 150px;'>" + dataList[item].serviceNo + "</td>";
+		    	  htmlTable = htmlTable + "<td style='width: 150px;'>" + dataList[item].name + "</td>";
+		    	  htmlTable = htmlTable + "<td style='width: 150px;'>" + dataList[item].age + "</td>";
+		    	  htmlTable = htmlTable + "<td style='width: 150px;'>" + dataList[item].gender + "</td>";
+		    	  htmlTable = htmlTable + "<td style='width: 150px;'>" + dataList[item].mobileNumber + "</td>";
+		    	  htmlTable = htmlTable + "<td style='width: 150px;'>" + dataList[item].registrationTypeName + "</td>";
+		    	  
+		      }
+			//$j('#message').html('');
+		      $j("#tblPatientDetails").html(htmlTable);
+			  $j('#tblPatientList').show();
+		}else{
+			
+			 $j('#tblPatientList').hide();
+			 $j("#tblPatientDetails").empty();
+			//$j('#message').html(jsonData.msg);
+	        
+		}
+	  }
+  
+  
+  function executeClickEvent(rowId,jsonData) {
+	  alert(rowId);
+	  var dataList=jsonData.data;
+		 for(item in dataList){
+			 if(dataList[item].Id===parseInt(rowId)){
+				 $j('#uhidNo').val(dataList[item].uhidNo);  
+				 $j('#serviceNo').val(dataList[item].serviceNo);
+				 $j('#firstname').val(dataList[item].name);
+				 $j('#genderId').val(dataList[item].genderId);
+				 $j('#dataOfBirthId').val(dataList[item].dateOfBirth);
+				 $j('#age').val(dataList[item].age);
+				 $j('#serviceTypeId').val(dataList[item].serviceTypeId);
+				 $j('#rankId').val(dataList[item].rank);
+				 $j('#mobilenumber').val(dataList[item].mobileNumber);
+				 $j('#identificationId').val(dataList[item].identificationTypeId);
+				 $j('#idnumber').val(dataList[item].idNumber);
+			 }
+		 }
+  }
+  
+  function validateSearchFields(){
+	  return true;
+	 /*  UhidNoId
+	  patientName
+	  searchServiceNo
+	  searchMobileNo */
+  }
+    </script>
+    
+</body>
+</html>
