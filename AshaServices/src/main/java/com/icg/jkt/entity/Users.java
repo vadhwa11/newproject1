@@ -1,17 +1,27 @@
 package com.icg.jkt.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
-
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 /**
@@ -107,6 +117,10 @@ public class Users implements Serializable {
 	@OneToMany(mappedBy="user")	
 	@JsonBackReference
 	private List<MasEmpanelledHospital> empanelledHospitals;
+	
+	@OneToMany(mappedBy="user")	
+	@JsonBackReference
+	private List<TemplateApplication> templateApplications; 
 			
 	//bi-directional many-to-one association to MasEmployee
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -347,6 +361,22 @@ public class Users implements Serializable {
 
 	public void setMasDisposal(List<MasDisposal> masDisposal) {
 		this.masDisposal = masDisposal;
+	}
+
+	public List<MasEmpanelledHospital> getEmpanelledHospitals() {
+		return empanelledHospitals;
+	}
+
+	public void setEmpanelledHospitals(List<MasEmpanelledHospital> empanelledHospitals) {
+		this.empanelledHospitals = empanelledHospitals;
+	}
+
+	public List<TemplateApplication> getTemplateApplications() {
+		return templateApplications;
+	}
+
+	public void setTemplateApplications(List<TemplateApplication> templateApplications) {
+		this.templateApplications = templateApplications;
 	}
 
 }

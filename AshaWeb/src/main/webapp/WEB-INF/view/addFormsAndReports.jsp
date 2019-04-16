@@ -16,23 +16,27 @@
     <meta content="Coderthemes" name="author" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
      
-    
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/newOpd.js"></script>    
 <%@include file="..//view/commonJavaScript.jsp" %>
 
 <script type="text/javascript">
 var $j = jQuery.noConflict();
 $j(document).ready(function()
-		{	
-		
+		{		
 		GetApplicationAutoCompleteList();
-			
+		GetParentId();
 		});
 
 
+var applicationArry = new Array();
+var appId;
+var dataList;
+var Id='';
+var appUrl='';
+var applicationId;
+var appNameList='';
+var applicationName='';
 function GetApplicationAutoCompleteList(){
-	/* var params = {
-				'applicationName':'User'}  */
-		
 		$j.ajax({
 			type : "POST",
 			contentType : "application/json",
@@ -40,81 +44,149 @@ function GetApplicationAutoCompleteList(){
 			data : JSON.stringify({}),
 			dataType : "json",
 			cache : false,
-			success : function(result) {
-				
+			success : function(result) {				
 				var maxAppId = result.max_app_id;
-				var dataList = result.data;
-				alert("dataList :: "+dataList);
-				
-				var maxId = parseInt(maxAppId.substring(1,5))+1;
-				alert("maxAppId :: "+maxAppId);
-				alert("maxId :: "+"A"+maxId);
-				$j('#applicationId').val("A"+maxId);
-				
-				
+				 dataList = result.data;				
+				var maxId = parseInt(maxAppId.substring(1,maxAppId.length))+1;				
+				$j('#applicationId').val("A"+maxId);								
 				  for(i=0;i<dataList.length;i++){
-					  alert("length:: "+dataList.length);
-					  alert(dataList[0].applicationName)
-					  $j("#applicationName").easyAutocomplete(dataList[i].applicationName);
-					// $j('#applicationName').val(dataList[i].applicationName);
-					
+					  appId = dataList[i].id;					  
+					  var status = dataList[i].status;
+					  //if(status == 'n'){
+					//Id = parseInt(appId.substring(1,appId.length));					  
+					  appNameList = dataList[i].appName;
+					  var url = dataList[i].url;
+					  var applicationName = appNameList+"["+appId+"]";					  
+					  applicationArry.push(applicationName);
+					  //}
 				}  
-				//$j('#applicationName').val();
-				//$j('#applicationUrl').val();
-			console.log(result);
+				  autocomplete(document.getElementById("applicationName"), applicationArry);  
+					
 			}
 		});
 		
 	}
 	
-function getAutoCompletion(length){
+	 function fillDataUrl(value){    	   	  
+    	  for(var i=0;i<dataList.length;i++){
+    		  var applicationId1 = dataList[i].id;    		  
+    		  //Id = parseInt(applicationId1.substring(1,applicationId1.length));    		  
+    		  if(applicationId1 == applicationId){    			 
+    			  appUrl = dataList[i].url;    			  
+    		  }
+    	  }    	  
+    	 $j('#applicationUrl').val(appUrl);    	  
+      }
 	
-	alert(length);
+function changeApplication(value){	
+	var index1 = value.lastIndexOf("[");
+    var index2 = value.lastIndexOf("]");
+    index1++;
+    applicationId = value.substring(index1, index2);
+                
 }
 
+var appName='';
+var appPId='';
+var appArray = new Array();
+function GetParentId(){
+	
+	$j.ajax({
+		type : "POST",
+		contentType : "application/json",
+		url : "getApplicationAutoComplete",
+		data : JSON.stringify({}),
+		dataType : "json",
+		cache : false,
+		success : function(result) {			
+			var dataList = result.listObjModule;
+			for(var i=0;i<dataList.length;i++){
+				 appPId = dataList[i].applicationId;				 
+				 var appName1 = dataList[i].applicationName;
+				 appName =  appName1+"["+appPId+"]";
+				 alert(appName);
+				 appArray.push(appName);
+			}
+			 autocomplete(document.getElementById("parentId"), appArray);
+		}
+	})
+}
+
+function addFormAndReportsDetails(){
+	 var url = $j('#applicationUrl').val();
+	 alert(url);
+	params = {"applicationId":$j('#applicationId').val(),
+			"applicationName":$j('#applicationName').val(),
+			"parentId":appPId,
+			"url":url
+			}
+	alert(JSON.stringify(params));
+	$j.ajax({
+		type : "POST",
+		contentType : "application/json",
+		url : "addFormAndReports",
+		data : JSON.stringify(params),
+		dataType : "json",
+		cache : false,
+		sucess : function(result){
+			if(result.status==1){	        	
+	        	document.getElementById("messageId").innerHTML = result.msg;
+	    		$("#messageId").css("color", "green");	        	
+	        }	        
+	    	else if(result.status==0){	        	
+	        	if(result.msg != undefined){
+		        		document.getElementById("messageId").innerHTML = result.msg;
+		        		$("#messageId").css("color", "red");			        	
+	        		}
+	        	if(result.err_mssg != undefined){
+	        		document.getElementById("messageId").innerHTML = result.err_mssg;
+	        		$("#messageId").css("color", "red");		        	
+        		}	        	
+	        }
+	    	else{	        	
+	        	if(result.msg != undefined){
+		        		document.getElementById("messageId").innerHTML = result.msg;
+		        		$("#messageId").css("color", "red");			        	
+	        		}
+	        	if(result.err_mssg != undefined){
+	        		document.getElementById("messageId").innerHTML = result.err_mssg;
+	        		$("#messageId").css("color", "red");		        	
+        		}	        	
+	        }
+	    },
+		error: function(result){			
+			alert("An error has occurred while contacting the server"+ result);			
+		   }
+		
+	})
+}
 </script>
+
+
+
 </head>
 <body>
     <!-- Begin page -->
     <div id="wrapper">
         <!-- Top Bar Start -->
         <div class="topbar">
-            <!-- LOGO -->
-           <%--  <div class="topbar-left">
-                <a href="index.html" class="logo">
-                    <span>
-                            <img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="" height="18">
-                        </span>
-                    <i>
-                            <img src="${pageContext.request.contextPath}/resources/images/logo_sm.png" alt="" height="22">
-                        </i>
-                </a>
-            </div> --%>
-
-            <nav class="navbar-custom">
-                <ul class="list-inline float-right mb-0">
-                
+             <nav class="navbar-custom">
+                <ul class="list-inline float-right mb-0">                
                     <li class="list-inline-item dropdown notification-list">
                         <a class="nav-link dropdown-toggle nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                             <i class="noti-icon"><img src="${pageContext.request.contextPath}/resources/images/users/avatar-1.jpg" alt="user" class="img-fluid rounded-circle"></i>
                             <span class="profile-username ml-2 text-dark">Username </span> <span class="mdi mdi-menu-down text-dark"></span>
-                        </a>
-                        
+                        </a>                        
                     </li>
-
                 </ul>
-
                 <ul class="list-inline menu-left mb-0">
                     <li class="float-left">
                         <button class="button-menu-mobile open-left waves-light waves-effect">
                             <i class="mdi mdi-menu"></i>
                         </button>
-                    </li>
-                   
+                    </li>                   
                 </ul>
-
             </nav>
-
         </div>
        
         <!-- ============================================================== -->
@@ -124,22 +196,15 @@ function getAutoCompletion(length){
             <!-- Start content -->
             <div class="">
                 <div class="container-fluid">
+                <div class="internal_Htext">ADD FORMS / REPORTS</div>
                     <div class="row">
-                        <div class="col-12">
-                            <div class="page-title-box">
-                                <h4 class="page-title float-left">ADD FORMS / REPORTS</h4>
-                                <div class="clearfix"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end row -->
-                   
+                    </div>                   
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-body">
                                  <p align="center" id="messageId" style="color:green; font-weight: bold;" ></p>
-                                       <br>
+                                  <br>
                                     <div class="row">                                                                     
                                         <div class="col-md-8">
                                             <form class="form-horizontal" id="" name="" method="" role="form">
@@ -150,8 +215,8 @@ function getAutoCompletion(length){
                                                         
                                                     </div>
                                                      <label class="col-3 col-form-label inner_md_htext">Application Name</label>
-                                                    <div class="col-3">
-                                                      <input type="text" name="applicationName" id="applicationName" class="form-control">
+                                                    <div class="autocomplete"">
+                                                      <input type="text" name="applicationName" id="applicationName" class="form-control" onblur="changeApplication(this.value);fillDataUrl(this);">
                                                     </div>
                                                     
                                                 </div>
@@ -177,7 +242,7 @@ function getAutoCompletion(length){
                                                      <label class="col-3 col-form-label inner_md_htext">Status</label>
                                                     <div class="col-3">
                                                     <label class="col-form-label inner_md_htext">Active</label>
-                                                      <input type="radio">
+                                                      <input type="radio" checked="checked">
                                                       <label class="col-form-label inner_md_htext">InActive</label>
                                                       <input type="radio">
                                                     </div>
@@ -192,8 +257,7 @@ function getAutoCompletion(length){
                                         <div class="col-md-5">
                                             <form>
                                                 <div class="button-list">
-
-                                                    <button type="button" id="btnAdd" class="btn btn-primary " onclick="addCmdDetails();">Add</button>
+                                                    <button type="button" id="btnAdd" class="btn btn-primary " onclick="addFormAndReportsDetails();">Add</button>
 
                                                 </div>
                                             </form>

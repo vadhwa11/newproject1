@@ -1,5 +1,6 @@
-document.write("<script type='text/javascript' src='/hms/jsp/js/prototype.js'></script>");
-document.write("<script type='text/javascript' src='/hms/jsp/js/divideprototype.js'></script>");
+document.write("<script type='text/javascript' src='resources/js/prototype.js'></script>");
+document.write("<script type='text/javascript' src='resources/js/divideprototype.js'></script>");
+
 
 function submitRadioAjax(formName,action,temp){
 

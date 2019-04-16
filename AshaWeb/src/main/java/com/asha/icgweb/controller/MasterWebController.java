@@ -33,7 +33,8 @@ public class MasterWebController {
 	@Autowired
 	MasterService masterService;
 	
-	String IpAndPortNo = HMSUtil.getProperties("urlextension.properties", "OSB_IP_AND_PORT");
+	String IpAndPortNo = HMSUtil.getProperties("urlextension.properties", "LOCAL_IP");
+	String IpAndPortNoLocal = HMSUtil.getProperties("urlextension.properties", "LOCAL_IP_AND_PORT");
 	
 	
 	/**************************************Command Master**************************************************/
@@ -46,15 +47,13 @@ public class MasterWebController {
 	
 	@RequestMapping(value="/masterModule", method=RequestMethod.GET)	
 	public ModelAndView masterModules(HttpServletRequest request, HttpServletResponse response) {
-		System.out.println("masterModules calling...");
 		ModelAndView mav = new ModelAndView("masterModule");			
 		return mav;
 			
 	}
 	
-	@RequestMapping(value="/commandMaster", method=RequestMethod.GET)	
+	@RequestMapping(value="/RegionMaster", method=RequestMethod.GET)	
 	public ModelAndView commandMaster(HttpServletRequest request, HttpServletResponse response) {
-		System.out.println("commandMaster calling...");
 		ModelAndView mav = new ModelAndView("commandMaster");			
 		return mav;
 			
@@ -188,7 +187,7 @@ public class MasterWebController {
 	public String getAgeList(@RequestBody Map<String, Object> idealWeight, HttpServletRequest request, HttpServletResponse response) {
 		JSONObject jsonObject = new JSONObject(idealWeight);
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
-		String Url = HMSUtil.getProperties("urlextension.properties", "getAge");
+		String Url = HMSUtil.getProperties("urlextension.properties", "GET_AGE");
 		String OSBURL = IpAndPortNo + Url;
 		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
 	}
@@ -206,7 +205,7 @@ public class MasterWebController {
 	public String getAllIdealWeight(@RequestBody String empnelledHospital, HttpServletRequest request, HttpServletResponse response) {
 		JSONObject jsonObject = new JSONObject(empnelledHospital);
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
-		String Url = HMSUtil.getProperties("urlextension.properties", "getAllIdealWeight");
+		String Url = HMSUtil.getProperties("urlextension.properties", "GET_ALL_IDEAL_WEIGHT");
 		String OSBURL = IpAndPortNo + Url;
 		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());		
 	}
@@ -464,7 +463,7 @@ public class MasterWebController {
 	public String addEmpanelledHospital(@RequestBody Map<String, Object> empnelledHospital, HttpServletRequest request, HttpServletResponse response) {
 		JSONObject jsonObject = new JSONObject(empnelledHospital);
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
-		String Url = HMSUtil.getProperties("urlextension.properties", "addEmpanelledHospital");
+		String Url = HMSUtil.getProperties("urlextension.properties", "ADD_EMPPANELLED_HOSPITAL");
 		String OSBURL = IpAndPortNo + Url;
 		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
 	}
@@ -473,7 +472,7 @@ public class MasterWebController {
 	public String getAllEmpanelledHospital(@RequestBody String empnelledHospital, HttpServletRequest request, HttpServletResponse response) {
 		JSONObject jsonObject = new JSONObject(empnelledHospital);
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
-		String Url = HMSUtil.getProperties("urlextension.properties", "getAllEmpanelledHospital");
+		String Url = HMSUtil.getProperties("urlextension.properties", "GET_ALL_EMPANELLED_HOSPITAL");
 		String OSBURL = IpAndPortNo + Url;
 		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());		
 	}
@@ -482,7 +481,7 @@ public class MasterWebController {
 	public String updateEmpanelledHospital(@RequestBody String empnelledHospital, HttpServletRequest request, HttpServletResponse response) {
 		JSONObject jsonObject = new JSONObject(empnelledHospital);
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
-		String Url = HMSUtil.getProperties("urlextension.properties", "updateEmpanelledHospital");
+		String Url = HMSUtil.getProperties("urlextension.properties", "UPDATE_EMPANELLED_HOSPITAL");
 		String OSBURL = IpAndPortNo + Url;
 		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());	
 	}
@@ -559,7 +558,7 @@ public class MasterWebController {
 	public String getAllPhysiotherapy(@RequestBody String physiotherapyPayload, HttpServletRequest request, HttpServletResponse response) {
 		JSONObject jsonObject = new JSONObject(physiotherapyPayload);
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
-		String Url = HMSUtil.getProperties("urlextension.properties", "getAllPhysiotherapy");
+		String Url = HMSUtil.getProperties("urlextension.properties", "GET_ALL_PHYSIOTHERAPY");
 		String OSBURL = IpAndPortNo + Url;
 		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
 		
@@ -569,7 +568,7 @@ public class MasterWebController {
 	public String addPhsiotherapy(@RequestBody Map<String, Object> requestPayload, HttpServletRequest request, HttpServletResponse response) {
 		JSONObject jsonObject = new JSONObject(requestPayload);
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
-		String Url = HMSUtil.getProperties("urlextension.properties", "addPhsiotherapyCare");
+		String Url = HMSUtil.getProperties("urlextension.properties", "ADD_PHSIOTHERAPY_CARE");
 		String OSBURL = IpAndPortNo + Url;
 		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
 	}
@@ -578,7 +577,7 @@ public class MasterWebController {
 	public String updatePhsiotherapyDetails(@RequestBody String masNursingCare, HttpServletRequest request, HttpServletResponse response) {
 		JSONObject jsonObject = new JSONObject(masNursingCare);
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
-		String Url = HMSUtil.getProperties("urlextension.properties", "updatePhysiotherapyDetails");
+		String Url = HMSUtil.getProperties("urlextension.properties", "UPDATE_PHSITHERAPY_DETAILS");
 		String OSBURL = IpAndPortNo + Url;
 		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());	
 	}
@@ -589,5 +588,833 @@ public class MasterWebController {
 	public ModelAndView ICDMaster(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mav = new ModelAndView("ICDMaster");		
 		return mav;
+	}
+	
+/***************************************** SERVICE TYPE *********************************************************/
+	
+	@RequestMapping(value="/serviceTypeMaster", method=RequestMethod.GET)	
+	public ModelAndView serviceTypeMaster(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("serviceTypeMaster calling...");
+		ModelAndView mav = new ModelAndView("serviceTypeMaster");			
+		return mav;
+			
+	}
+	@RequestMapping(value="/getAllServiceTypeDetails", method=RequestMethod.POST)	
+	public String  getAllServiceTypeDetails(@RequestBody String stPayload, HttpServletRequest request, HttpServletResponse response) {
+		String serviceTypeDetails="";		
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "osb_getAllServiceType");	
+		String OSBURL = IpAndPortNo + Url;
+		serviceTypeDetails = RestUtils.postWithHeaders(OSBURL, requestHeaders, stPayload);		
+		
+		return serviceTypeDetails;
+	}
+	
+	@RequestMapping(value="/updateServiceTypeDetails", method=RequestMethod.POST)
+	public String updateServiceTypeDetails(@RequestBody String updateStPayload, HttpServletRequest request, HttpServletResponse response) {
+		String responseObj="";
+		String Url="";
+		System.out.println("updateServiceTypeDetails");
+		JSONObject jsonObject = new JSONObject(updateStPayload);	
+		System.out.println("updateServiceTypeDetails :: "+jsonObject);
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();		
+		Url = HMSUtil.getProperties("urlextension.properties", "osb_updateServiceType");
+		String OSBURL = IpAndPortNo + Url;
+		responseObj = RestUtils.postWithHeaders(OSBURL, requestHeaders, jsonObject.toString());
+		System.out.println("updateServiceType ::"+responseObj);
+		return responseObj;
+	}
+	@RequestMapping(value="/addServiceType", method=RequestMethod.POST)
+	public String addServiceType(@RequestBody Map<String, Object> requestPayload, HttpServletRequest request,
+			HttpServletResponse response) {			
+		JSONObject jsonObject = new JSONObject(requestPayload);						
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "osb_addServiceType");
+		String OSBURL = IpAndPortNo + Url;		
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+	}
+	
+	@RequestMapping(value="/updateServiceTypeStatus", method=RequestMethod.POST)
+	public String updateServiceTypeStatus(@RequestBody String activeStatusCmdPayload, HttpServletRequest request, HttpServletResponse response) {		
+		JSONObject jsonObject = new JSONObject(activeStatusCmdPayload);
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();		
+		String Url = HMSUtil.getProperties("urlextension.properties", "osb_statusServiceType");
+		String OSBURL = IpAndPortNo + Url;		
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+	}	
+	
+	
+	/**************************************
+	 * Rank Master
+	 **************************************************/
+	/**
+	 * @param RankMaster
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	
+	@RequestMapping(value = "/rankMaster", method = RequestMethod.GET)
+	public ModelAndView rankMaster(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("rankMaster calling...");
+		ModelAndView mav = new ModelAndView("rankMaster");
+		return mav;
+
+	}
+	
+	@RequestMapping(value = "/getAllRankDetails", method = RequestMethod.POST)
+	public String getAllRankDetails(@RequestBody String rankPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "osb_getRank");
+		String OSBURL = IpAndPortNo + Url;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, rankPayload);
+	}
+	
+	@RequestMapping(value = "/addRank", method = RequestMethod.POST)
+	public String addRank(@RequestBody Map<String, Object> requestPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String responseObj = "";
+		JSONObject jsonObject = new JSONObject(requestPayload);
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties","osb_addRank");
+		String OSBURL = IpAndPortNo + Url;		
+		responseObj = RestUtils.postWithHeaders(OSBURL.trim(),requestHeaders, jsonObject.toString());
+		return responseObj;
+	}
+
+	@RequestMapping(value = "/updateRankDetails", method = RequestMethod.POST)
+	public String updateRankDetails(@RequestBody HashMap<String, Object> payload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String responseObj = "";
+		JSONObject jsonObject = new JSONObject(payload);
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "osb_updateRank");
+		String OSBURL = IpAndPortNo + Url;
+		responseObj = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObj;
+	}
+
+	@RequestMapping(value = "/updateRankStatus", method = RequestMethod.POST)
+	public String updateRankStatus(@RequestBody String activeStatusRankPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "osb_statusRank");
+		String OSBURL = IpAndPortNo + URL;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, activeStatusRankPayload);
+	}
+
+	@RequestMapping(value = "/getEmployeeCategoryList", method = RequestMethod.POST)
+	public String getEmployeeCategoryList(@RequestBody String payload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "osb_getEmployeeCategoryList");
+		String OSBURL = IpAndPortNo + URL; 
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+	}
+	/**************************************
+	 * Trade Master
+	 **************************************************/
+	/**
+	 * @param TradeMaster
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/tradeMaster", method = RequestMethod.GET)
+	public ModelAndView tradeMaster(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("tradeMaster calling...");
+		ModelAndView mav = new ModelAndView("tradeMaster");
+		return mav;
+
+	}
+
+	@RequestMapping(value = "/addTrade", method = RequestMethod.POST)
+	public String addTrade(@RequestBody Map<String, Object> requestPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String responseObj = "";
+		JSONObject jsonObject = new JSONObject(requestPayload);
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "addTrade");
+		String OSBURL = IpAndPortNo + URL;
+		responseObj = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObj;
+	}
+
+	@RequestMapping(value = "/getAllTradeDetails", method = RequestMethod.POST)
+	public String getAllTradeDetails(@RequestBody String tradePayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "getAllTrade");
+		String OSBURL = IpAndPortNo + URL;
+		return  RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, tradePayload);
+
+	}
+
+	@RequestMapping(value = "/updateTradeDetails", method = RequestMethod.POST)
+	public String updateTradeDetails(@RequestBody HashMap<String, Object> payload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String responseObj = "";
+		JSONObject jsonObject = new JSONObject(payload);
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateTrade");
+		String OSBURL = IpAndPortNo + URL;
+		responseObj = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObj;
+	}
+
+	@RequestMapping(value = "/updateTradeStatus", method = RequestMethod.POST)
+	public String updateTradeStatus(@RequestBody String activeStatusTradePayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "statusTrade");
+		String OSBURL = IpAndPortNo + URL; 
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, activeStatusTradePayload);
+	}
+
+	@RequestMapping(value = "/getServiceTypeList", method = RequestMethod.POST)
+	public String getServiceTypeList(@RequestBody String payload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "getServiceTypeList");
+		String OSBURL = IpAndPortNo + URL; 		
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+	}
+
+	/**************************************
+	 * RELION Master
+	 **************************************************/
+	/**
+	 * @param ReligionMaster
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+
+	@RequestMapping(value = "/religionMaster", method = RequestMethod.GET)
+	public ModelAndView religionMaster(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView("religionMaster");
+		return mav;
+	}
+
+	@RequestMapping(value = "/addReligion", method = RequestMethod.POST)
+	public String addReligion(@RequestBody Map<String, Object> religionPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String responseObj = "";
+		JSONObject jsonObject = new JSONObject(religionPayload);
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "addReligion");
+		String OSBURL = IpAndPortNo + URL; 
+		responseObj = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObj;
+	}
+
+	@RequestMapping(value = "/getAllReligion", method = RequestMethod.POST)
+	public String getAllReligion(@RequestBody String religionPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "getAllReligion");
+		String OSBURL = IpAndPortNo + URL; 
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, religionPayload);
+	}
+
+	@RequestMapping(value = "/updateReligionDetails", method = RequestMethod.POST)
+	public String updateReligionDetails(@RequestBody String religionPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String responseObj = "";
+		JSONObject jsonObject = new JSONObject(religionPayload);
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateReligionDetails");
+		String OSBURL = IpAndPortNo + URL;
+		responseObj = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObj;
+	}
+
+	@RequestMapping(value = "/updateReligionStatus", method = RequestMethod.POST)
+	public String updateReligionStatus(@RequestBody String religionPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateReligionStatus");
+		String OSBURL = IpAndPortNo + URL;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, religionPayload);
+	} 
+
+	/**************************************
+	 * MARITAL STATUS Master
+	 **************************************************/
+	/**
+	 * @param MaritalStatusMaster
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+
+	@RequestMapping(value = "/maritalStatusMaster", method = RequestMethod.GET)
+	public ModelAndView maritalStatusMaster(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView("maritalStatusMaster");
+		return mav;
+	}
+
+	@RequestMapping(value = "/addMaritalStatus", method = RequestMethod.POST)
+	public String addMaritalStatus(@RequestBody Map<String, Object> maritalStatusPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String responseObj = "";
+		JSONObject jsonObject = new JSONObject(maritalStatusPayload);
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "addMaritalStatus");
+		String OSBURL = IpAndPortNo + URL;
+		responseObj = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObj;
+	}
+
+	@RequestMapping(value = "/getAllMaritalStatus", method = RequestMethod.POST)
+	public String getAllMaritalStatus(@RequestBody String maritalStatusPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "getAllMaritalStatus");
+		String OSBURL = IpAndPortNo + URL;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, maritalStatusPayload);
+	}
+
+	@RequestMapping(value = "/updateMaritalStatusDetails", method = RequestMethod.POST)
+	public String updateMaritalStatusDetails(@RequestBody String maritalStatusPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateMaritalStatusDetails");
+		String OSBURL = IpAndPortNo + URL;
+		return  RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, maritalStatusPayload);
+		
+	}
+
+	@RequestMapping(value = "/updateMaritalStatusStatus", method = RequestMethod.POST)
+	public String updateMaritalStatusStatus(@RequestBody String maritalStatusPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateMaritalStatusStatus");
+		String OSBURL = IpAndPortNo + URL;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, maritalStatusPayload);
+		}
+
+	/**************************************
+	 * Employee Category Master
+	 **************************************************/
+	/**
+	 * @param EmployeeCategoryMaster
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+
+	@RequestMapping(value = "/employeeCategoryMaster", method = RequestMethod.GET)
+	public ModelAndView employeeCategoryMaster(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView("employeeCategoryMaster");
+		return mav;
+	}
+
+	@RequestMapping(value = "/addEmployeeCategory", method = RequestMethod.POST)
+	public String addEmployeeCategory(@RequestBody Map<String, Object> employeeCategoryPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String responseObj = "";
+		JSONObject jsonObject = new JSONObject(employeeCategoryPayload);
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "addEmployeeCategory");
+		String OSBURL = IpAndPortNo + URL;
+		responseObj = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObj;
+	}
+
+	@RequestMapping(value = "/getAllEmployeeCategory", method = RequestMethod.POST)
+	public String getAllEmployeeCategory(@RequestBody String employeeCategoryPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "getAllEmployeeCategory");
+		String OSBURL = IpAndPortNo + URL;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, employeeCategoryPayload);
+	}
+
+	@RequestMapping(value = "/updateEmployeeCategoryDetails", method = RequestMethod.POST)
+	public String updateEmployeeCategoryDetails(@RequestBody String employeeCategoryPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateEmployeeCategoryDetails");
+		String OSBURL = IpAndPortNo + URL;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, employeeCategoryPayload);
+	}
+
+	@RequestMapping(value = "/updateEmployeeCategoryStatus", method = RequestMethod.POST)
+	public String updateEmployeeCategoryStatus(@RequestBody String employeeCategoryPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateEmployeeCategoryStatus");
+		String OSBURL = IpAndPortNo + URL;
+		return  RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, employeeCategoryPayload);
+	}
+
+	/**************************************
+	 * Administrative Sex Master
+	 **************************************************/
+	/**
+	 * @param AdministrativeSexMaster
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+
+	@RequestMapping(value = "/genderMaster", method = RequestMethod.GET)
+	public ModelAndView genderMaster(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView("genderMaster");
+		return mav;
+	}
+
+	@RequestMapping(value = "/addAdministrativeSex", method = RequestMethod.POST)
+	public String addAdministrativeSex(@RequestBody Map<String, Object> administrativeSexPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String responseObj = "";
+		JSONObject jsonObject = new JSONObject(administrativeSexPayload);
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "addAdministrativeSex");
+		String OSBURL = IpAndPortNo + URL;
+		responseObj = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObj;
+	}
+
+	@RequestMapping(value = "/getAllAdministrativeSex", method = RequestMethod.POST)
+	public String getAllAdministrativeSex(@RequestBody String administrativeSexPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "getAllAdministrativeSex");
+		String OSBURL = IpAndPortNo + URL;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, administrativeSexPayload);
+	}
+
+	@RequestMapping(value = "/updateAdministrativeSexDetails", method = RequestMethod.POST)
+	public String updateAdministrativeSexDetails(@RequestBody String administrativeSexPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateAdministrativeSexDetails");
+		String OSBURL = IpAndPortNo + URL;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, administrativeSexPayload);
+		
+	}
+
+	@RequestMapping(value = "/updateAdministrativeSexStatus", method = RequestMethod.POST)
+	public String updateAdministrativeSexStatus(@RequestBody String administrativeSexPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateAdministrativeSexStatus");
+		String OSBURL = IpAndPortNo + URL;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, administrativeSexPayload);
+	}
+
+	/**************************************
+	 * Medical Category Master
+	 **************************************************/
+	/**
+	 * @param MedicalCategoryMaster
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+
+	@RequestMapping(value = "/medicalCategoryMaster", method = RequestMethod.GET)
+	public ModelAndView medicalCategoryMaster(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView("medicalCategoryMaster");
+		return mav;
+	}
+
+	@RequestMapping(value = "/addMedicalCategory", method = RequestMethod.POST)
+	public String addMedicalCategory(@RequestBody Map<String, Object> medicalCategoryPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String responseObj = "";
+		JSONObject jsonObject = new JSONObject(medicalCategoryPayload);
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "addMedicalCategory");
+		String OSBURL = IpAndPortNo + URL;
+		responseObj = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObj;
+	}
+
+	@RequestMapping(value = "/getAllMedicalCategory", method = RequestMethod.POST)
+	public String getAllMedicalCategory(@RequestBody String medicalCategoryPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "getAllMedicalCategory");
+		String OSBURL = IpAndPortNo + URL;
+		return  RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, medicalCategoryPayload);
+	}
+
+	@RequestMapping(value = "/updateMedicalCategoryDetails", method = RequestMethod.POST)
+	public String updateMedicalCategoryDetails(@RequestBody String medicalCategoryPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateMedicalCategoryDetails");
+		String OSBURL = IpAndPortNo + URL;	
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, medicalCategoryPayload);
+	}
+
+	@RequestMapping(value = "/updateMedicalCategoryStatus", method = RequestMethod.POST)
+	public String updateMedicalCategoryStatus(@RequestBody String medicalCategoryPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateMedicalCategoryStatus");
+		String OSBURL = IpAndPortNo + URL;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, medicalCategoryPayload);
+	}
+
+	/**************************************
+	 * Blood Group Master
+	 **************************************************/
+	/**
+	 * @param BloodGroupMaster
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+
+	@RequestMapping(value = "/bloodGroupMaster", method = RequestMethod.GET)
+	public ModelAndView bloodGroupMaster(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView("bloodGroupMaster");
+		return mav;
+	}
+
+	@RequestMapping(value = "/addBloodGroup", method = RequestMethod.POST)
+	public String addBloodGroup(@RequestBody Map<String, Object> bloodGroupPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String responseObj = "";
+		JSONObject jsonObject = new JSONObject(bloodGroupPayload);
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "addBloodGroup");
+		String OSBURL = IpAndPortNo + URL;
+		responseObj = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObj;
+	}
+
+	@RequestMapping(value = "/getAllBloodGroup", method = RequestMethod.POST)
+	public String getAllBloodGroup(@RequestBody String bloodGroupPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "getAllBloodGroup");
+		String OSBURL = IpAndPortNo + URL;		
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, bloodGroupPayload);
+	}
+
+	@RequestMapping(value = "/updateBloodGroupDetails", method = RequestMethod.POST)
+	public String updateBloodGroupDetails(@RequestBody String bloodGroupPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateBloodGroupDetails");
+		String OSBURL = IpAndPortNo + URL;		
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, bloodGroupPayload);
+	}
+
+	@RequestMapping(value = "/updateBloodGroupStatus", method = RequestMethod.POST)
+	public String updateBloodGroupStatus(@RequestBody String bloodGroupPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateBloodGroupStatus");
+		String OSBURL = IpAndPortNo + URL;		
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, bloodGroupPayload);
+	}
+
+	/**************************************
+	 * Sample Container Master
+	 **************************************************/
+	/**
+	 * @param SampleContainerMaster
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+
+	@RequestMapping(value = "/sampleContainerMaster", method = RequestMethod.GET)
+	public ModelAndView sampleContainerMaster(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView("sampleContainerMaster");
+		return mav;
+	}
+
+	@RequestMapping(value = "/addSample", method = RequestMethod.POST)
+	public String addSample(@RequestBody Map<String, Object> samplePayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String responseObj = "";
+		JSONObject jsonObject = new JSONObject(samplePayload);
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "addSample");
+		String OSBURL = IpAndPortNo + URL;
+		//String LOCALURL = IpAndPortNoLocal + URL;
+		responseObj = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObj;
+	}
+
+	@RequestMapping(value = "/getAllSample", method = RequestMethod.POST)
+	public String getAllSample(@RequestBody String samplePayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "getAllSample");
+		String OSBURL = IpAndPortNo + URL;
+		//String LOCALURL = IpAndPortNoLocal + URL;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, samplePayload);
+	}
+
+	@RequestMapping(value = "/updateSampleDetails", method = RequestMethod.POST)
+	public String updateSampleDetails(@RequestBody String samplePayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateSampleDetails");
+		String OSBURL = IpAndPortNo + URL;
+		//String LOCALURL = IpAndPortNoLocal + URL;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, samplePayload);
+	}
+
+	@RequestMapping(value = "/updateSampleStatus", method = RequestMethod.POST)
+	public String updateSampleStatus(@RequestBody String samplePayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateSampleStatus");
+		String OSBURL = IpAndPortNo + URL;
+		//String LOCALURL = IpAndPortNoLocal + URL;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, samplePayload);
+	}
+
+	/**************************************
+	 * Unit of Measurement Master
+	 **************************************************/
+	/**
+	 * @param UOMMaster
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+
+	@RequestMapping(value = "/uomMaster", method = RequestMethod.GET)
+	public ModelAndView uomMaster(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView("uomMaster");
+		return mav;
+	}
+	
+	@RequestMapping(value = "/addUOM", method = RequestMethod.POST)
+	public String addUOM(@RequestBody Map<String, Object> UOMPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String responseObj = "";
+		JSONObject jsonObject = new JSONObject(UOMPayload);
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "addUOM");
+		String OSBURL = IpAndPortNo + URL;
+		//String LOCALURL = IpAndPortNoLocal + URL;
+		responseObj = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObj;
+	}
+
+	@RequestMapping(value = "/getAllUOM", method = RequestMethod.POST)
+	public String getAllUOM(@RequestBody String UOMPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "getAllUOM");
+		String OSBURL = IpAndPortNo + URL;
+		//String LOCALURL = IpAndPortNoLocal + URL;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, UOMPayload);
+	}
+
+	@RequestMapping(value = "/updateUOMDetails", method = RequestMethod.POST)
+	public String updateUOMDetails(@RequestBody String UOMPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateUOMDetails");
+		String OSBURL = IpAndPortNo + URL;
+		//String LOCALURL = IpAndPortNoLocal + URL;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, UOMPayload);
+	}
+
+	@RequestMapping(value = "/updateUOMStatus", method = RequestMethod.POST)
+	public String updateUOMStatus(@RequestBody String UOMPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateUOMStatus");
+		String OSBURL = IpAndPortNo + URL;
+		//String LOCALURL = IpAndPortNoLocal + URL;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, UOMPayload);		
+	}
+	
+	/**************************************
+	 * Item Unit Master
+	 **************************************************/
+	/**
+	 * @param itemUnitMaster
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+
+	@RequestMapping(value = "/itemUnitMaster", method = RequestMethod.GET)
+	public ModelAndView itemUnitMaster(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView("itemUnitMaster");
+		return mav;
+	}
+	
+	@RequestMapping(value = "/addItemUnit", method = RequestMethod.POST)
+	public String addItemUnit(@RequestBody Map<String, Object> itemUnitPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String responseObj = "";
+		JSONObject jsonObject = new JSONObject(itemUnitPayload);
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "addItemUnit");
+		String OSBURL = IpAndPortNo + URL;	
+		responseObj = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObj;
+	}
+
+	@RequestMapping(value = "/getAllItemUnit", method = RequestMethod.POST)
+	public String getAllItemUnit(@RequestBody String itemUnitPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "getAllItemUnit");
+		String OSBURL = IpAndPortNo + URL;		
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, itemUnitPayload);
+	}
+
+	@RequestMapping(value = "/updateItemUnitDetails", method = RequestMethod.POST)
+	public String updateItemUnitDetails(@RequestBody String itemUnitPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateItemUnitDetails");
+		String OSBURL = IpAndPortNo + URL;		
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, itemUnitPayload);
+	}
+
+	@RequestMapping(value = "/updateItemUnitStatus", method = RequestMethod.POST)
+	public String updateItemUnitStatus(@RequestBody String itemUnitPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateItemUnitStatus");
+		String OSBURL = IpAndPortNo + URL;		
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, itemUnitPayload);		
+	}
+	
+	/**************************************
+	 * Users Master
+	 **************************************************/
+	/**
+	 * @param usersMaster
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+
+	@RequestMapping(value = "/usersMaster", method = RequestMethod.GET)
+	public ModelAndView usersMaster(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView("usersMaster");
+		return mav;
+	}
+	
+	@RequestMapping(value = "/addUsers", method = RequestMethod.POST)
+	public String addUsers(@RequestBody Map<String, Object> usersPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String responseObj = "";
+		JSONObject jsonObject = new JSONObject(usersPayload);
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "addUsers");
+		String OSBURL = IpAndPortNo + URL;	
+		responseObj = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObj;
+	}
+
+	@RequestMapping(value = "/getAllUsers", method = RequestMethod.POST)
+	public String getAllUsers(@RequestBody String usersPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "getAllUsers");
+		String OSBURL = IpAndPortNo + URL;	
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, usersPayload);
+	}
+
+	@RequestMapping(value = "/updateUsersDetails", method = RequestMethod.POST)
+	public String updateUsersDetails(@RequestBody String usersPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateUsersDetails");
+		String OSBURL = IpAndPortNo + URL;		
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, usersPayload);
+	}
+
+	@RequestMapping(value = "/updateUsersStatus", method = RequestMethod.POST)
+	public String updateUsersStatus(@RequestBody String usersPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateUsersStatus");
+		String OSBURL = IpAndPortNo + URL;		
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, usersPayload);		
+	}
+	
+	@RequestMapping(value = "/getHospitalList", method = RequestMethod.POST)
+	public String getHospitalList(@RequestBody String payload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "getHospitalList");
+		String OSBURL = IpAndPortNo + URL; 
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+	}
+	
+	/**************************************
+	 * MainChargecode Master
+	 **************************************************/
+	/**
+	 * @param mainChargecodeMaster
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+
+	@RequestMapping(value = "/mainChargeCodeMaster", method = RequestMethod.GET)
+	public ModelAndView mainChargeCodeMaster(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView("mainChargeCodeMaster");
+		return mav;
+	}
+	
+	@RequestMapping(value = "/addMainChargecode", method = RequestMethod.POST)
+	public String addMainChargecode(@RequestBody Map<String, Object> mainChargecodePayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String responseObj = "";
+		JSONObject jsonObject = new JSONObject(mainChargecodePayload);
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "addMainChargecode");
+		String OSBURL = IpAndPortNo + URL;	
+		responseObj = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObj;
+	}
+
+	@RequestMapping(value = "/getAllMainChargecode", method = RequestMethod.POST)
+	public String getAllMainChargecode(@RequestBody String mainChargecodePayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "getAllMainChargecode");
+		String OSBURL = IpAndPortNo + URL;	
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, mainChargecodePayload);
+	}
+
+	@RequestMapping(value = "/updateMainChargecodeDetails", method = RequestMethod.POST)
+	public String updateMainChargecodeDetails(@RequestBody String mainChargecodePayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateMainChargecodeDetails");
+		String OSBURL = IpAndPortNo + URL;		
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, mainChargecodePayload);
+	}
+
+	@RequestMapping(value = "/updateMainChargecodeStatus", method = RequestMethod.POST)
+	public String updateMainChargecodeStatus(@RequestBody String mainChargecodePayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateMainChargecodeStatus");
+		String OSBURL = IpAndPortNo + URL;		
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, mainChargecodePayload);		
+	}
+	
+	@RequestMapping(value = "/getDepartmentList", method = RequestMethod.POST)
+	public String getDepartmentList(@RequestBody String payload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "getDepartmentList");
+		String OSBURL = IpAndPortNo + URL; 
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
 	}
 }

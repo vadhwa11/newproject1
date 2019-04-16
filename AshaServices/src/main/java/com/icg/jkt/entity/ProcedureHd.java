@@ -2,7 +2,9 @@ package com.icg.jkt.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import java.math.BigDecimal;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -15,24 +17,31 @@ import java.util.List;
 @Table(name="PROCEDURE_HD")
 @NamedQuery(name="ProcedureHd.findAll", query="SELECT p FROM ProcedureHd p")
 public class ProcedureHd implements Serializable {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="PROCEDURE_HD_SEQ", sequenceName="PROCEDURE_HD_SEQ")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="PROCEDURE_HD_SEQ")
+	@SequenceGenerator(name="PROCEDURE_HD_PROCEDUREHDID_GENERATOR", sequenceName="PROCEDURE_HEADER_SEQ")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="PROCEDURE_HD_PROCEDUREHDID_GENERATOR")
 	@Column(name="PROCEDURE_HD_ID")
 	private long procedureHdId;
+
+	@Column(name="HOSPITAL_ID")
+	private Long hospitalId;
+
+	@Column(name="INPATIENT_ID")
+	private Long inpatientId;
+
+	@Column(name="LAST_CHG_BY")
+	private Long lastChgBy;
 
 	@Column(name="LAST_CHG_DATE")
 	private Timestamp lastChgDate;
 
-	@ManyToOne
-	@JoinColumn(name="OPD_PATIENT_DETAILS_ID")
-	private OpdPatientDetail opdPatientDetailsId;
+	@Column(name="OPD_PATIENT_DETAILS_ID")
+	private Long opdPatientDetailsId;
+
+	@Column(name="PATIENT_ID")
+	private Long patientId;
 
 	@Column(name="PROCEDURE_TYPE")
 	private String procedureType;
@@ -42,35 +51,51 @@ public class ProcedureHd implements Serializable {
 
 	private String status;
 
-	//bi-directional many-to-one association to ProcedureDt
-	@OneToMany(mappedBy="procedureHd")
-	private List<ProcedureDt> procedureDts;
+	@Column(name="VISIT_ID")
+	private Long visitId;
 
-	//bi-directional many-to-one association to Inpatient
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="INPATIENT_ID")
-	private Inpatient inpatient;
+	   //bi-directional many-to-one association to ProcedureDt
+		@OneToMany(mappedBy="procedureHd")
+		@JsonBackReference
+		private List<ProcedureDt> procedureDts;
 
-	//bi-directional many-to-one association to MasHospital
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="HOSPITAL_ID")
-	private MasHospital masHospital;
+		//bi-directional many-to-one association to Inpatient
+		@ManyToOne(fetch=FetchType.LAZY)
+		@JoinColumn(name="INPATIENT_ID",nullable=false,insertable=false,updatable=false)
+		private Inpatient inpatient;
 
-	//bi-directional many-to-one association to Patient
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="PATIENT_ID")
-	private Patient patient;
+		//bi-directional many-to-one association to MasHospital
+		@ManyToOne(fetch=FetchType.LAZY)
+		@JoinColumn(name="HOSPITAL_ID",nullable=false,insertable=false,updatable=false)
+		private MasHospital masHospital;
 
-	//bi-directional many-to-one association to User
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="LAST_CHG_BY")
-	private Users user;
+		//bi-directional many-to-one association to Patient
+		@ManyToOne(fetch=FetchType.LAZY)
+		@JoinColumn(name="PATIENT_ID",nullable=false,insertable=false,updatable=false)
+		private Patient patient;
 
-	//bi-directional many-to-one association to Visit
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="VISIT_ID")
-	private Visit visit;
+		//bi-directional many-to-one association to User
+		@ManyToOne(fetch=FetchType.LAZY)
+		@JoinColumn(name="LAST_CHG_BY",nullable=false,insertable=false,updatable=false)
+		private Users user;
 
+		//bi-directional many-to-one association to Visit
+		@ManyToOne(fetch=FetchType.LAZY)
+		@JoinColumn(name="VISIT_ID",nullable=false,insertable=false,updatable=false)
+		private Visit visit;
+	    
+		public OpdPatientDetail getOpdPatientDetails() {
+			return opdPatientDetails;
+		}
+
+		public void setOpdPatientDetails(OpdPatientDetail opdPatientDetails) {
+			this.opdPatientDetails = opdPatientDetails;
+		}
+
+		@ManyToOne
+		@JoinColumn(name="OPD_PATIENT_DETAILS_ID",nullable=false,insertable=false,updatable=false)
+		private OpdPatientDetail opdPatientDetails;
+	
 	public ProcedureHd() {
 	}
 
@@ -82,6 +107,30 @@ public class ProcedureHd implements Serializable {
 		this.procedureHdId = procedureHdId;
 	}
 
+	public Long getHospitalId() {
+		return this.hospitalId;
+	}
+
+	public void setHospitalId(Long hospitalId) {
+		this.hospitalId = hospitalId;
+	}
+
+	public Long getInpatientId() {
+		return this.inpatientId;
+	}
+
+	public void setInpatientId(Long inpatientId) {
+		this.inpatientId = inpatientId;
+	}
+
+	public Long getLastChgBy() {
+		return this.lastChgBy;
+	}
+
+	public void setLastChgBy(Long lastChgBy) {
+		this.lastChgBy = lastChgBy;
+	}
+
 	public Timestamp getLastChgDate() {
 		return this.lastChgDate;
 	}
@@ -90,12 +139,20 @@ public class ProcedureHd implements Serializable {
 		this.lastChgDate = lastChgDate;
 	}
 
-	public OpdPatientDetail getOpdPatientDetailsId() {
+	public Long getOpdPatientDetailsId() {
 		return this.opdPatientDetailsId;
 	}
 
-	public void setOpdPatientDetailsId(OpdPatientDetail opdPatientDetailsId) {
+	public void setOpdPatientDetailsId(Long opdPatientDetailsId) {
 		this.opdPatientDetailsId = opdPatientDetailsId;
+	}
+
+	public Long getPatientId() {
+		return this.patientId;
+	}
+
+	public void setPatientId(Long patientId) {
+		this.patientId = patientId;
 	}
 
 	public String getProcedureType() {
@@ -122,30 +179,24 @@ public class ProcedureHd implements Serializable {
 		this.status = status;
 	}
 
+	public Long getVisitId() {
+		return this.visitId;
+	}
+
+	public void setVisitId(Long visitId) {
+		this.visitId = visitId;
+	}
+
 	public List<ProcedureDt> getProcedureDts() {
-		return this.procedureDts;
+		return procedureDts;
 	}
 
 	public void setProcedureDts(List<ProcedureDt> procedureDts) {
 		this.procedureDts = procedureDts;
 	}
 
-	public ProcedureDt addProcedureDt(ProcedureDt procedureDt) {
-		getProcedureDts().add(procedureDt);
-		procedureDt.setProcedureHd(this);
-
-		return procedureDt;
-	}
-
-	public ProcedureDt removeProcedureDt(ProcedureDt procedureDt) {
-		getProcedureDts().remove(procedureDt);
-		procedureDt.setProcedureHd(null);
-
-		return procedureDt;
-	}
-
 	public Inpatient getInpatient() {
-		return this.inpatient;
+		return inpatient;
 	}
 
 	public void setInpatient(Inpatient inpatient) {
@@ -153,7 +204,7 @@ public class ProcedureHd implements Serializable {
 	}
 
 	public MasHospital getMasHospital() {
-		return this.masHospital;
+		return masHospital;
 	}
 
 	public void setMasHospital(MasHospital masHospital) {
@@ -161,7 +212,7 @@ public class ProcedureHd implements Serializable {
 	}
 
 	public Patient getPatient() {
-		return this.patient;
+		return patient;
 	}
 
 	public void setPatient(Patient patient) {
@@ -169,7 +220,7 @@ public class ProcedureHd implements Serializable {
 	}
 
 	public Users getUser() {
-		return this.user;
+		return user;
 	}
 
 	public void setUser(Users user) {
@@ -177,11 +228,12 @@ public class ProcedureHd implements Serializable {
 	}
 
 	public Visit getVisit() {
-		return this.visit;
+		return visit;
 	}
 
 	public void setVisit(Visit visit) {
 		this.visit = visit;
 	}
+	
 
 }

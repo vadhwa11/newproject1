@@ -1,0 +1,616 @@
+<%@page import="java.util.HashMap"%>
+<%@page import="java.util.Map"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+    
+ <%@include file="..//view/leftMenu.jsp" %>
+    
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Coast Guard</title>
+    <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+    <meta content="Coderthemes" name="author" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+     <link href="//resources/css/icons1.css" rel="stylesheet" type="text/css" />
+    
+<%@include file="..//view/commonJavaScript.jsp" %>
+  
+<script type="text/javascript" language="javascript">
+var nPageNo=1;
+var Status;
+var $j = jQuery.noConflict();
+
+$j(document).ready(function()
+		{	
+			$j("#btnActive").hide();
+			$j("#btnInActive").hide();
+			$j('#updateBtn').attr("disabled", true);
+			GetUsersList('ALL');
+			GetHospitalList();
+			
+		});
+
+		
+function GetUsersList(MODE)
+{
+	var userId=0;
+	 if(MODE == 'ALL'){
+			var data = {"PN":nPageNo};			
+		}
+	else
+		{
+		var data = {"PN":nPageNo};
+		} 
+	var url = "getAllUsers";
+		
+	var bClickable = true;
+	GetJsonData('tblListOfUsers',data,url,bClickable);
+}
+function makeTable(jsonData)
+{	
+	var htmlTable = "";	
+	var data = jsonData.count;
+	
+	
+	var pageSize = 5;
+
+	
+	var dataList = jsonData.data;
+	
+	for(i=0;i<dataList.length;i++)
+		{		
+		
+		 if(dataList[i].status == 'Y' || dataList[i].status == 'y')
+				{
+					Status='Active'
+						
+				}
+			else
+				{
+					Status='Inactive'
+				}
+		 
+		
+				
+			htmlTable = htmlTable+"<tr id='"+dataList[i].userId+"' >";			
+			htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].loginName+"</td>";
+			htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].firstName+"</td>";			
+			htmlTable = htmlTable +"<td style='width: 100px;'>"+dataList[i].hospitalName+"</td>";
+			htmlTable = htmlTable +"<td style='width: 100px;'>"+Status+"</td>";
+			
+			htmlTable = htmlTable+"</tr>";
+			
+		}
+	if(dataList.length == 0)
+		{
+		htmlTable = htmlTable+"<tr ><td colspan='4'><h6>No Record Found</h6></td></tr>";
+		   //alert('No Record Found');
+		}			
+	
+	$j("#tblListOfUsers").html(htmlTable);	
+	
+	
+}
+var comboArray = [];
+var uId;
+var uloginName;
+var uName;
+var uStatus;
+var hName;
+var hId;
+function executeClickEvent(userId,data)
+{
+	
+	for(j=0;j<data.data.length;j++){
+		if(userId == data.data[j].userId){
+			uId = data.data[j].userId;
+			uloginName = data.data[j].loginName;
+			uName = data.data[j].firstName;
+			uStatus = data.data[j].status;
+			hName = data.data[j].hospitalName;
+			hId = data.data[j].hospitalId;
+			
+		}
+	}
+	rowClick(uId,uloginName,uName,uStatus,hName,hId);
+}
+
+function searchUsersList(){
+	 if(document.getElementById('searchUsers').value == "" ){
+		 alert("Plese Enter the Name");
+		 return false;
+	 }
+	 
+	var firstName= jQuery("#searchUsers").attr("checked", true).val().toUpperCase();
+		
+	var nPageNo=1;
+	var url = "getAllUsers";
+	var data =  {"PN":nPageNo, "loginName":loginName};//"PN="+nPageNo+"cmdName="+cmdName;
+	var bClickable = true;
+	GetJsonData('tblListOfUsers',data,url,bClickable);
+	ResetForm();
+}
+
+function addUsersDetails(){
+	//return ValidateInputParamenters('commandCode','commandName','selectCmdType');
+	
+	 if(document.getElementById('loginName').value=="" || document.getElementById('loginName').value==null){
+		alert("Please Enter the Login Name");
+		return false;
+	}
+	 
+	if(document.getElementById('firstName').value=="" || document.getElementById('firstName').value==null){
+		alert("Please Enter the Name");
+		return false;
+	}
+	if(document.getElementById('selectHospital').value=="" || document.getElementById('selectHospital').value==null){
+		alert("Please Enter the Hospital");
+		return false;
+	} 
+	var params = {
+			 
+			 'loginName':jQuery('#loginName').val(),
+			 'firstName':jQuery('#firstName').val(),
+			 'hospitalId':jQuery('#selectHospital').find('option:selected').val()
+	 } 	
+	var url="addUsers";
+	
+	SendJsonData(url,params);
+	
+		
+	
+}
+
+
+
+
+function updateUsersDetails()
+{	
+	$j('#messageId').fadeIn();
+	 if(document.getElementById('loginName').value == "" || document.getElementById('loginName').value == null ){
+		alert("please enter the Login Name");
+		return false;
+	}
+	if(document.getElementById('firstName').value == "" || document.getElementById('firstName').value == null ){
+		alert("please enter the First Name");
+		return false;
+	}
+	if(document.getElementById('selectHospital').value == "" || document.getElementById('selectHospital').value == null ){
+		alert("please enter the Hospital");
+		return false;
+	}
+		
+	var params = {
+			 'userId':uId,
+			 'loginName':jQuery('#loginName').val(),
+			 'firstName':jQuery('#firstName').val(),
+			 'hospitalId':jQuery('#selectHospital').find('option:selected').val()
+	 } 
+	var url="updateUsersDetails";
+	SendJsonData(url,params);	
+ 		 		
+	$j('#updateBtn').attr("disabled", true);
+	$j('#btnAddUsers').attr("disabled", false);
+	ResetForm();
+	
+}
+
+function updateStatus(){
+	$j('#messageId').fadeIn();
+	if(document.getElementById('loginName').value == "" || document.getElementById('loginName') == null ){
+		alert("Please Select the Login Name");
+		return false;
+	}
+		
+	 var params = {
+		 'userId':uId,
+		 'loginName':uloginName,
+		 'status':uStatus
+		 
+	}  
+	 
+	 var url="updateUsersStatus";
+	 SendJsonData(url,params);	 
+	 
+	 $j("#btnActive").attr("disabled", true);
+	 $j("#btnInActive").attr("disabled", true);
+	 $j('#btnAddUsers').attr("disabled", false);
+}
+
+
+
+function GetHospitalList(){
+	jQuery.ajax({
+	 	crossOrigin: true,
+	    method: "POST",			    
+	    crossDomain:true,
+	    url: "getHospitalList",
+	    data: JSON.stringify({}),
+	    contentType: "application/json; charset=utf-8",
+	    dataType: "json",
+	    success: function(result){
+	    	//alert("success "+result.data.length);
+	    	var combo = "<option value=\"\">Select</option>" ;
+	    	
+	    	for(var i=0;i<result.data.length;i++){
+	    		comboArray[i] = result.data[i].hospitalName;
+	    		combo += '<option value='+result.data[i].hospitalId+'>' +result.data[i].hospitalName+ '</option>';
+	    		//alert("combo :: "+comboArray[i]);
+	    		
+	    		
+	    	}
+	    	jQuery('#selectHospital').append(combo);
+	    }
+	    
+	});
+}
+
+function rowClick(uId,uloginName,uName,uStatus,hName,hId){	
+		
+	document.getElementById("loginName").value = uloginName;
+	document.getElementById("firstName").value = uName;
+	
+	for(var j=0; j<comboArray.length;j++){		
+		//alert("HOSPITALNAME"+hName);
+		if(comboArray[j] == hName){
+			
+			jQuery("#selectHospital").val(hId);
+		}
+	}
+	
+	if(uStatus == 'Y' || uStatus == 'y'){
+		
+		$j("#btnInActive").show();
+		$j("#btnActive").hide();
+		$j('#updateBtn').attr("disabled", false);
+	}
+	if(uStatus == 'N' || uStatus == 'n'){
+		$j("#btnActive").show();
+		$j("#btnInActive").hide();
+		$j('#updateBtn').attr("disabled", true);
+	}
+	
+	 $j('#updateBtn').show();
+	$j('#btnAddUsers').attr("disabled", true);
+	
+	 $j("#btnActive").attr("disabled", false);
+	 $j("#btnInActive").attr("disabled", false);
+	
+}
+
+function changeHospital(value){
+	
+	var hospitalId = jQuery('#selectHospital').find('option:selected').val();
+	
+	if(value == hospitalId){
+		$j('#updateBtn').attr("disabled", false);
+	}
+	
+}
+function showResultPage(pageNo)
+{
+	
+	
+	nPageNo = pageNo;	
+	GetUsersList('FILTER');
+	
+}
+
+
+
+function Reset(){
+	document.getElementById("addUsersForm").reset();
+	document.getElementById("searchUsersForm").reset();
+	document.getElementById('searchUsers').value = "";
+	
+	$j("#btnActive").hide();
+	$j("#btnInActive").hide();
+	$j('#updateBtn').attr("disabled", true);
+	$j('#btnAddUsers').attr("disabled", false);
+	document.getElementById("messageId").innerHTML = "";
+	$("#messageId").css("color", "black");
+	
+}
+
+
+
+function ResetForm()
+{	
+	$j('#loginName').val('');
+	$j('#firstName').val('');
+	$j('#selectHospital').val('');
+	$j('#searchUsers').val('');
+	
+}
+
+function showAll()
+{
+	ResetForm();
+	nPageNo = 1;	
+	GetUsersList('ALL');
+	
+}
+
+</script>
+</head>
+
+<body>
+
+    <!-- Begin page -->
+    <div id="wrapper">
+
+        <!-- Top Bar Start -->
+        <div class="topbar">
+
+            <!-- LOGO -->
+           <%--  <div class="topbar-left">
+                <a href="index.html" class="logo">
+                    <span>
+                            <img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="" height="18">
+                        </span>
+                    <i>
+                            <img src="${pageContext.request.contextPath}/resources/images/logo_sm.png" alt="" height="22">
+                        </i>
+                </a>
+            </div> --%>
+
+            <nav class="navbar-custom">
+                <ul class="list-inline float-right mb-0">
+                
+                    <li class="list-inline-item dropdown notification-list">
+                        <a class="nav-link dropdown-toggle nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                            <i class="noti-icon"><img src="${pageContext.request.contextPath}/resources/images/users/avatar-1.jpg" alt="user" class="img-fluid rounded-circle"></i>
+                            <span class="profile-username ml-2 text-dark">Username </span> <span class="mdi mdi-menu-down text-dark"></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-animated dropdown-menu-right profile-dropdown ">
+                            <!-- item-->
+                            <div class="dropdown-item noti-title">
+                                <h5 class="text-overflow"><small>Welcome ! Users Master</small> </h5>
+                            </div>
+
+                            <!-- item-->
+                            <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <i class="mdi mdi-account-circle"></i> <span>Profile</span>
+                            </a>
+
+                            <!-- item-->
+                            <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <i class="mdi mdi-settings"></i> <span>Settings</span>
+                            </a>
+
+                            <!-- item-->
+                            <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <i class="mdi mdi-lock-open"></i> <span>Lock Screen</span>
+                            </a>
+
+                            <!-- item-->
+                            <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <i class="mdi mdi-power"></i> <span>Logout</span>
+                            </a>
+
+                        </div>
+                    </li>
+
+                </ul>
+
+                <ul class="list-inline menu-left mb-0">
+                    <li class="float-left">
+                        <button class="button-menu-mobile open-left waves-light waves-effect">
+                            <i class="mdi mdi-menu"></i>
+                        </button>
+                    </li>
+                    <!-- <li class="hide-phone app-search"> -->
+                        <!-- <form role="search" class=""> -->
+                            <!-- <input type="text" placeholder="Search..." class="form-control"> -->
+                            <!-- <a href="#"><i class="fa fa-search"></i></a> -->
+                        <!-- </form> -->
+                    <!-- </li> -->
+                </ul>
+
+            </nav>
+
+        </div>
+        <!-- Top Bar End -->
+
+        <!-- ========== Left Sidebar Start ========== -->
+        
+        <!-- Left Sidebar End -->
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <div class="content-page">
+            <!-- Start content -->
+            <div class="">
+                <div class="container-fluid">
+                <div class="internal_Htext">Users Master</div>
+                    
+                    <!-- end row -->
+                   
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                 <p align="center" id="messageId" style="font-weight: bold;" ></p>
+                                       <br>
+                                    <div class="row">
+                                                                     
+                                        <div class="col-md-8">
+                                            <form class="form-horizontal" id="searchUsersForm" name="searchUsersForm" method="" role="form">
+                                                <div class="form-group row">
+                                                    <label class="col-3 col-form-label inner_md_htext">Login Name <span style="color:red">*</span></label>
+                                                    <div class="col-4">
+                                                        <div class="col-auto">
+                                                            <label class="sr-only" for="inlineFormInputGroup">Login Name</label>
+                                                            <div class="input-group mb-2">
+                                                                <!-- <div class="input-group-prepend">
+                                                                    <div class="input-group-text">&#128269;</div>
+                                                                </div> -->
+                                                                <input type="text" name="searchUsers" id="searchUsers" class="form-control" id="inlineFormInputGroup" placeholder="Login Name" onkeypress="return validateTextField('LoginName',12);">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <button type="button" class="btn  btn-primary" onclick="searchUsersList();">Search</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+
+                                        </div>
+                                        
+                                        
+                                        
+                                        
+                                        <div class="col-md-4">
+                                            <form>
+                                                <div class="button-list">
+                                                    <button type="button" class="btn  btn-primary " onclick="showAll('ALL');">Show All</button>
+                                                    <button type="button" class="btn  btn-primary ">Reports</button>
+
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                    </div>
+
+                                   
+
+					<!-- <table class="table table-striped table-hover jambo_table"> -->
+					
+					
+					                  <div style="float:left">					           
+		                                    <table class="tblSearchActions" cellspacing="0" cellpadding="0" border="0" >			<tr>
+												<td class="SearchStatus" style="font-size: 15px;" align="left">Search Results</td>
+												<td>
+												 <!-- <div id=resultnavigation></div> -->
+												
+												</td>
+												</tr>
+										</table>
+		                                 </div>     
+		                                    <div style="float:right">
+				                                    <div id="resultnavigation">
+				                                    </div> 
+		                                    </div> 
+                                    
+					
+		
+
+                                    <table class="table table-hover table-bordered">
+                                        <thead class="bg-success" style="color:#fff;">
+                                            <tr>
+                                                <th id="th2" class ="inner_md_htext">Login Name</th>
+                                                <th id="th3" class ="inner_md_htext">Name</th>
+                                                <th id="th4" class ="inner_md_htext">Unit/Hospital </th>
+                                                <th id="th5" class ="inner_md_htext">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <!--  <tbody id="tblListOfEmployeeAndDepenent">   </tbody>  --->
+                                     <tbody id="tblListOfUsers">
+										 
+                     				 </tbody>
+                                    </table>
+                                    
+                                   
+                                    
+                                    
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <form id="addUsersForm" name="addUsersForm" method="">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="form-group row">
+                                                        <div class="col-sm-4">
+                                                            <label for="Login Name" class=" col-form-label inner_md_htext" >Login Name <span style="color:red">*</span></label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" class="form-control" id="loginName" name="loginName" placeholder="Login Name" onkeypress="return validateText('loginName',12);">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group row">
+                                                        <div class="col-sm-4">
+                                                            <label for="Name" class="col-form-label inner_md_htext">Name <span style="color:red">*</span></label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Name" onkeypress="return validateTextField('firstName',50);">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group row">
+                                                        
+                                                            <label for="recordoffice" class="col-sm-4 col-form-label inner_md_htext">Unit/Hospital<span style="color:red">*</span></label>
+                                                            
+                                                            <div class="col-md-6">
+                                                                <select class="form-control" id="selectHospital" onchange="changeHospital(this.value);">
+                                                                    
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                    </div>
+									<br>	
+                                    <div class="row">
+                                        <div class="col-md-7">
+                                        </div>
+                                        <div class="col-md-5">
+                                            <form>
+                                                <div class="button-list">
+
+                                                    <button type="button" id="btnAddUsers" class="btn btn-primary  " onclick="addUsersDetails();">Add</button>
+                                                    <button type="button" id ="updateBtn" class="btn btn-primary  " onclick="updateUsersDetails();">Update</button>
+                                                    <button id="btnActive" type="button" class="btn btn-primary  " onclick="updateStatus();">Activate</button>
+                                      				<button id="btnInActive" type="button" class="btn btn-primary  " onclick="updateStatus();">Deactivate</button>
+                                                    <button type="button" class="btn btn-danger " onclick="Reset();">Reset</button>
+
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                    </div>
+
+                                    <!-- end row -->
+
+                                </div>
+                            </div>
+                            <!-- end card -->
+                        </div>
+                        <!-- end col -->
+                    </div>
+                    <!-- end row -->
+                    <!-- end row -->
+
+                </div>
+                <!-- container -->
+
+            </div>
+            <!-- content -->
+
+            
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- End Right content here -->
+        <!-- ============================================================== -->
+
+    </div>
+    <!-- END wrapper -->
+
+    <!-- jQuery  -->
+    
+
+</body>
+
+</html>

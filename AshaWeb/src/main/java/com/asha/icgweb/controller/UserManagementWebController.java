@@ -35,8 +35,7 @@ public class UserManagementWebController {
 	 * @param manageUserApplication method will load the User Application Page.
 	 */
 	
-	String IpAndPortNo = HMSUtil.getProperties("urlextension.properties", "OSB_IP_AND_PORT");
-	String LOCAL_IPAndPortNo = HMSUtil.getProperties("urlextension.properties", "LOCAL_IP");
+	String IpAndPortNo = HMSUtil.getProperties("urlextension.properties", "LOCAL_IP");
 	
 	@RequestMapping(value="/manageUserApplication", method=RequestMethod.GET)	
 	public ModelAndView manageUserApplication(HttpServletRequest request, HttpServletResponse response) {
@@ -48,8 +47,8 @@ public class UserManagementWebController {
 		JSONObject jsonObject = new JSONObject(requestObject);
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties", "GET_ALL_USER_APPLICATION");
-		String OSBURL = LOCAL_IPAndPortNo+Url;
-		String responseObject = RestUtils.postWithHeaders(OSBURL, requestHeaders, jsonObject.toString());
+		String OSBURL = IpAndPortNo+Url;
+		String responseObject = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
 		return responseObject;
 	}
 	
@@ -59,9 +58,18 @@ public class UserManagementWebController {
 		JSONObject jsonObject = new JSONObject(requestObject);
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties", "UPDATE_USER_APPLICATION");
-		String OSBURL = LOCAL_IPAndPortNo+Url;
-		String responseObject = RestUtils.postWithHeaders(OSBURL, requestHeaders, jsonObject.toString());
+		String OSBURL = IpAndPortNo+Url;
+		String responseObject = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
 		return responseObject;
+	}
+	
+	@RequestMapping(value="/addUserApplication", method=RequestMethod.POST)
+	public String addUserApplication(@RequestBody Map<String, Object> requestObject) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "ADD_USER_APPLICATION");
+		String OSBURL = IpAndPortNo+Url;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
 	}
 	
 	/**
@@ -75,14 +83,53 @@ public class UserManagementWebController {
 		ModelAndView mav = new ModelAndView("manageTemplate");			
 		return mav;			
 	}
+	@RequestMapping(value="/addTemplate", method=RequestMethod.POST)
+	public String addTemplate(@RequestBody Map<String, Object> requestObject) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "ADD_TEMPLATE");
+		String OSBURL = IpAndPortNo+Url;
+		String responseObject = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObject;
+	}
 	
 	@RequestMapping(value="/getAllTemplate", method=RequestMethod.POST)
 	public String getAllTemplate(@RequestBody Map<String, Object> requestObject) {
 		JSONObject jsonObject = new JSONObject(requestObject);
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties", "GET_ALL_TEMPLATE");
-		String OSBURL = LOCAL_IPAndPortNo+Url;
-		String responseObject = RestUtils.postWithHeaders(OSBURL, requestHeaders, jsonObject.toString());
+		String OSBURL = IpAndPortNo+Url;
+		String responseObject = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObject;
+	}
+	
+	@RequestMapping(value="/getTemplateList", method=RequestMethod.POST)
+	public String getTemplateList(@RequestBody Map<String, Object> requestObject) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "GET_TEMPLATE_LIST");
+		String OSBURL = IpAndPortNo+Url;
+		String responseObject = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObject;
+	}
+	
+	@RequestMapping(value="/getModuleNameTemplateWise", method=RequestMethod.POST)
+	public String getModuleNameTemplateWise(@RequestBody Map<String, Object> requestObject) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "GET_MODULE_NAME_TEMPLATE_WISE");
+		String OSBURL = IpAndPortNo+Url;
+		String responseObject = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObject;
+	}
+	
+	@RequestMapping(value="/updateTemplate", method=RequestMethod.POST)
+	public String updateTemplate(@RequestBody Map<String, Object> requestObject) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "UPDATE_TEMPLATE");
+		String OSBURL = IpAndPortNo+Url;
+		String responseObject = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
 		return responseObject;
 	}
 	
@@ -117,7 +164,36 @@ public class UserManagementWebController {
 		JSONObject jsonObject = new JSONObject(requestObject);
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties", "GET_APPLICATION_AUTO_COMPLETE");
-		String OSBURL = LOCAL_IPAndPortNo+Url;
-		return RestUtils.postWithHeaders(OSBURL, requestHeaders, jsonObject.toString());			
+		String OSBURL = IpAndPortNo+Url;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());			
 	}
+	
+	@RequestMapping(value="/addFormAndReports", method=RequestMethod.POST)	
+	public String addFormAndReports(@RequestBody Map<String, Object> requestObject) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "addFormAndReports");
+		String OSBURL = IpAndPortNo+Url;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());			
+	}
+	
+	@RequestMapping(value="/getAllApplicationAndTemplates", method=RequestMethod.POST)
+	public String getAllApplicationAndTemplates(@RequestBody Map<String, Object> requestObject) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "getAllApplicationAndTemplates");
+		String OSBURL = IpAndPortNo+Url;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());	
+	}
+	
+	
+	@RequestMapping(value="/addTemplateApplication", method=RequestMethod.POST)
+	public String addTemplateApplication(@RequestBody Map<String, Object> requestObject) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "addTemplateApplication");
+		String OSBURL = IpAndPortNo+Url;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());	
+	}
+	
 }

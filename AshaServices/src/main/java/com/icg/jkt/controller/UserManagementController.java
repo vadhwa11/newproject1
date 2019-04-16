@@ -19,32 +19,97 @@ import com.icg.jkt.service.UserManagementService;
 @RestController
 @CrossOrigin
 public class UserManagementController {
-	
+
 	@Autowired
 	UserManagementService userManagementService;
-	
-	@RequestMapping(value="/getAllUserApplication", method = RequestMethod.POST, consumes="application/json", produces="application/json")
-	public String getAllUserApplication(@RequestBody Map<String, Object> requestMapObject, HttpServletRequest request, HttpServletResponse response) {
+
+	@RequestMapping(value = "/getAllUserApplication", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	public String getAllUserApplication(@RequestBody Map<String, Object> requestMapObject, HttpServletRequest request,
+			HttpServletResponse response) {
 		JSONObject jsonObject = new JSONObject(requestMapObject);
-		return userManagementService.getAllUserApplication(jsonObject,request,response);
+		return userManagementService.getAllUserApplication(jsonObject, request, response);
 	}
-	
-	@RequestMapping(value="/updateUserApplication", method = RequestMethod.POST, consumes="application/json", produces="application/json")
-	public String updateUserApplication(@RequestBody Map<String, Object> requestMapObject, HttpServletRequest request, HttpServletResponse response) {
+
+	@RequestMapping(value = "/updateUserApplication", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	public String updateUserApplication(@RequestBody Map<String, Object> requestMapObject, HttpServletRequest request,
+			HttpServletResponse response) {
 		JSONObject jsonObject = new JSONObject(requestMapObject);
-		System.out.println("jsonObject :: "+jsonObject);
 		return userManagementService.updateUserApplication(jsonObject, request, response);
 	}
-	
-	@RequestMapping(value="/getAllTemplate", method=RequestMethod.POST, produces="application/json",consumes="application/json")
-	public String getAllTemplate(@RequestBody Map<String, Object> requestObject, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject jsonObject = new JSONObject(requestObject);
-		return userManagementService.getAllTemplate(jsonObject,request,response);
+
+	@RequestMapping(value = "/addUserApplication", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	public String addUserApplication(@RequestBody Map<String, Object> requestMapObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject(requestMapObject);
+		return userManagementService.addUserApplication(jsonObject, request, response);
 	}
-		
-	@RequestMapping(value="/getApplicationAutoComplete", method=RequestMethod.POST, produces="application/json",consumes="application/json")
-	public String getApplicationAutoComplete(@RequestBody Map<String, Object> requestObject, HttpServletRequest request, HttpServletResponse response) {
+
+	@RequestMapping(value = "/addTemplate", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String addTemplate(@RequestBody Map<String, Object> requestObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		return userManagementService.addTemplate(jsonObject, request, response);
+	}
+
+	@RequestMapping(value = "/getAllTemplate", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getAllTemplate(@RequestBody Map<String, Object> requestObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		return userManagementService.getAllTemplate(jsonObject, request, response);
+	}
+
+	@RequestMapping(value = "/getTemplateList", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getTemplateList(@RequestBody Map<String, Object> requestObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		return userManagementService.getTemplateList(jsonObject, request, response);
+	}
+
+	@RequestMapping(value = "/getModuleNameTemplateWise", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getModuleNameTemplateWise(@RequestBody Map<String, Object> requestObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		return userManagementService.getModuleNameTemplateWise(jsonObject, request, response);
+	}
+
+	@RequestMapping(value = "/getApplicationListForTemplate", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getApplicationListForTemplate(@RequestBody Map<String, Object> requestObject,
+			HttpServletRequest request, HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		return userManagementService.getApplicationListForTemplate(jsonObject, request, response);
+	}
+
+	@RequestMapping(value="/getAllApplicationAndTemplates", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getAllApplicationAndTemplates(@RequestBody Map<String, Object> requestObject,
+			HttpServletRequest request, HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		return userManagementService.getAllApplicationAndTemplates(jsonObject, request, response);
+	}
+	
+	@RequestMapping(value = "/updateTemplate", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateTemplate(@RequestBody Map<String, Object> requestObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		return userManagementService.updateTemplate(jsonObject, request, response);
+	}
+
+	@RequestMapping(value = "/getApplicationAutoComplete", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getApplicationAutoComplete(@RequestBody Map<String, Object> requestObject, HttpServletRequest request,
+			HttpServletResponse response) {
 		JSONObject jsonObject = new JSONObject(requestObject);
 		return userManagementService.getApplicationAutoComplete(jsonObject, request, response);
+	}
+	
+	@RequestMapping(value ="/addFormAndReports", method=RequestMethod.POST, produces="application/json", consumes="application/json")
+	public String addFormAndReports(@RequestBody Map<String, Object> requestObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		return userManagementService.addFormAndReports(jsonObject, request, response);
+	}
+	
+	@RequestMapping(value="/addTemplateApplication", method=RequestMethod.POST, produces="application/json", consumes="application/json")
+	public String addTemplateApplication(@RequestBody Map<String, Object> requestObject, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		return userManagementService.addTemplateApplication(jsonObject, request, response);
 	}
 }

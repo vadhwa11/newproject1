@@ -29,6 +29,7 @@ $j(document).ready(function()
 	$j("#btnActive").hide();
 	$j("#btnInActive").hide();
 	$j('#updateBtn').attr("disabled", true);
+	$j('#updateBtn').hide();
 	
 			GetAllUnit('ALL');
 			GetCommandList();
@@ -199,8 +200,10 @@ function GetCommandList(){
 			$j('#updateBtn').attr("disabled", true);
 		}
 		
-		/* $j('#updateBtn').attr("disabled", false); */
+		$j('#updateBtn').show();
 		$j('#addBtnUnit').attr("disabled", true);
+		 $j("#btnActive").attr("disabled", false);
+		 $j("#btnInActive").attr("disabled", false);
 		
 }
  function updateUnitMaster(){
@@ -398,6 +401,7 @@ function GetCommandList(){
 		$j("#btnInActive").hide();
 		$j('#updateBtn').attr("disabled", true);
 		$j('#addBtnUnit').attr("disabled", false);
+		$j('#updateBtn').hide();
 		
 	   
  }
@@ -640,7 +644,7 @@ function showAll()
                                         <thead class="bg-success" style="color:#fff;">
                                             <tr>
                                                 <th id="th2" class ="inner_md_htext">Unit Name</th>
-                                                <th id="th3" class ="inner_md_htext">Command Name</th>
+                                                <th id="th3" class ="inner_md_htext">Region Name</th>
                                                 <th id="th4" class ="inner_md_htext"> Unit Type</th>
                                                 <th id="th5" class ="inner_md_htext"> Address</th>
                                                 <th id="th6" class ="inner_md_htext">Status</th>
@@ -679,7 +683,7 @@ function showAll()
                                                     <div class="col-md-3">
                                                         <div class="form-group row">
                                                         
-                                                            <label for="recordoffice" class="col-sm-5 col-form-label inner_md_htext">Command Name <span style="color:red">*</span></label>
+                                                            <label for="recordoffice" class="col-sm-5 col-form-label inner_md_htext">Region Name <span style="color:red">*</span></label>
                                                             
                                                             <div class="col-md-6">
                                                                 <select class="form-control" id="selectListOfCommand" onchange="onChgcommandName(this.value);">
@@ -741,10 +745,6 @@ function showAll()
 
             </div>
             <!-- content -->
-
-            <footer class="footer">
-                Lorem Ipsum
-            </footer>
 
         </div>
 

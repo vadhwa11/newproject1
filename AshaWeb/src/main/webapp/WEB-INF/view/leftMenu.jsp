@@ -8,9 +8,24 @@
     <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
     <meta content="Coderthemes" name="author" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-            
-       
-    <%@include file="..//view/commonJavaScript.jsp"%>
+    
+        
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="${pageContext.request.contextPath}/resources/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="${pageContext.request.contextPath}/resources/css/metismenu.min.css" rel="stylesheet" type="text/css" />
+    <link href="${pageContext.request.contextPath}/resources/css/app.css" rel="stylesheet" type="text/css" />
+   	<%-- <link href="${pageContext.request.contextPath}/resources/css/style.css" rel="stylesheet" type="text/css" /> --%>
+    
+    <script src="${pageContext.request.contextPath}/resources/js/jquery.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/metisMenu.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/waves.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/jquery.slimscroll.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/jquery.scrollTo.min.js"></script>    
+    <script src="${pageContext.request.contextPath}/resources/js/jquery.core.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/jquery.app.js"></script>    
+    <script src="${pageContext.request.contextPath}/resources/js/modernizr.min.js"></script>
+    
    
 
     
@@ -28,7 +43,7 @@
             <div class="topbar-left">
                 <a href="index.html" class="logo">
                     <span>
-                            <img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="" height="100%">
+                            <img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="" height="18">
                         </span>
                     <i>
                             <img src="${pageContext.request.contextPath}/resources/images/logo_sm.png" alt="" height="22">
@@ -108,11 +123,10 @@
                         <li>
                             <a href="javascript: void(0);"><i class="ion-md-home"></i> <span>Reception</span> <span class="menu-arrow"></span></a>
                             <ul class="nav-second-level" aria-expanded=false>
-                                <li><a href="${pageContext.request.contextPath}/appointment/showappointmentsetup">Appointment Setup</a></li>
-                                <li><a href="${pageContext.request.contextPath}/appointment/showappointmentsession">Appointment Session</a></li>
 								<li><a href="${pageContext.request.contextPath}/registration/showemployeeanddependent">Registration and Appointment ICG</a></li>
 								<li><a href="${pageContext.request.contextPath}/registration/registrationandappointmentothers">Registration and Appointment Others</a></li>
-
+										
+								<li><a href="${pageContext.request.contextPath}/registration/uploadPatientDocument">Upload Patient Document</a></li>
                             </ul>
                         </li>
                         <li>
@@ -122,8 +136,11 @@
                                 
                                 <li><a href="${pageContext.request.contextPath}/v0.1/opd/preOpdWaitingList">Pre-Consultation Waiting List</a></li>
                                 <li><a href="${pageContext.request.contextPath}/v0.1/opd/opdWaitingList">OPD Waiting List</a></li>
-                                <li><a href="${pageContext.request.contextPath}/v0.1/opd/obesityWaitingJsp">obesityWaitingJsp</a></li>                               
-                                <li><a href="#">Reports</a></li>
+                                <li><a href="${pageContext.request.contextPath}/v0.1/opd/obesityWaitingJsp">Obesity Waiting List</a></li>    
+                                <li><a href="${pageContext.request.contextPath}/v0.1/opd/referralWaitingList">Referral Waiting List</a></li>   
+                                <li><a href="${pageContext.request.contextPath}/v0.1/opd/admissionDischargePending">Pending Admission List</a></li>
+                                <li><a href="${pageContext.request.contextPath}/v0.1/opd/dischargePending">Pending Discharge List</a></li>                                  
+                                <li><a href="${pageContext.request.contextPath}/v0.1/opd/opdPrescriptionReports">Reports</a></li>
                                 <li><a href="#">Reports Case stylesheet</a></li>
                                 <li><a href="#">OP Nursing Care</a></li>
                                 
@@ -227,7 +244,7 @@
                            </ul>
                         </li>
                         
-                         <li>
+                        <li>
                             <a href="javascript: void(0);"><i class="ion-md-copy"></i> <span> User Management </span> <span class="menu-arrow"></span></a>
                             <ul class="nav-second-level" aria-expanded="false">
                             <li><a href="${pageContext.request.contextPath}/addFormsAndReports">Add Form / Reports</a></li>
@@ -243,26 +260,41 @@
                         <li>
                             <a href="javascript: void(0);"><i class="ion-md-copy"></i> <span> Masters </span> <span class="menu-arrow"></span></a>
                             <ul class="nav-second-level" aria-expanded="false">
-                                <li><a href="${pageContext.request.contextPath}/v0.1/master/commandMaster">Command Master </a></li>
+                                <li><a href="${pageContext.request.contextPath}/v0.1/master/regionMaster">Command Master </a></li>
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/unitMaster">Unit Master </a></li>
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/hospitalMaster">Hospital Master </a></li>
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/departmentMaster">Department Master</a></li>
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/relationMaster">Relation Master </a></li>
-                                <li><a href="${pageContext.request.contextPath}/v0.1/master/disposalMaster">Disposal Type Master </a></li>
+                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/rankMaster">Rank Master </a></li>
+                                <li><a href="${pageContext.request.contextPath}/v0.1/master/tradeMaster">Trade Master </a></li>
+                                <li><a href="${pageContext.request.contextPath}/v0.1/master/religionMaster">Religion Master </a></li>
+                                <li><a href="${pageContext.request.contextPath}/v0.1/master/maritalStatusMaster">Marital Status Master </a></li>
+                                <li><a href="${pageContext.request.contextPath}/v0.1/master/employeeCategoryMaster">Employee Category Master </a></li>
+                                <li><a href="${pageContext.request.contextPath}/v0.1/master/genderMaster">Gender Master </a></li>
+                                <li><a href="${pageContext.request.contextPath}/v0.1/master/medicalCategoryMaster">Medical Category Master </a></li>
+                                <li><a href="${pageContext.request.contextPath}/v0.1/master/bloodGroupMaster">Blood Group Master </a></li>
+                                <li><a href="${pageContext.request.contextPath}/v0.1/master/sampleContainerMaster">Sample Container Master </a></li>
+                                <li><a href="${pageContext.request.contextPath}/v0.1/master/uomMaster">Unit of Measurement Master </a></li>
+                                <li><a href="${pageContext.request.contextPath}/v0.1/master/itemUnitMaster">Item Unit Master </a></li>
+                                <%-- <li><a href="${pageContext.request.contextPath}/v0.1/master/usersMaster">Users Master </a></li>
+                                <li><a href="${pageContext.request.contextPath}/v0.1/master/mainChargeCodeMaster">MainChargeCode Master </a></li>
+                                --%> <li><a href="${pageContext.request.contextPath}/v0.1/master/disposalMaster">Disposal Type Master </a></li>
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/idealWeightMaster">Ideal Weight Master </a></li>
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/frequencyMaster">Frequency Master </a></li>
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/appointmentTypeMaster">Appointment Type </a></li>
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/empanelledHospitalMaster">Empanelled Hospital Master </a></li>                                
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/physiotherapyMaster">Physiotherapy Master </a></li>
-                                
+                                <li><a href="${pageContext.request.contextPath}/v0.1/master/serviceTypeMaster">Service Type</a></li>                                
                             </ul>
                         </li>
                         
                         <li>
                             <a href="javascript: void(0);"><i class="ion-md-copy"></i> <span> ADMIN </span> <span class="menu-arrow"></span></a>
                             <ul class="nav-second-level" aria-expanded="false">
-                                <li><a href="${pageContext.request.contextPath}/admin/doctorRoaster">Doctor Roaster</a></li>
-                                <li><a href="${pageContext.request.contextPath}/appointment/showappointmentsession">Appointment Session </a></li>
+                                                         
+                             <li><a href="${pageContext.request.contextPath}/appointment/showappointmentsetup">Appointment Setup</a></li>
+                                <li><a href="${pageContext.request.contextPath}/appointment/showappointmentsession">Appointment Session</a></li>
+                                <li><a href="${pageContext.request.contextPath}/admin/doctorRoaster">Doctor Roster</a></li>
                                                               
                             </ul>
                         </li>
@@ -287,7 +319,6 @@
             <div class="content">
                 <div class="container-fluid">
                     
-                    <!-- end row -->
                     <!-- end row -->
                     <!-- end row -->
 

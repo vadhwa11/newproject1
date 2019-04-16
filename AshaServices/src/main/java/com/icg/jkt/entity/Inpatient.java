@@ -2,6 +2,9 @@ package com.icg.jkt.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.sql.Timestamp;
@@ -210,6 +213,7 @@ public class Inpatient implements Serializable {
 
 	//bi-directional many-to-one association to ProcedureHd
 	@OneToMany(mappedBy="inpatient")
+	@JsonBackReference
 	private List<ProcedureHd> procedureHds;
 
 	public Inpatient() {

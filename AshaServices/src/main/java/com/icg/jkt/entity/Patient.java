@@ -273,6 +273,7 @@ public class Patient implements Serializable {
 	
 
 	@OneToMany(mappedBy="patient")
+	@JsonBackReference
 	private List<AdmissionDischarge> admissionDischarge;
 	
 	//bi-directional many-to-one association to ReferralPatientHd
@@ -310,11 +311,8 @@ public class Patient implements Serializable {
 		 @JsonBackReference
 		 private List<Visit> visit;
 		 
-		    @OneToOne(cascade = CascadeType.ALL,fetch=FetchType.EAGER) 
-			@JoinColumn(name = "ADMINISTRATIVE_SEX_ID",nullable=false,insertable=false,updatable=false)
-			private MasAdministrativeSex massex;
-			
-			@OneToOne(cascade = CascadeType.ALL,fetch=FetchType.EAGER) 
+				
+			@OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY) 
 			@JoinColumn(name = "RELATION_ID",nullable=false,insertable=false,updatable=false)
 			private MasRelation masrelation;
 			
@@ -328,13 +326,6 @@ public class Patient implements Serializable {
 				this.visit = visit;
 			}
 
-			public MasAdministrativeSex getMassex() {
-				return massex;
-			}
-
-			public void setMassex(MasAdministrativeSex massex) {
-				this.massex = massex;
-			}
 
 			public MasRelation getMasrelation() {
 				return masrelation;
@@ -579,13 +570,13 @@ public class Patient implements Serializable {
 		this.serviceNo = serviceNo;
 	}
 
-	public long getUhidNo() {
+	public Long getUhidNo() {
 		return this.uhidNo;
 	}
-
-	public void setUhidNo(long uhidNo) {
+	public void setUhidNo(Long uhidNo) {
 		this.uhidNo = uhidNo;
 	}
+	
 
 	public MasAdministrativeSex getMasAdministrativeSex() {
 		return this.masAdministrativeSex;
@@ -879,9 +870,7 @@ public class Patient implements Serializable {
 		this.unitId = unitId;
 	}
 
-	public void setUhidNo(Long uhidNo) {
-		this.uhidNo = uhidNo;
-	}
+	
 
 	public List<AdmissionDischarge> getAdmissionDischarge() {
 		return admissionDischarge;

@@ -1790,8 +1790,8 @@ function setOnlineToken(startTokenId, totalTokenId, timeIntervalId,
 	while (i <= totalToken) {
 		totalOnlineToken = totalOnlineToken + 1;
 		i = +i + +timeInterval;
-	}
 		}
+	}
 
 	// totalOnlineToken = Math.floor(totalToken / timeInterval);
 

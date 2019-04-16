@@ -3,6 +3,7 @@ package com.icg.jkt.entity;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,13 +15,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * The persistent class for the USER_APPLICATIONS database table.
  * 
  */
 @Entity
 @Table(name = "USER_APPLICATIONS")
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserApplication implements Serializable {
 
 	/**
@@ -29,7 +32,7 @@ public class UserApplication implements Serializable {
 	private static final long serialVersionUID = 7934534210438937307L;
 
 	@Id
-	@SequenceGenerator(name = "USER_APPLICATIONS_ID_GENERATOR", sequenceName = "USER_APPLICATIONS_SEQ")
+	@SequenceGenerator(name = "USER_APPLICATIONS_ID_GENERATOR", sequenceName = "USER_APPLICATIONS_SEQ",allocationSize=1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_APPLICATIONS_ID_GENERATOR")
 	@Column(name = "USER_APP_ID")
 	private long id;
@@ -46,10 +49,10 @@ public class UserApplication implements Serializable {
 	@Column(name = "URL")
 	private String url;
 
-	// bi-directional many-to-one association to User
-	@ManyToOne(fetch = FetchType.LAZY)
+	/*// bi-directional many-to-one association to User
+	@ManyToOne(fetch = FetchType.LAZY, cascade= CascadeType.ALL)
 	@JoinColumn(name = "LAST_CHG_BY")
-	private Users users;
+	private Users users;*/
 
 	public UserApplication() {
 	}
@@ -94,12 +97,20 @@ public class UserApplication implements Serializable {
 		this.url = url;
 	}
 
-	public Users getUser() {
+	/*public Users getUser() {
 		return this.users;
 	}
 
 	public void setUser(Users users) {
 		this.users = users;
 	}
+
+	public Users getUsers() {
+		return users;
+	}
+
+	public void setUsers(Users users) {
+		this.users = users;
+	}*/
 
 }
