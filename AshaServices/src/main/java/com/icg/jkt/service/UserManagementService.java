@@ -23,4 +23,11 @@ public interface UserManagementService {
 	String addFormAndReports(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 	String getAllApplicationAndTemplates(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 	String addTemplateApplication(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+	
+	String getRoleRightsList(HttpServletRequest request, HttpServletResponse response);
+	String getTemplateNameList(HttpServletRequest request, HttpServletResponse response);
+	String getAssingedTemplateNameList(JSONObject json, HttpServletRequest request, HttpServletResponse response);
+	String saveRolesRight(JSONObject json, HttpServletRequest request, HttpServletResponse response);
+	String getApplicationNameFormsAndReport(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+	String updateAddFormsAndReport(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 }

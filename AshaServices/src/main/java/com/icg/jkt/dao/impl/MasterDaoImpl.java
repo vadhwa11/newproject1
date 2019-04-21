@@ -39,12 +39,14 @@ import com.icg.jkt.entity.MasFrequency;
 import com.icg.jkt.entity.MasHospital;
 import com.icg.jkt.entity.MasIcd;
 import com.icg.jkt.entity.MasIdealWeight;
+import com.icg.jkt.entity.MasMainChargecode;
 import com.icg.jkt.entity.MasMaritalStatus;
 import com.icg.jkt.entity.MasMedicalCategory;
 import com.icg.jkt.entity.MasNursingCare;
 import com.icg.jkt.entity.MasRank;
 import com.icg.jkt.entity.MasRelation;
 import com.icg.jkt.entity.MasReligion;
+import com.icg.jkt.entity.MasRole;
 import com.icg.jkt.entity.MasSample;
 import com.icg.jkt.entity.MasServiceType;
 import com.icg.jkt.entity.MasState;
@@ -147,16 +149,6 @@ public class MasterDaoImpl implements MasterDao {
 
 		map.put("stateList", stateList);
 		return map;
-	}
-
-	@Override
-	public MasTrade checkTrade(String tradeName) {
-		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-		Criteria criteria = session.createCriteria(MasTrade.class);
-		// criteria.add(Restrictions.eq("status", "y"));
-		MasTrade masTradeObj = (MasTrade) criteria.setMaxResults(1).uniqueResult();
-		getHibernateUtils.getHibernateUtlis().CloseConnection();
-		return masTradeObj;
 	}
 
 	@Override
@@ -283,17 +275,6 @@ public class MasterDaoImpl implements MasterDao {
 		}
 
 		return masCmdList;
-	}
-
-	@Override
-	public List<MasTrade> validateMasTrade(String tradeName) {
-		List<MasTrade> masTrade = new ArrayList<MasTrade>();
-		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-		Criteria criteria = session.createCriteria(MasTrade.class);
-		criteria.add(Restrictions.eq("tradeName", tradeName));
-		masTrade = criteria.list();
-		getHibernateUtils.getHibernateUtlis().CloseConnection();
-		return masTrade;
 	}
 
 	@Override
@@ -2214,15 +2195,247 @@ public class MasterDaoImpl implements MasterDao {
 		return listObject;
 	}
 
+		/****************************Service Type*********************************************************/
+
+	@Override
+	public Map<String, List<MasServiceType>> getAllServiceType(JSONObject jsonObj) {
+		Map<String, List<MasServiceType>> mapObj = new HashMap<String, List<MasServiceType>>();
+		int pageSize = 5;
+		int pageNo = 1;
+
+		List totalMatches = new ArrayList();
+		List<MasServiceType> masServiceTypeList = new ArrayList<MasServiceType>();
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		Criteria criteria = session.createCriteria(MasServiceType.class);
+
+		if (jsonObj.get("PN") != null)
+			pageNo = Integer.parseInt(jsonObj.get("PN").toString());
+
+		String stName = "";
+		if (jsonObj.has("serviceTypeName")) {
+			stName = jsonObj.get("serviceTypeName") + "%";
+			if (jsonObj.get("serviceTypeName").toString().length() > 0
+					&& !jsonObj.get("serviceTypeName").toString().trim().equalsIgnoreCase("")) {
+				criteria.add(Restrictions.like("serviceTypeName", stName));
+
+			}
+		}
+		criteria.addOrder(Order.asc("serviceTypeName"));
+
+		totalMatches = criteria.list();
+		criteria.setFirstResult((pageSize) * (pageNo - 1));
+		criteria.setMaxResults(pageSize);
+
+		masServiceTypeList = criteria.list();
+		getHibernateUtils.getHibernateUtlis().CloseConnection();
+		mapObj.put("masServiceTypeList", masServiceTypeList);
+		mapObj.put("totalMatches", totalMatches);
+		return mapObj;
+	}
+
+	@Override
+	public String updateServiceType(Long serviceTypeId, String serviceTypeName) {
+		String result = "";
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+
+			if (serviceTypeId != 0) {
+				Object stObject = session.load(MasServiceType.class, serviceTypeId);
+				MasServiceType masServiceType = (MasServiceType) stObject;					
+				Transaction transaction = session.beginTransaction();				
+				masServiceType.setServiceTypeName(serviceTypeName);
+				masServiceType.setStatus("Y");			
+				Users users = new Users(); 
+				users.setUserId(new Long(1));
+				masServiceType.setUser(users);				
+				long d = System.currentTimeMillis();
+				Date date = new Date(d);
+				masServiceType.setLastChgDate(date);
+				session.merge(masServiceType);
+				transaction.commit();
+				result = "200";
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+
+		return result;
+	}
+
+
+
+	@Override
+	public String addServiceType(MasServiceType masServiceType) {
+		String result = "";
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			Transaction tx = session.beginTransaction();
+			Criteria cr1=session.createCriteria(MasServiceType.class).add(Restrictions.eq("serviceTypeCode", masServiceType.getServiceTypeCode()));
+			Criteria cr2=session.createCriteria(MasServiceType.class).add(Restrictions.eq("serviceTypeName", masServiceType.getServiceTypeName()));
+			List<MasServiceType> masList1=cr1.list();
+			List<MasServiceType> masList2=cr2.list();
+			if(masList1 !=null && !masList1.isEmpty()){
+				result="serviceTypeCodeExist";
+			}
+			else if(masList2 !=null && !masList2.isEmpty()) {
+				result="serviceTypeNameExist";
+			}else {
+					Serializable savedObj = session.save(masServiceType);
+					tx.commit();
+					if (savedObj != null) {
+						result = "200";
+					} else {
+						result = "500";
+					}
+				}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		
+		finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		
+		return result;
+	}
+
+	@Override
+	public String updateServiceTypeStatus(Long serviceTypeId, String serviceTypeCode, String status) {
+		String result = "";
+		try {
+
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+
+			Object stObject = session.load(MasServiceType.class, serviceTypeId);
+			MasServiceType masServiceType = (MasServiceType) stObject;
+
+			Transaction transaction = session.beginTransaction();
+			if (masServiceType.getStatus().equalsIgnoreCase("Y")) {
+				masServiceType.setStatus("N");
+
+			} else if (masServiceType.getStatus().equalsIgnoreCase("N")) {
+				masServiceType.setStatus("Y");
+
+			} else {
+				masServiceType.setStatus("Y");	
+			}
+
+			session.update(masServiceType);
+			transaction.commit();
+			result = "200";
+			// }
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return result;
+	}
+	
+	@Override
+	public String updateIdealWeight(JSONObject jsonObject) {
+	 String result="";
+	 long d = System.currentTimeMillis();
+	 Date lastChgDate = new Date(d);
+	 try {
+	  if (jsonObject != null) {
+	   List<MasIdealWeight> masIdealWeightsList = new ArrayList<MasIdealWeight>();
+	   Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+	   //Criteria criteria = session.createCriteria(MasIdealWeight.class);
+	   String hStatus = "";
+	   Long idealWtId;
+	   if (jsonObject.has("idealWeightId")) {
+	    String selectAge = jsonObject.get("selectAge").toString();
+	    System.out.println("selectAge :: "+selectAge);
+	    String[] ageArray = JavaUtils.getSplitString(selectAge);
+	    String fromAge = ageArray[0];
+	    String toAge = ageArray[1];
+	    System.out.println(fromAge +"== "+toAge);
+	    
+	    idealWtId = Long.parseLong(jsonObject.get("idealWeightId").toString());
+	     /*criteria.add(Restrictions.eq("idealWeightId", idealWtId));
+	     masIdealWeightsList = criteria.list();*/
+
+	    /*for (int i = 0; i < masIdealWeightsList.size(); i++) {
+	     Long idealWeightId = masIdealWeightsList.get(i).getIdealWeightId();*/
+
+	     Object object = session.load(MasIdealWeight.class, idealWtId);
+	     MasIdealWeight idealWeight = (MasIdealWeight) object;
+
+	     Transaction transaction = session.beginTransaction();
+
+	     if (jsonObject.has("status")) {       
+	      hStatus = jsonObject.get("status").toString();       
+	      if (hStatus.equalsIgnoreCase("active") || hStatus.equalsIgnoreCase("inactive")) {
+	       if (hStatus.equalsIgnoreCase("active"))
+	        idealWeight.setStatus("N");
+	       else
+	        idealWeight.setStatus("Y");
+	       session.update(idealWeight);
+	       transaction.commit();
+	       result = "200";
+	      } else {
+	       
+	       idealWeight.setGenderId(Long.parseLong(jsonObject.get("genderId").toString()));
+	       idealWeight.setFromAge(fromAge);
+	       idealWeight.setToAge(toAge);
+	       idealWeight.setFromHeight(Long.parseLong(jsonObject.get("fromHeight").toString()));
+	       idealWeight.setToHeight(Long.parseLong(jsonObject.get("toHeight").toString()));
+	       idealWeight.setWeight(Long.parseLong(jsonObject.get("weight").toString()));
+
+	       /*Users user = new Users();
+	       user.setUserId(new Long(1));
+	       idealWeight.setUser(user);*/
+
+	       // masNursingCare.setLastChgBy(new Long(1));
+	       idealWeight.setLastChgDate(lastChgDate);
+	       session.update(idealWeight);
+	       transaction.commit();
+	       result = "200";
+	      }
+
+	     }
+
+	    //}
+	   }
+	  }
+
+	 } catch (Exception e) {
+	  e.printStackTrace();
+	 } finally {
+	  getHibernateUtils.getHibernateUtlis().CloseConnection();
+	 }
+	 return result;
+	}
+	
 	/**----------------MAS RANK--------------------*/
 
 	@Override
 	public List<MasRank> validateMasRank(String rankCode, String rankName) {
 		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-		List<MasRank> rankList = new ArrayList<MasRank>();
-		Criteria criteria = session.createCriteria(MasRank.class);
-		criteria.add(Restrictions.or(Restrictions.eq("rankCode", rankCode), Restrictions.eq("rankName", rankName)));
-		rankList = criteria.list();
+		//List<MasRank> rankList = new ArrayList<MasRank>();
+		//List<MasRank> rankList = null;
+		Criteria criteria = null;
+		criteria = session.createCriteria(MasRank.class)
+							.add(Restrictions.or(Restrictions.eq("rankCode", rankCode), Restrictions.eq("rankName", rankName)));
+		List<MasRank> rankList = criteria.list();
+		getHibernateUtils.getHibernateUtlis().CloseConnection();
+		return rankList;
+	}
+
+	@Override
+	public List<MasRank> validateMasRankUpdate(String rankCode, String rankName) {
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		//List<MasRank> rankList = new ArrayList<MasRank>();
+		//List<MasRank> rankList = null;
+		Criteria criteria = null;
+		criteria = session.createCriteria(MasRank.class)
+							.add(Restrictions.and(Restrictions.eq("rankCode", rankCode), Restrictions.eq("rankName", rankName)));
+		List<MasRank> rankList = criteria.list();
 		getHibernateUtils.getHibernateUtlis().CloseConnection();
 		return rankList;
 	}
@@ -2454,6 +2667,27 @@ public class MasterDaoImpl implements MasterDao {
 
 	/***************************************MAS TRADE*************************************************************/
 
+	@Override
+	public List<MasTrade> validateMasTrade(String tradeName) {
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		List<MasTrade> tradeList = new ArrayList<MasTrade>();
+		Criteria criteria = session.createCriteria(MasTrade.class);
+		criteria.add(Restrictions.or(Restrictions.eq("tradeName", tradeName)));
+		tradeList = criteria.list();
+		getHibernateUtils.getHibernateUtlis().CloseConnection();
+		return tradeList;
+	}
+
+	@Override
+	public List<MasTrade> validateMasTradeUpdate(String tradeName) {
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		List<MasTrade> tradeList = new ArrayList<MasTrade>();
+		Criteria criteria = session.createCriteria(MasTrade.class);
+		criteria.add(Restrictions.and(Restrictions.eq("tradeName", tradeName)));
+		tradeList = criteria.list();
+		getHibernateUtils.getHibernateUtlis().CloseConnection();
+		return tradeList;
+	}
 
 	@Override
 	public String addMasTrade(MasTrade masTrade) {
@@ -2477,8 +2711,19 @@ public class MasterDaoImpl implements MasterDao {
 		return result;
 	}
 
+	@Override
+	public MasTrade checkTrade(String tradeName) {
+		
+		MasTrade masTrade = new MasTrade();	
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		Criteria criteria =  session.createCriteria(MasTrade.class);
+		criteria.add(Restrictions.eq("tradeName", tradeName));
+		masTrade = (MasTrade)criteria.uniqueResult();
+		getHibernateUtils.getHibernateUtlis().CloseConnection();
+		
+		return masTrade;
+	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, List<MasTrade>>  getAllTrade(JSONObject jsonObj){
 		Map<String, List<MasTrade>> mapObj = new HashMap<String, List<MasTrade>>();
@@ -2682,7 +2927,7 @@ public class MasterDaoImpl implements MasterDao {
 					  rgName = jsondata.get("religionName")+"%";
 					  if(jsondata.get("religionName").toString().length()>0 && !jsondata.get("religionName").toString().trim().equalsIgnoreCase("")) {
 							criteria.add(Restrictions.like("religionName", rgName));
-							//criteria.addOrder(Order.asc(jsondata.get("departmentName").toString()));
+							criteria.addOrder(Order.asc(jsondata.get("religionName").toString()));
 						}
 				 }
 				 List totalMatches = criteria.list();
@@ -2709,6 +2954,22 @@ public class MasterDaoImpl implements MasterDao {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
 				Criteria criteria = session.createCriteria(MasReligion.class);
 				criteria.add(Restrictions.or(Restrictions.eq("religionCode", religionCode), Restrictions.eq("religionName", religionName)));
+				reliList = criteria.list();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				getHibernateUtils.getHibernateUtlis().CloseConnection();
+			}
+		return reliList;
+	}
+
+	@Override
+	public List<MasReligion> validateReligionUpdate(String religionCode, String religionName) {
+		List<MasReligion> reliList =  new ArrayList<MasReligion>();	
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+				Criteria criteria = session.createCriteria(MasReligion.class);
+				criteria.add(Restrictions.and(Restrictions.eq("religionCode", religionCode), Restrictions.eq("religionName", religionName)));
 				reliList = criteria.list();
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -2746,15 +3007,6 @@ public class MasterDaoImpl implements MasterDao {
 		String result="";
 		try {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-			/*List<MasFrequency> freqList = new ArrayList<MasFrequency>();
-			Criteria criteria = session.createCriteria(MasFrequency.class);
-			criteria.add(Restrictions.eq("frequencyId", frequencyId));
-			freqList = criteria.list();
-			if(freqList!=null && freqList.size()>0) {
-				
-				for(int i=0;i<freqList.size();i++) {
-					Long freqId =  freqList.get(i).getFrequencyId();*/
-					
 					Object object = session.load(MasReligion.class, religionId);
 					MasReligion masReligion = (MasReligion)object;
 					
@@ -2803,18 +3055,6 @@ public class MasterDaoImpl implements MasterDao {
 		String result = "";	
 		try {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-			/*List<MasFrequency> frequencyList = new ArrayList<MasFrequency>();		
-			Criteria criteria = session.createCriteria(MasFrequency.class);
-			criteria.add(Restrictions.and(Restrictions.eq("frequencyId", frequencyId),
-										Restrictions.eq("frequencyCode", frequencyCode),
-										Restrictions.eq("status", status)));
-			
-			frequencyList = criteria.list();
-			
-			
-			for(int i=0;i<frequencyList.size();i++) {
-				Long freqId = frequencyList.get(i).getFrequencyId();*/
-				
 				Object object =  session.load(MasReligion.class, religionId);
 				
 				MasReligion masReligion = (MasReligion)object;
@@ -2862,7 +3102,7 @@ public class MasterDaoImpl implements MasterDao {
 					  msName = jsondata.get("maritalStatusName")+"%";
 					  if(jsondata.get("maritalStatusName").toString().length()>0 && !jsondata.get("maritalStatusName").toString().trim().equalsIgnoreCase("")) {
 							criteria.add(Restrictions.like("maritalStatusName", msName));
-							//criteria.addOrder(Order.asc(jsondata.get("departmentName").toString()));
+							criteria.addOrder(Order.asc(jsondata.get("maritalStatusName").toString()));
 						}
 				 }
 				 List totalMatches = criteria.list();
@@ -2889,6 +3129,22 @@ public class MasterDaoImpl implements MasterDao {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
 				Criteria criteria = session.createCriteria(MasMaritalStatus.class);
 				criteria.add(Restrictions.or(Restrictions.eq("maritalStatusCode", maritalStatusCode), Restrictions.eq("maritalStatusName", maritalStatusName)));
+				marsList = criteria.list();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				getHibernateUtils.getHibernateUtlis().CloseConnection();
+			}
+		return marsList;
+	}
+
+	@Override
+	public List<MasMaritalStatus> validateMaritalStatusUpdate(String maritalStatusCode, String maritalStatusName) {
+		List<MasMaritalStatus> marsList =  new ArrayList<MasMaritalStatus>();	
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+				Criteria criteria = session.createCriteria(MasMaritalStatus.class);
+				criteria.add(Restrictions.and(Restrictions.eq("maritalStatusCode", maritalStatusCode), Restrictions.eq("maritalStatusName", maritalStatusName)));
 				marsList = criteria.list();
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -2926,15 +3182,6 @@ public class MasterDaoImpl implements MasterDao {
 		String result="";
 		try {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-			/*List<MasFrequency> freqList = new ArrayList<MasFrequency>();
-			Criteria criteria = session.createCriteria(MasFrequency.class);
-			criteria.add(Restrictions.eq("frequencyId", frequencyId));
-			freqList = criteria.list();
-			if(freqList!=null && freqList.size()>0) {
-				
-				for(int i=0;i<freqList.size();i++) {
-					Long freqId =  freqList.get(i).getFrequencyId();*/
-					
 					Object object = session.load(MasMaritalStatus.class, maritalStatusId);
 					MasMaritalStatus masMaritalStatus = (MasMaritalStatus)object;
 					
@@ -2983,18 +3230,6 @@ public class MasterDaoImpl implements MasterDao {
 		String result = "";	
 		try {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-			/*List<MasFrequency> frequencyList = new ArrayList<MasFrequency>();		
-			Criteria criteria = session.createCriteria(MasFrequency.class);
-			criteria.add(Restrictions.and(Restrictions.eq("frequencyId", frequencyId),
-										Restrictions.eq("frequencyCode", frequencyCode),
-										Restrictions.eq("status", status)));
-			
-			frequencyList = criteria.list();
-			
-			
-			for(int i=0;i<frequencyList.size();i++) {
-				Long freqId = frequencyList.get(i).getFrequencyId();*/
-				
 				Object object =  session.load(MasMaritalStatus.class, maritalStatusId);
 				
 				MasMaritalStatus masMaritalStatus = (MasMaritalStatus)object;
@@ -3042,7 +3277,7 @@ public class MasterDaoImpl implements MasterDao {
 					  ecName = jsondata.get("employeeCategoryName")+"%";
 					  if(jsondata.get("employeeCategoryName").toString().length()>0 && !jsondata.get("employeeCategoryName").toString().trim().equalsIgnoreCase("")) {
 							criteria.add(Restrictions.like("employeeCategoryName", ecName));
-							//criteria.addOrder(Order.asc(jsondata.get("departmentName").toString()));
+							criteria.addOrder(Order.asc(jsondata.get("employeeCategoryName").toString()));
 						}
 				 }
 				 List totalMatches = criteria.list();
@@ -3069,6 +3304,22 @@ public class MasterDaoImpl implements MasterDao {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
 				Criteria criteria = session.createCriteria(MasEmployeeCategory.class);
 				criteria.add(Restrictions.or(Restrictions.eq("employeeCategoryCode", employeeCategoryCode), Restrictions.eq("employeeCategoryName", employeeCategoryName)));
+				ecList = criteria.list();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				getHibernateUtils.getHibernateUtlis().CloseConnection();
+			}
+		return ecList;
+	}
+
+	@Override
+	public List<MasEmployeeCategory> validateEmployeeCategoryUpdate(Long employeeCategoryCode, String employeeCategoryName) {
+		List<MasEmployeeCategory> ecList =  new ArrayList<MasEmployeeCategory>();	
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+				Criteria criteria = session.createCriteria(MasEmployeeCategory.class);
+				criteria.add(Restrictions.and(Restrictions.eq("employeeCategoryCode", employeeCategoryCode), Restrictions.eq("employeeCategoryName", employeeCategoryName)));
 				ecList = criteria.list();
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -3106,14 +3357,6 @@ public class MasterDaoImpl implements MasterDao {
 		String result="";
 		try {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-			/*List<MasFrequency> freqList = new ArrayList<MasFrequency>();
-			Criteria criteria = session.createCriteria(MasFrequency.class);
-			criteria.add(Restrictions.eq("frequencyId", frequencyId));
-			freqList = criteria.list();
-			if(freqList!=null && freqList.size()>0) {
-				
-				for(int i=0;i<freqList.size();i++) {
-					Long freqId =  freqList.get(i).getFrequencyId();*/
 					
 					Object object = session.load(MasEmployeeCategory.class, employeeCategoryId);
 					MasEmployeeCategory masEmployeeCategory = (MasEmployeeCategory)object;
@@ -3163,18 +3406,6 @@ public class MasterDaoImpl implements MasterDao {
 		String result = "";	
 		try {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-			/*List<MasFrequency> frequencyList = new ArrayList<MasFrequency>();		
-			Criteria criteria = session.createCriteria(MasFrequency.class);
-			criteria.add(Restrictions.and(Restrictions.eq("frequencyId", frequencyId),
-										Restrictions.eq("frequencyCode", frequencyCode),
-										Restrictions.eq("status", status)));
-			
-			frequencyList = criteria.list();
-			
-			
-			for(int i=0;i<frequencyList.size();i++) {
-				Long freqId = frequencyList.get(i).getFrequencyId();*/
-				
 				Object object =  session.load(MasEmployeeCategory.class, employeeCategoryId);
 				
 				MasEmployeeCategory masEmployeeCategory = (MasEmployeeCategory)object;
@@ -3222,7 +3453,7 @@ public class MasterDaoImpl implements MasterDao {
 					  asName = jsondata.get("administrativeSexName")+"%";
 					  if(jsondata.get("administrativeSexName").toString().length()>0 && !jsondata.get("administrativeSexName").toString().trim().equalsIgnoreCase("")) {
 							criteria.add(Restrictions.like("administrativeSexName", asName));
-							//criteria.addOrder(Order.asc(jsondata.get("departmentName").toString()));
+							criteria.addOrder(Order.asc(jsondata.get("administrativeSexName").toString()));
 						}
 				 }
 				 List totalMatches = criteria.list();
@@ -3249,6 +3480,22 @@ public class MasterDaoImpl implements MasterDao {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
 				Criteria criteria = session.createCriteria(MasAdministrativeSex.class);
 				criteria.add(Restrictions.or(Restrictions.eq("administrativeSexCode", administrativeSexCode), Restrictions.eq("administrativeSexName", administrativeSexName)));
+				ecList = criteria.list();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				getHibernateUtils.getHibernateUtlis().CloseConnection();
+			}
+		return ecList;
+	}
+
+	@Override
+	public List<MasAdministrativeSex> validateAdministrativeSexUpdate(String administrativeSexCode, String administrativeSexName) {
+		List<MasAdministrativeSex> ecList =  new ArrayList<MasAdministrativeSex>();	
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+				Criteria criteria = session.createCriteria(MasAdministrativeSex.class);
+				criteria.add(Restrictions.and(Restrictions.eq("administrativeSexCode", administrativeSexCode), Restrictions.eq("administrativeSexName", administrativeSexName)));
 				ecList = criteria.list();
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -3286,15 +3533,6 @@ public class MasterDaoImpl implements MasterDao {
 		String result="";
 		try {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-			/*List<MasFrequency> freqList = new ArrayList<MasFrequency>();
-			Criteria criteria = session.createCriteria(MasFrequency.class);
-			criteria.add(Restrictions.eq("frequencyId", frequencyId));
-			freqList = criteria.list();
-			if(freqList!=null && freqList.size()>0) {
-				
-				for(int i=0;i<freqList.size();i++) {
-					Long freqId =  freqList.get(i).getFrequencyId();*/
-					
 					Object object = session.load(MasAdministrativeSex.class, administrativeSexId);
 					MasAdministrativeSex masAdministrativeSex = (MasAdministrativeSex)object;
 					
@@ -3343,17 +3581,6 @@ public class MasterDaoImpl implements MasterDao {
 		String result = "";	
 		try {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-			/*List<MasFrequency> frequencyList = new ArrayList<MasFrequency>();		
-			Criteria criteria = session.createCriteria(MasFrequency.class);
-			criteria.add(Restrictions.and(Restrictions.eq("frequencyId", frequencyId),
-										Restrictions.eq("frequencyCode", frequencyCode),
-										Restrictions.eq("status", status)));
-			
-			frequencyList = criteria.list();
-			
-			
-			for(int i=0;i<frequencyList.size();i++) {
-				Long freqId = frequencyList.get(i).getFrequencyId();*/
 				
 				Object object =  session.load(MasAdministrativeSex.class, administrativeSexId);
 				
@@ -3402,7 +3629,7 @@ public class MasterDaoImpl implements MasterDao {
 					  mCatName = jsondata.get("medicalCategoryName")+"%";
 					  if(jsondata.get("medicalCategoryName").toString().length()>0 && !jsondata.get("medicalCategoryName").toString().trim().equalsIgnoreCase("")) {
 							criteria.add(Restrictions.like("medicalCategoryName", mCatName));
-							//criteria.addOrder(Order.asc(jsondata.get("departmentName").toString()));
+							criteria.addOrder(Order.asc(jsondata.get("medicalCategoryName").toString()));
 						}
 				 }
 				 List totalMatches = criteria.list();
@@ -3429,6 +3656,22 @@ public class MasterDaoImpl implements MasterDao {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
 				Criteria criteria = session.createCriteria(MasMedicalCategory.class);
 				criteria.add(Restrictions.or(Restrictions.eq("medicalCategoryCode", medicalCategoryCode), Restrictions.eq("medicalCategoryName", medicalCategoryName)));
+				mCatList = criteria.list();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				getHibernateUtils.getHibernateUtlis().CloseConnection();
+			}
+		return mCatList;
+	}
+
+	@Override
+	public List<MasMedicalCategory> validateMedicalCategoryUpdate(Long medicalCategoryCode, String medicalCategoryName) {
+		List<MasMedicalCategory> mCatList =  new ArrayList<MasMedicalCategory>();	
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+				Criteria criteria = session.createCriteria(MasMedicalCategory.class);
+				criteria.add(Restrictions.and(Restrictions.eq("medicalCategoryCode", medicalCategoryCode), Restrictions.eq("medicalCategoryName", medicalCategoryName)));
 				mCatList = criteria.list();
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -3466,14 +3709,6 @@ public class MasterDaoImpl implements MasterDao {
 		String result="";
 		try {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-			/*List<MasFrequency> freqList = new ArrayList<MasFrequency>();
-			Criteria criteria = session.createCriteria(MasFrequency.class);
-			criteria.add(Restrictions.eq("frequencyId", frequencyId));
-			freqList = criteria.list();
-			if(freqList!=null && freqList.size()>0) {
-				
-				for(int i=0;i<freqList.size();i++) {
-					Long freqId =  freqList.get(i).getFrequencyId();*/
 					
 					Object object = session.load(MasMedicalCategory.class, medicalCategoryId);
 					MasMedicalCategory masMedicalCategory = (MasMedicalCategory)object;
@@ -3523,18 +3758,6 @@ public class MasterDaoImpl implements MasterDao {
 		String result = "";	
 		try {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-			/*List<MasFrequency> frequencyList = new ArrayList<MasFrequency>();		
-			Criteria criteria = session.createCriteria(MasFrequency.class);
-			criteria.add(Restrictions.and(Restrictions.eq("frequencyId", frequencyId),
-										Restrictions.eq("frequencyCode", frequencyCode),
-										Restrictions.eq("status", status)));
-			
-			frequencyList = criteria.list();
-			
-			
-			for(int i=0;i<frequencyList.size();i++) {
-				Long freqId = frequencyList.get(i).getFrequencyId();*/
-				
 				Object object =  session.load(MasMedicalCategory.class, medicalCategoryId);
 				
 				MasMedicalCategory masMedicalCategory = (MasMedicalCategory)object;
@@ -3582,7 +3805,7 @@ public class MasterDaoImpl implements MasterDao {
 					  bgName = jsondata.get("bloodGroupName")+"%";
 					  if(jsondata.get("bloodGroupName").toString().length()>0 && !jsondata.get("bloodGroupName").toString().trim().equalsIgnoreCase("")) {
 							criteria.add(Restrictions.like("bloodGroupName", bgName));
-							//criteria.addOrder(Order.asc(jsondata.get("departmentName").toString()));
+							criteria.addOrder(Order.asc(jsondata.get("bloodGroupName").toString()));
 						}
 				 }
 				 List totalMatches = criteria.list();
@@ -3609,6 +3832,22 @@ public class MasterDaoImpl implements MasterDao {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
 				Criteria criteria = session.createCriteria(MasBloodGroup.class);
 				criteria.add(Restrictions.or(Restrictions.eq("bloodGroupCode", bloodGroupCode), Restrictions.eq("bloodGroupName", bloodGroupName)));
+				ecList = criteria.list();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				getHibernateUtils.getHibernateUtlis().CloseConnection();
+			}
+		return ecList;
+	}
+
+	@Override
+	public List<MasBloodGroup> validateBloodGroupUpdate(String bloodGroupCode, String bloodGroupName) {
+		List<MasBloodGroup> ecList =  new ArrayList<MasBloodGroup>();	
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+				Criteria criteria = session.createCriteria(MasBloodGroup.class);
+				criteria.add(Restrictions.and(Restrictions.eq("bloodGroupCode", bloodGroupCode), Restrictions.eq("bloodGroupName", bloodGroupName)));
 				ecList = criteria.list();
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -3646,15 +3885,6 @@ public class MasterDaoImpl implements MasterDao {
 		String result="";
 		try {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-			/*List<MasFrequency> freqList = new ArrayList<MasFrequency>();
-			Criteria criteria = session.createCriteria(MasFrequency.class);
-			criteria.add(Restrictions.eq("frequencyId", frequencyId));
-			freqList = criteria.list();
-			if(freqList!=null && freqList.size()>0) {
-				
-				for(int i=0;i<freqList.size();i++) {
-					Long freqId =  freqList.get(i).getFrequencyId();*/
-					
 					Object object = session.load(MasBloodGroup.class, bloodGroupId);
 					MasBloodGroup masBloodGroup = (MasBloodGroup)object;
 					
@@ -3703,18 +3933,6 @@ public class MasterDaoImpl implements MasterDao {
 		String result = "";	
 		try {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-			/*List<MasFrequency> frequencyList = new ArrayList<MasFrequency>();		
-			Criteria criteria = session.createCriteria(MasFrequency.class);
-			criteria.add(Restrictions.and(Restrictions.eq("frequencyId", frequencyId),
-										Restrictions.eq("frequencyCode", frequencyCode),
-										Restrictions.eq("status", status)));
-			
-			frequencyList = criteria.list();
-			
-			
-			for(int i=0;i<frequencyList.size();i++) {
-				Long freqId = frequencyList.get(i).getFrequencyId();*/
-				
 				Object object =  session.load(MasBloodGroup.class, bloodGroupId);
 				
 				MasBloodGroup masBloodGroup = (MasBloodGroup)object;
@@ -3762,7 +3980,7 @@ public class MasterDaoImpl implements MasterDao {
 					  sName = jsondata.get("sampleDescription")+"%";
 					  if(jsondata.get("sampleDescription").toString().length()>0 && !jsondata.get("sampleDescription").toString().trim().equalsIgnoreCase("")) {
 							criteria.add(Restrictions.like("sampleDescription", sName));
-							//criteria.addOrder(Order.asc(jsondata.get("departmentName").toString()));
+							criteria.addOrder(Order.asc(jsondata.get("sampleDescription").toString()));
 						}
 				 }
 				 List totalMatches = criteria.list();
@@ -3789,6 +4007,22 @@ public class MasterDaoImpl implements MasterDao {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
 				Criteria criteria = session.createCriteria(MasSample.class);
 				criteria.add(Restrictions.or(Restrictions.eq("sampleCode", sampleCode), Restrictions.eq("sampleDescription", sampleDescription)));
+				ecList = criteria.list();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				getHibernateUtils.getHibernateUtlis().CloseConnection();
+			}
+		return ecList;
+	}
+
+	@Override
+	public List<MasSample> validateSampleUpdate(String sampleCode, String sampleDescription) {
+		List<MasSample> ecList =  new ArrayList<MasSample>();	
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+				Criteria criteria = session.createCriteria(MasSample.class);
+				criteria.add(Restrictions.and(Restrictions.eq("sampleCode", sampleCode), Restrictions.eq("sampleDescription", sampleDescription)));
 				ecList = criteria.list();
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -3826,15 +4060,6 @@ public class MasterDaoImpl implements MasterDao {
 		String result="";
 		try {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-			/*List<MasFrequency> freqList = new ArrayList<MasFrequency>();
-			Criteria criteria = session.createCriteria(MasFrequency.class);
-			criteria.add(Restrictions.eq("frequencyId", frequencyId));
-			freqList = criteria.list();
-			if(freqList!=null && freqList.size()>0) {
-				
-				for(int i=0;i<freqList.size();i++) {
-					Long freqId =  freqList.get(i).getFrequencyId();*/
-					
 					Object object = session.load(MasSample.class, sampleId);
 					MasSample masSample = (MasSample)object;
 					
@@ -3842,7 +4067,7 @@ public class MasterDaoImpl implements MasterDao {
 					masSample.setSampleCode(sampleCode.toUpperCase());
 					masSample.setSampleDescription(sampleDescription.toUpperCase());			
 									
-					masSample.setLastChgBy(new Long(1));				
+					//masSample.setLastChgBy(new Long(1));				
 					long d = System.currentTimeMillis();
 					Date date = new Date(d);
 					//masMaritalStatus.setLastChgDate(date);
@@ -3883,17 +4108,6 @@ public class MasterDaoImpl implements MasterDao {
 		String result = "";	
 		try {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-			/*List<MasFrequency> frequencyList = new ArrayList<MasFrequency>();		
-			Criteria criteria = session.createCriteria(MasFrequency.class);
-			criteria.add(Restrictions.and(Restrictions.eq("frequencyId", frequencyId),
-										Restrictions.eq("frequencyCode", frequencyCode),
-										Restrictions.eq("status", status)));
-			
-			frequencyList = criteria.list();
-			
-			
-			for(int i=0;i<frequencyList.size();i++) {
-				Long freqId = frequencyList.get(i).getFrequencyId();*/
 				
 				Object object =  session.load(MasSample.class, sampleId);
 				
@@ -3922,7 +4136,45 @@ public class MasterDaoImpl implements MasterDao {
 	}
 
 	/****************************MAS UOM*********************************************************/
-	
+	@Override
+	public Map<String, List<MasUOM>> getAllUOM(JSONObject jsondata) {
+		Map<String, List<MasUOM>> map = new HashMap<String, List<MasUOM>>();
+		List<MasUOM> UOMList = new ArrayList<MasUOM>();
+		int pageNo=1;
+		int pageSize = 5;
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			Criteria criteria = session.createCriteria(MasUOM.class);
+			
+					
+			if( jsondata.get("PN")!=null)
+			 pageNo = Integer.parseInt(jsondata.get("PN").toString());
+					
+			String uName="";
+				 if (jsondata.has("UOMName"))
+				 {
+					  uName = jsondata.get("UOMName")+"%";
+					  if(jsondata.get("UOMName").toString().length()>0 && !jsondata.get("UOMName").toString().trim().equalsIgnoreCase("")) {
+							criteria.add(Restrictions.like("UOMName", uName));
+							criteria.addOrder(Order.asc(jsondata.get("UOMName").toString()));
+						}
+				 }
+				 List totalMatches = criteria.list();
+				 
+				 criteria.setFirstResult((pageSize) * (pageNo - 1));
+				 criteria.setMaxResults(pageSize);
+				 UOMList = criteria.list();
+			
+			
+		map.put("UOMList", UOMList);
+		map.put("totalMatches", totalMatches);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return map;
+	}
 
 	@Override
 	public List<MasUOM> validateUOM(String UOMCode, String UOMName) {
@@ -3931,6 +4183,22 @@ public class MasterDaoImpl implements MasterDao {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
 				Criteria criteria = session.createCriteria(MasUOM.class);
 				criteria.add(Restrictions.or(Restrictions.eq("UOMCode", UOMCode), Restrictions.eq("UOMName", UOMName)));
+				UOMList = criteria.list();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				getHibernateUtils.getHibernateUtlis().CloseConnection();
+			}
+		return UOMList;
+	}
+
+	@Override
+	public List<MasUOM> validateUOMUpdate(String UOMCode, String UOMName) {
+		List<MasUOM> UOMList =  new ArrayList<MasUOM>();	
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+				Criteria criteria = session.createCriteria(MasUOM.class);
+				criteria.add(Restrictions.and(Restrictions.eq("UOMCode", UOMCode), Restrictions.eq("UOMName", UOMName)));
 				UOMList = criteria.list();
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -3959,144 +4227,87 @@ public class MasterDaoImpl implements MasterDao {
 		}finally {
 			getHibernateUtils.getHibernateUtlis().CloseConnection();
 		}
+		
 		return result;
-}
-	/****************************Service Type*********************************************************/
-
-	@Override
-	public Map<String, List<MasServiceType>> getAllServiceType(JSONObject jsonObj) {
-		Map<String, List<MasServiceType>> mapObj = new HashMap<String, List<MasServiceType>>();
-		int pageSize = 5;
-		int pageNo = 1;
-
-		List totalMatches = new ArrayList();
-		List<MasServiceType> masServiceTypeList = new ArrayList<MasServiceType>();
-		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-		Criteria criteria = session.createCriteria(MasServiceType.class);
-
-		if (jsonObj.get("PN") != null)
-			pageNo = Integer.parseInt(jsonObj.get("PN").toString());
-
-		String stName = "";
-		if (jsonObj.has("serviceTypeName")) {
-			stName = jsonObj.get("serviceTypeName") + "%";
-			if (jsonObj.get("serviceTypeName").toString().length() > 0
-					&& !jsonObj.get("serviceTypeName").toString().trim().equalsIgnoreCase("")) {
-				criteria.add(Restrictions.like("serviceTypeName", stName));
-
-			}
-		}
-		criteria.addOrder(Order.asc("serviceTypeName"));
-
-		totalMatches = criteria.list();
-		criteria.setFirstResult((pageSize) * (pageNo - 1));
-		criteria.setMaxResults(pageSize);
-
-		masServiceTypeList = criteria.list();
-		getHibernateUtils.getHibernateUtlis().CloseConnection();
-		mapObj.put("masServiceTypeList", masServiceTypeList);
-		mapObj.put("totalMatches", totalMatches);
-		return mapObj;
 	}
 
 	@Override
-	public String updateServiceType(Long serviceTypeId, String serviceTypeName) {
-		String result = "";
+	public String updateUOMDetails(Long UOMId, String UOMCode, String UOMName) {
+		String result="";
 		try {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			Transaction transaction = session.beginTransaction();		
+					Object object = session.load(MasUOM.class, UOMId);
+					MasUOM masUOM = (MasUOM)object;
+					
+					
+					masUOM.setUOMCode(UOMCode.toUpperCase());
+					masUOM.setUOMName(UOMName.toUpperCase());			
+					System.out.println(masUOM.getUOMCode());
+					System.out.println(masUOM.getUOMName());			
+					//masUOM.setLastChgBy(new Long(1));				
+				/*
+				 * long d = System.currentTimeMillis(); Date date = new Date(d);
+				 */
+					//masMaritalStatus.setLastChgDate(date);
+					session.update(masUOM);
+					transaction.commit();				
+					result = "200";
+				//}
+			//}
+											
+		}catch(Exception e) {
+			
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return result;
+	}
 
-			if (serviceTypeId != 0) {
-				Object stObject = session.load(MasServiceType.class, serviceTypeId);
-				MasServiceType masServiceType = (MasServiceType) stObject;					
-				Transaction transaction = session.beginTransaction();				
-				masServiceType.setServiceTypeName(serviceTypeName);
-				masServiceType.setStatus("Y");			
-				Users users = new Users(); 
-				users.setUserId(new Long(1));
-				masServiceType.setUser(users);				
-				long d = System.currentTimeMillis();
-				Date date = new Date(d);
-				masServiceType.setLastChgDate(date);
-				session.merge(masServiceType);
+	@Override
+	public MasUOM checkUOM(String UOMCode) {
+		MasUOM mUOM = new MasUOM();
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			Criteria criteria = session.createCriteria(MasUOM.class);		
+			criteria.add(Restrictions.eq("UOMCode", UOMCode));
+			mUOM = (MasUOM)criteria.uniqueResult();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return mUOM;
+	}
+
+	@Override
+	public String updateUOMStatus(Long UOMId, String UOMCode, String status) {
+		String result = "";	
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+				
+				Object object =  session.load(MasUOM.class, UOMId);
+				
+				MasUOM masUOM = (MasUOM)object;
+				Transaction transaction = session.beginTransaction();
+				
+				
+				if(masUOM.getUOMStatus().equalsIgnoreCase("Y") || masUOM.getUOMStatus().equalsIgnoreCase("y")) {
+					masUOM.setUOMStatus("N");
+				}else if(masUOM.getUOMStatus().equalsIgnoreCase("N") || masUOM.getUOMStatus().equalsIgnoreCase("n")) {
+					masUOM.setUOMStatus("Y");
+				}else {
+					masUOM.setUOMStatus("Y");
+				}
+				session.update(masUOM);
 				transaction.commit();
 				result = "200";
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-
-			getHibernateUtils.getHibernateUtlis().CloseConnection();
-		}
-
-		return result;
-	}
-
-
-
-	@Override
-	public String addServiceType(MasServiceType masServiceType) {
-		String result = "";
-		try {
-			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-			Transaction tx = session.beginTransaction();
-			Criteria cr1=session.createCriteria(MasServiceType.class).add(Restrictions.eq("serviceTypeCode", masServiceType.getServiceTypeCode()));
-			Criteria cr2=session.createCriteria(MasServiceType.class).add(Restrictions.eq("serviceTypeName", masServiceType.getServiceTypeName()));
-			List<MasServiceType> masList1=cr1.list();
-			List<MasServiceType> masList2=cr2.list();
-			if(masList1 !=null && !masList1.isEmpty()){
-				result="serviceTypeCodeExist";
-			}
-			else if(masList2 !=null && !masList2.isEmpty()) {
-				result="serviceTypeNameExist";
-			}else {
-					Serializable savedObj = session.save(masServiceType);
-					tx.commit();
-					if (savedObj != null) {
-						result = "200";
-					} else {
-						result = "500";
-					}
-				}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
-		
-		finally {
-			getHibernateUtils.getHibernateUtlis().CloseConnection();
-		}
-		
-		return result;
-	}
-
-	@Override
-	public String updateServiceTypeStatus(Long serviceTypeId, String serviceTypeCode, String status) {
-		String result = "";
-		try {
-
-			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-
-			Object stObject = session.load(MasServiceType.class, serviceTypeId);
-			MasServiceType masServiceType = (MasServiceType) stObject;
-
-			Transaction transaction = session.beginTransaction();
-			if (masServiceType.getStatus().equalsIgnoreCase("Y")) {
-				masServiceType.setStatus("N");
-
-			} else if (masServiceType.getStatus().equalsIgnoreCase("N")) {
-				masServiceType.setStatus("Y");
-
-			} else {
-				masServiceType.setStatus("Y");	
-			}
-
-			session.update(masServiceType);
-			transaction.commit();
-			result = "200";
-			// }
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
+			//}
+			
+		}catch(Exception e) {
+			
+		}finally {
 			getHibernateUtils.getHibernateUtlis().CloseConnection();
 		}
 		return result;
@@ -4123,7 +4334,7 @@ public class MasterDaoImpl implements MasterDao {
 					  uName = jsondata.get("storeUnitName")+"%";
 					  if(jsondata.get("storeUnitName").toString().length()>0 && !jsondata.get("storeUnitName").toString().trim().equalsIgnoreCase("")) {
 							criteria.add(Restrictions.like("storeUnitName", uName));
-							//criteria.addOrder(Order.asc(jsondata.get("departmentName").toString()));
+							criteria.addOrder(Order.asc(jsondata.get("storeUnitName").toString()));
 						}
 				 }
 				 List totalMatches = criteria.list();
@@ -4145,6 +4356,22 @@ public class MasterDaoImpl implements MasterDao {
 
 	@Override
 	public List<MasStoreUnit> validateItemUnit( String storeUnitName) {
+		List<MasStoreUnit> itemUnitList =  new ArrayList<MasStoreUnit>();	
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+				Criteria criteria = session.createCriteria(MasStoreUnit.class);
+				criteria.add(Restrictions.eq("storeUnitName", storeUnitName));
+				itemUnitList = criteria.list();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				getHibernateUtils.getHibernateUtlis().CloseConnection();
+			}
+		return itemUnitList;
+	}
+
+	@Override
+	public List<MasStoreUnit> validateItemUnitUpdate( String storeUnitName) {
 		List<MasStoreUnit> itemUnitList =  new ArrayList<MasStoreUnit>();	
 		try {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
@@ -4187,14 +4414,6 @@ public class MasterDaoImpl implements MasterDao {
 		String result="";
 		try {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-			/*List<MasFrequency> freqList = new ArrayList<MasFrequency>();
-			Criteria criteria = session.createCriteria(MasFrequency.class);
-			criteria.add(Restrictions.eq("frequencyId", frequencyId));
-			freqList = criteria.list();
-			if(freqList!=null && freqList.size()>0) {
-				
-				for(int i=0;i<freqList.size();i++) {
-					Long freqId =  freqList.get(i).getFrequencyId();*/
 					
 					Object object = session.load(MasStoreUnit.class, storeUnitId);
 					MasStoreUnit masStoreUnit = (MasStoreUnit)object;
@@ -4243,18 +4462,7 @@ public class MasterDaoImpl implements MasterDao {
 		String result = "";	
 		try {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-			/*List<MasFrequency> frequencyList = new ArrayList<MasFrequency>();		
-			Criteria criteria = session.createCriteria(MasFrequency.class);
-			criteria.add(Restrictions.and(Restrictions.eq("frequencyId", frequencyId),
-										Restrictions.eq("frequencyCode", frequencyCode),
-										Restrictions.eq("status", status)));
 			
-			frequencyList = criteria.list();
-			
-			
-			for(int i=0;i<frequencyList.size();i++) {
-				Long freqId = frequencyList.get(i).getFrequencyId();*/
-				
 				Object object =  session.load(MasStoreUnit.class, storeUnitId);
 				
 				MasStoreUnit masStoreUnit = (MasStoreUnit)object;
@@ -4281,96 +4489,662 @@ public class MasterDaoImpl implements MasterDao {
 		return result;
 	}
 
+	/**----------------Users--------------------*/
+
 	@Override
-	public MasUOM checkUOM(String UOMCode) {
-		MasUOM mUOM = new MasUOM();
+	public List<Users> validateUsers(String loginName, String firstName) {
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		List<Users> usersList = new ArrayList<Users>();
+		Criteria criteria = session.createCriteria(Users.class);
+		criteria.add(Restrictions.or(Restrictions.eq("loginName", loginName), Restrictions.eq("firstName", firstName)));
+		usersList = criteria.list();
+		getHibernateUtils.getHibernateUtlis().CloseConnection();
+		return usersList;
+	}
+
+	@Override
+	public List<Users> validateUsersUpdate(String loginName, String firstName) {
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		List<Users> usersList = new ArrayList<Users>();
+		Criteria criteria = session.createCriteria(Users.class);
+		criteria.add(Restrictions.and(Restrictions.eq("loginName", loginName), Restrictions.eq("firstName", firstName)));
+		usersList = criteria.list();
+		getHibernateUtils.getHibernateUtlis().CloseConnection();
+		return usersList;
+	}
+
+	@Override
+	public String addUsers(Users users) {
+		String result="";
 		try {
-			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-			Criteria criteria = session.createCriteria(MasUOM.class);		
-			criteria.add(Restrictions.eq("UOMCode", UOMCode));
-			mUOM = (MasUOM)criteria.uniqueResult();
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();	
+			
+			Transaction tx = session.beginTransaction();
+			Serializable savedObj =  session.save(users);
+			tx.commit();
+			if(savedObj!=null) {
+				result = "200";
+			}else {
+				result = "500";
+			}
 			
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {
 			getHibernateUtils.getHibernateUtlis().CloseConnection();
 		}
-		return mUOM;
+		return result;
 	}
 
 	@Override
-	public String updateIdealWeight(JSONObject jsonObject) {
-		String result="";
-		long d = System.currentTimeMillis();
-		Date lastChgDate = new Date(d);
-		try {
-			if (jsonObject != null) {
-				List<MasIdealWeight> masIdealWeightsList = new ArrayList<MasIdealWeight>();
-				Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
-				//Criteria criteria = session.createCriteria(MasIdealWeight.class);
-				String hStatus = "";
-				Long idealWtId;
-				if (jsonObject.has("idealWeightId")) {
-					String selectAge = jsonObject.get("selectAge").toString();
-					System.out.println("selectAge :: "+selectAge);
-					String[] ageArray = JavaUtils.getSplitString(selectAge);
-					String fromAge = ageArray[0];
-					String toAge = ageArray[1];
-					System.out.println(fromAge +"== "+toAge);
-					
-					idealWtId = Long.parseLong(jsonObject.get("idealWeightId").toString());
-						/*criteria.add(Restrictions.eq("idealWeightId", idealWtId));
-						masIdealWeightsList = criteria.list();*/
+	public Users checkUsers(String loginName) {
+		
+		Users users = new Users();	
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		Criteria criteria =  session.createCriteria(Users.class);
+		criteria.add(Restrictions.eq("loginName", loginName));
+		users = (Users)criteria.uniqueResult();
+		getHibernateUtils.getHibernateUtlis().CloseConnection();
+		
+		return users;
+	}
 
-					/*for (int i = 0; i < masIdealWeightsList.size(); i++) {
-						Long idealWeightId = masIdealWeightsList.get(i).getIdealWeightId();*/
-
-						Object object = session.load(MasIdealWeight.class, idealWtId);
-						MasIdealWeight idealWeight = (MasIdealWeight) object;
-
-						Transaction transaction = session.beginTransaction();
-
-						if (jsonObject.has("status")) {							
-							hStatus = jsonObject.get("status").toString();							
-							if (hStatus.equalsIgnoreCase("active") || hStatus.equalsIgnoreCase("inactive")) {
-								if (hStatus.equalsIgnoreCase("active"))
-									idealWeight.setStatus("N");
-								else
-									idealWeight.setStatus("Y");
-								session.update(idealWeight);
-								transaction.commit();
-								result = "200";
-							} else {
-								
-								idealWeight.setGenderId(Long.parseLong(jsonObject.get("genderId").toString()));
-								idealWeight.setFromAge(fromAge);
-								idealWeight.setToAge(toAge);
-								idealWeight.setFromHeight(Long.parseLong(jsonObject.get("fromHeight").toString()));
-								idealWeight.setToHeight(Long.parseLong(jsonObject.get("toHeight").toString()));
-								idealWeight.setWeight(Long.parseLong(jsonObject.get("weight").toString()));
-
-								/*Users user = new Users();
-								user.setUserId(new Long(1));
-								idealWeight.setUser(user);*/
-
-								// masNursingCare.setLastChgBy(new Long(1));
-								idealWeight.setLastChgDate(lastChgDate);
-								session.update(idealWeight);
-								transaction.commit();
-								result = "200";
-							}
-
+	@Override
+	public Map<String, List<Users>>  getAllUsers(JSONObject jsonObj){
+		Map<String, List<Users>> mapObj = new HashMap<String, List<Users>>();
+		int pageSize = 5;
+		int pageNo=1;
+		
+		List totalMatches = new ArrayList();
+		 
+		List<Users> usersList = new ArrayList<Users>();
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			Criteria criteria = session.createCriteria(Users.class);				
+			if( jsonObj.get("PN")!=null)
+			 pageNo = Integer.parseInt(jsonObj.get("PN").toString());		
+			String loginName="";
+				 if (jsonObj.has("loginName"))
+				 {
+					  loginName = jsonObj.get("loginName")+"%";
+					  if(jsonObj.get("loginName").toString().length()>0 && !jsonObj.get("loginName").toString().trim().equalsIgnoreCase("")) {
+							criteria.add(Restrictions.like("loginName", loginName));
 						}
+				 }	
+				 
+			ProjectionList projectionList = Projections.projectionList();
+			projectionList.add(Projections.property("userId").as("userId"));
+			projectionList.add(Projections.property("loginName").as("loginName"));
+			projectionList.add(Projections.property("firstName").as("firstName"));
+			projectionList.add(Projections.property("status").as("status"));
+			projectionList.add(Projections.property("masHospital").as("masHospital"));
+			criteria.addOrder(Order.asc("loginName"));
+			
+			totalMatches = criteria.list();
+			criteria.setFirstResult((pageSize) * (pageNo - 1));
+			criteria.setProjection(projectionList).setMaxResults(pageSize);
+			usersList = criteria.setResultTransformer(new AliasToBeanResultTransformer(Users.class)).list();
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+			mapObj.put("usersList", usersList);
+			mapObj.put("totalMatches", totalMatches);
+			return mapObj;
+		}
+		
+		
+		
 
-					//}
+
+	@Override
+	public List<Users> getUsers(String loginName){
+		Object[] status = new Object[] {"y"};
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		List<Users> usersList = new ArrayList<Users>();
+		Criteria criteria = session.createCriteria(Users.class);
+		if(loginName.length()>0 && !loginName.trim().equalsIgnoreCase("")) {
+			
+			criteria.add(Restrictions.like("loginName", loginName));
+		}
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.property("userId").as("userId"));
+		projectionList.add(Projections.property("loginName").as("loginName"));
+		projectionList.add(Projections.property("firstName").as("firstName"));
+		projectionList.add(Projections.property("status").as("status"));
+		
+		criteria.setProjection(projectionList);
+		
+		usersList = criteria.setResultTransformer(new AliasToBeanResultTransformer(Users.class)).list();
+		getHibernateUtils.getHibernateUtlis().CloseConnection();
+		return usersList;
+	}
+
+	@Override
+	public String updateUsers(Long userId, String loginName, String firstName, Long hospitalId) {	
+		String result="";
+		try {
+			
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			Users users =  (Users)session.get(Users.class, userId);
+				
+			
+				
+				if(users != null)
+				{
+				
+				Transaction transaction = session.beginTransaction();
+				users.setLoginName(loginName);
+				users.setFirstName(firstName);
+				users.setStatus("y");
+				//users.getMasHospital().getHospitalName();
+				//Users usr = new Users();
+				//usr.setUserId(new Long(1)); // userId will be fetch from session
+				//masRank.setLastChgBy(new Long(1));
+				MasHospital hospital = new MasHospital();
+				hospital.setHospitalId(hospitalId);
+				
+				//users.setMasHospital(hospital);
+				
+				long d = System.currentTimeMillis();
+				Date date = new Date(d);
+				
+				//users.setLastChgDate(date);
+				//String lastChgTime = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
+				session.update(users);
+				
+				transaction.commit();
+				
+				result="200";	
+				}	
+				else {
+					session.update("msg","UserId dose not found");
 				}
-			}
-
-		} catch (Exception e) {
+				
+			
+		}catch(Exception e) {
 			e.printStackTrace();
-		} finally {
+		}finally {
+		
+		
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		
+		
+		return result;
+	}
+
+	@Override
+	public String updateUsersStatus(Long userId,String loginName,String status) {
+		//Object[] status = new Object[] {"y"};
+		String result = "";
+		try {
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		List<Users> userstatusList = new ArrayList<Users>();
+		Criteria criteria = session.createCriteria(Users.class,"users");
+		criteria.add(Restrictions.and(Restrictions.eq("userId", userId),Restrictions.eq("loginName", loginName),Restrictions.eq("users.status", status)));
+		//criteria.add(Restrictions.in("mascommand.status", status));
+		userstatusList = criteria.list();
+			for(int i=0;i<userstatusList.size();i++) {
+				Long userId1 = userstatusList.get(i).getUserId();
+				
+				Object usersObject =  session.load(Users.class, userId1);
+				Users users = (Users)usersObject;
+				
+				Transaction transaction = session.beginTransaction();
+				if(users.getStatus().equalsIgnoreCase("y")){
+					users.setStatus("n");
+					//result="400";
+				}else if(users.getStatus().equalsIgnoreCase("n")) {
+					users.setStatus("y");
+					//result="200";
+				}else {
+					users.setStatus("y");
+				}
+				
+				session.update(users);
+				transaction.commit();
+				result="200";
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
 			getHibernateUtils.getHibernateUtlis().CloseConnection();
 		}
 		return result;
 	}
+
+	@Override
+	public List<MasHospital> getHospitalList() {
+		List<MasHospital> hospitalList = new ArrayList<MasHospital>();
+		try {	 
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		Criteria criteria =  session.createCriteria(MasHospital.class);
+		
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.property("hospitalId").as("hospitalId"));		
+		projectionList.add(Projections.property("hospitalName").as("hospitalName"));
+		criteria.setProjection(projectionList);
+		
+		hospitalList = criteria.setResultTransformer(new AliasToBeanResultTransformer(MasHospital.class)).list();
+		
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return hospitalList;
+	}
+
+	/**----------------Mas MainChargecode--------------------*/
+
+	@Override
+	public List<MasMainChargecode> validateMainChargecode(String mainChargecodeCode, String mainChargecodeName) {
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		List<MasMainChargecode> mainChargecodeList = new ArrayList<MasMainChargecode>();
+		Criteria criteria = session.createCriteria(MasMainChargecode.class);
+		criteria.add(Restrictions.or(Restrictions.eq("mainChargecodeCode", mainChargecodeCode), Restrictions.eq("mainChargecodeName", mainChargecodeName)));
+		mainChargecodeList = criteria.list();
+		getHibernateUtils.getHibernateUtlis().CloseConnection();
+		return mainChargecodeList;
+	}
+
+	@Override
+	public List<MasMainChargecode> validateMainChargecodeUpdate(String mainChargecodeCode, String mainChargecodeName) {
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		List<MasMainChargecode> mainChargecodeList = new ArrayList<MasMainChargecode>();
+		Criteria criteria = session.createCriteria(MasMainChargecode.class);
+		criteria.add(Restrictions.and(Restrictions.eq("mainChargecodeCode", mainChargecodeCode), Restrictions.eq("mainChargecodeName", mainChargecodeName)));
+		mainChargecodeList = criteria.list();
+		getHibernateUtils.getHibernateUtlis().CloseConnection();
+		return mainChargecodeList;
+	}
+
+	@Override
+	public String addMainChargecode(MasMainChargecode mainChargecode) {
+		String result="";
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();	
+			
+			Transaction tx = session.beginTransaction();
+			Serializable savedObj =  session.save(mainChargecode);
+			tx.commit();
+			if(savedObj!=null) {
+				result = "200";
+			}else {
+				result = "500";
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return result;
+	}
+
+	@Override
+	public MasMainChargecode checkMainChargecode(String mainChargecodeCode) {
+		
+		MasMainChargecode mainChargecode = new MasMainChargecode();	
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		Criteria criteria =  session.createCriteria(MasMainChargecode.class);
+		criteria.add(Restrictions.eq("mainChargecodeCode", mainChargecodeCode));
+		mainChargecode = (MasMainChargecode)criteria.uniqueResult();
+		getHibernateUtils.getHibernateUtlis().CloseConnection();
+		
+		return mainChargecode;
+	}
+
+	@Override
+	public Map<String, List<MasMainChargecode>>  getAllMainChargecode(JSONObject jsonObj){
+		Map<String, List<MasMainChargecode>> mapObj = new HashMap<String, List<MasMainChargecode>>();
+		int pageSize = 5;
+		int pageNo=1;
+		
+		List totalMatches = new ArrayList();
+		 
+		List<MasMainChargecode> mainChargecodeList = new ArrayList<MasMainChargecode>();
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			Criteria criteria = session.createCriteria(MasMainChargecode.class);				
+			if( jsonObj.get("PN")!=null)
+			 pageNo = Integer.parseInt(jsonObj.get("PN").toString());		
+			String mainChargecodeCode="";
+				 if (jsonObj.has("mainChargecodeCode"))
+				 {
+					 mainChargecodeCode = jsonObj.get("mainChargecodeCode")+"%";
+					  if(jsonObj.get("mainChargecodeCode").toString().length()>0 && !jsonObj.get("mainChargecodeCode").toString().trim().equalsIgnoreCase("")) {
+							criteria.add(Restrictions.like("mainChargecodeCode", mainChargecodeCode));
+						}
+				 }	
+				 
+			ProjectionList projectionList = Projections.projectionList();
+			projectionList.add(Projections.property("mainChargecodeId").as("mainChargecodeId"));
+			projectionList.add(Projections.property("mainChargecodeCode").as("mainChargecodeCode"));
+			projectionList.add(Projections.property("mainChargecodeName").as("mainChargecodeName"));
+			projectionList.add(Projections.property("status").as("status"));
+			projectionList.add(Projections.property("masDepartment").as("masDepartment"));
+			criteria.addOrder(Order.asc("mainChargecodeCode"));
+			
+			totalMatches = criteria.list();
+			criteria.setFirstResult((pageSize) * (pageNo - 1));
+			criteria.setProjection(projectionList).setMaxResults(pageSize);
+			mainChargecodeList = criteria.setResultTransformer(new AliasToBeanResultTransformer(MasMainChargecode.class)).list();
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+			mapObj.put("mainChargecodeList", mainChargecodeList);
+			mapObj.put("totalMatches", totalMatches);
+			return mapObj;
+		}
+		
+		
+		
+
+
+	@Override
+	public List<MasMainChargecode> getMainChargecode(String mainChargecodeCode){
+		Object[] status = new Object[] {"y"};
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		List<MasMainChargecode> mainChargecodeList = new ArrayList<MasMainChargecode>();
+		Criteria criteria = session.createCriteria(MasMainChargecode.class);
+		if(mainChargecodeCode.length()>0 && !mainChargecodeCode.trim().equalsIgnoreCase("")) {
+			
+			criteria.add(Restrictions.like("mainChargecodeCode", mainChargecodeCode));
+		}
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.property("mainChargecodeId").as("mainChargecodeId"));
+		projectionList.add(Projections.property("MainChargecodeCode").as("mainChargecodeCode"));
+		projectionList.add(Projections.property("mainChargecodeName").as("mainChargecodeName"));
+		projectionList.add(Projections.property("status").as("status"));
+		
+		criteria.setProjection(projectionList);
+		
+		mainChargecodeList = criteria.setResultTransformer(new AliasToBeanResultTransformer(MasMainChargecode.class)).list();
+		getHibernateUtils.getHibernateUtlis().CloseConnection();
+		return mainChargecodeList;
+	}
+
+	@Override
+	public String updateMainChargecode(Long mainChargecodeId, String mainChargecodeCode, String mainChargecodeName, Long departmentId) {	
+		String result="";
+		try {
+			
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			MasMainChargecode mainChargecode =  (MasMainChargecode)session.get(MasMainChargecode.class, mainChargecodeId);
+				
+			
+				
+				if(mainChargecode != null)
+				{
+				
+				Transaction transaction = session.beginTransaction();
+				mainChargecode.setMainChargecodeCode(mainChargecodeCode);
+				mainChargecode.setMainChargecodeName(mainChargecodeName);
+				mainChargecode.setStatus("y");
+				mainChargecode.getMasDepartment().getDepartmentName();
+				//Users usr = new Users();
+				//usr.setUserId(new Long(1)); // userId will be fetch from session
+				//masRank.setLastChgBy(new Long(1));
+				MasDepartment department = new MasDepartment();
+				department.setDepartmentId(departmentId);
+				
+				mainChargecode.setMasDepartment(department);
+				
+				long d = System.currentTimeMillis();
+				Date date = new Date(d);
+				
+				//users.setLastChgDate(date);
+				//String lastChgTime = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
+				session.update(mainChargecode);
+				
+				transaction.commit();
+				
+				result="200";	
+				}	
+				else {
+					session.update("msg","mainChargecodeId dose not found");
+				}
+				
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+		
+		
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		
+		
+		return result;
+	}
+
+	@Override
+	public String updateMainChargecodeStatus(Long mainChargecodeId,String mainChargecodeCode,String status) {
+		//Object[] status = new Object[] {"y"};
+		String result = "";
+		try {
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		List<MasMainChargecode> mainChargecodeStatusList = new ArrayList<MasMainChargecode>();
+		Criteria criteria = session.createCriteria(MasMainChargecode.class,"mainChargecode");
+		criteria.add(Restrictions.and(Restrictions.eq("mainChargecodeId", mainChargecodeId),Restrictions.eq("mainChargecodeCode", mainChargecodeCode),Restrictions.eq("mainChargecodeCode.status", status)));
+		//criteria.add(Restrictions.in("mascommand.status", status));
+		mainChargecodeStatusList = criteria.list();
+			for(int i=0;i<mainChargecodeStatusList.size();i++) {
+				Long mainChargecodeId1 = mainChargecodeStatusList.get(i).getMainChargecodeId();
+				
+				Object mainChargecodeCodeObject =  session.load(MasMainChargecode.class, mainChargecodeId1);
+				MasMainChargecode mainChargecode = (MasMainChargecode)mainChargecodeCodeObject;
+				
+				Transaction transaction = session.beginTransaction();
+				if(mainChargecode.getStatus().equalsIgnoreCase("y")){
+					mainChargecode.setStatus("n");
+					//result="400";
+				}else if(mainChargecode.getStatus().equalsIgnoreCase("n")) {
+					mainChargecode.setStatus("y");
+					//result="200";
+				}else {
+					mainChargecode.setStatus("y");
+				}
+				
+				session.update(mainChargecode);
+				transaction.commit();
+				result="200";
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return result;
+	}
+
+	@Override
+	public List<MasDepartment> getDepartmentsList() {
+		List<MasDepartment> departmentList = new ArrayList<MasDepartment>();
+		try {	 
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		Criteria criteria =  session.createCriteria(MasDepartment.class);
+		
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.property("departmentId").as("departmentId"));		
+		projectionList.add(Projections.property("departmentName").as("departmentName"));
+		criteria.setProjection(projectionList);
+		
+		departmentList = criteria.setResultTransformer(new AliasToBeanResultTransformer(MasDepartment.class)).list();
+		
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return departmentList;
+	}
+	
+	/****************************MAS ROLE*********************************************************/
+	@Override
+	public Map<String, List<MasRole>> getAllRole(JSONObject jsondata) {
+		Map<String, List<MasRole>> map = new HashMap<String, List<MasRole>>();
+		List<MasRole> roleList = new ArrayList<MasRole>();
+		int pageNo=0;
+		int pageSize=5;
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			Criteria criteria = session.createCriteria(MasRole.class);
+			
+					
+			if( jsondata.get("PN")!=null)
+			 pageNo = Integer.parseInt(jsondata.get("PN").toString());
+					
+			String rName="";
+				 if (jsondata.has("roleName"))
+				 {
+					  rName = jsondata.get("roleName")+"%";
+					  if(jsondata.get("roleName").toString().length()>0 && !jsondata.get("roleName").toString().trim().equalsIgnoreCase("")) {
+							criteria.add(Restrictions.like("roleName", rName));
+							criteria.addOrder(Order.asc(jsondata.get("roleName").toString()));
+						}
+				 }
+				 List totalMatches = criteria.list();
+				 
+				 criteria.setFirstResult((pageSize) * (pageNo - 1));
+				 criteria.setMaxResults(pageSize);
+				 roleList = criteria.list();
+			
+			
+		map.put("roleList", roleList);
+		map.put("totalMatches", totalMatches);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return map;
+	}
+
+	@Override
+	public List<MasRole> validateRole(String roleCode, String roleName) {
+		List<MasRole> rList =  new ArrayList<MasRole>();	
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+				Criteria criteria = session.createCriteria(MasRole.class);
+				criteria.add(Restrictions.or(Restrictions.eq("roleCode", roleCode), Restrictions.eq("roleName", roleName)));
+				rList = criteria.list();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				getHibernateUtils.getHibernateUtlis().CloseConnection();
+			}
+		return rList;
+	}
+
+	@Override
+	public List<MasRole> validateRoleUpdate(String roleCode, String roleName) {
+		List<MasRole> rList =  new ArrayList<MasRole>();	
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+				Criteria criteria = session.createCriteria(MasRole.class);
+				criteria.add(Restrictions.and(Restrictions.eq("roleCode", roleCode), Restrictions.eq("roleName", roleName)));
+				rList = criteria.list();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				getHibernateUtils.getHibernateUtlis().CloseConnection();
+			}
+		return rList;
+	}
+
+	@Override
+	public String addRole(MasRole masRole) {
+		String result="";		
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			Transaction tx = session.beginTransaction();
+			Serializable savedObj =  session.save(masRole);
+			tx.commit();
+			if(savedObj!=null) {
+				result="200";
+			}else {
+				result = "500";
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		
+		return result;
+	}
+
+	@Override
+	public String updateRoleDetails(Long roleId, String roleCode, String roleName) {
+		String result="";
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+					
+					Object object = session.load(MasRole.class, roleId);
+					MasRole masRole = (MasRole)object;
+					
+					Transaction transaction = session.beginTransaction();
+					masRole.setRoleCode(roleCode.toString().toUpperCase());
+					masRole.setRoleName(roleName.toUpperCase());			
+									
+					//masEmployeeCategory.setLastChgBy(new Long(1));				
+					long d = System.currentTimeMillis();
+					Date date = new Date(d);
+					//masMaritalStatus.setLastChgDate(date);
+					session.update(masRole);
+					transaction.commit();
+					
+					result = "200";
+				//}
+			//}
+											
+		}catch(Exception e) {
+			
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return result;
+	}
+
+	@Override
+	public MasRole checkRole(String roleCode) {
+		MasRole mRole = new MasRole();
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			Criteria criteria = session.createCriteria(MasRole.class);		
+			criteria.add(Restrictions.eq("roleCode", roleCode));
+			mRole = (MasRole)criteria.uniqueResult();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return mRole;
+	}
+
+	@Override
+	public String updateRoleStatus(Long roleId, String roleCode, String status) {
+		String result = "";	
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+				Object object =  session.load(MasRole.class, roleId);
+				
+				MasRole masRole = (MasRole)object;
+				Transaction transaction = session.beginTransaction();
+				
+				
+				if(masRole.getStatus().equalsIgnoreCase("Y") || masRole.getStatus().equalsIgnoreCase("y")) {
+					masRole.setStatus("N");
+				}else if(masRole.getStatus().equalsIgnoreCase("N") || masRole.getStatus().equalsIgnoreCase("n")) {
+					masRole.setStatus("Y");
+				}else {
+					masRole.setStatus("Y");
+				}
+				session.update(masRole);
+				transaction.commit();
+				result = "200";
+			//}
+			
+		}catch(Exception e) {
+			
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return result;
+	}
+	
 }

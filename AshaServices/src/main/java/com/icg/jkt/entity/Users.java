@@ -1,27 +1,17 @@
 package com.icg.jkt.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
+import javax.persistence.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -43,6 +33,22 @@ public class Users implements Serializable {
 
 	@Column(name="COUNT_USER")
 	private BigDecimal countUser;
+
+	public MasHospital getMasHospital() {
+		return masHospital;
+	}
+
+	public void setMasHospital(MasHospital masHospital) {
+		this.masHospital = masHospital;
+	}
+
+	public void setServiceNo(String serviceNo) {
+		this.serviceNo = serviceNo;
+	}
+
+	public void setMasHospitals(List<MasHospital> masHospitals) {
+		this.masHospitals = masHospitals;
+	}
 
 	@Column(name="EMAIL_ADDRESS")
 	private String emailAddress;
@@ -80,6 +86,9 @@ public class Users implements Serializable {
 	@Column(name="USER_NAME")
 	private String userName;
 	
+	@Column(name="SERVICE_NO")
+	private String serviceNo;
+
 	@OneToMany(mappedBy="user")
 	@JsonBackReference
 	private List<MasAppointmentType> masAppointmentSession;
@@ -108,6 +117,20 @@ public class Users implements Serializable {
 	@JsonBackReference
 	private List<MasHospital> masHospitals;
 	
+	
+	@OneToMany(mappedBy="user")
+	@JsonBackReference
+	private List<AppSetup> appSetup;
+	
+	
+	public List<AppSetup> getAppSetup() {
+		return appSetup;
+	}
+
+	public void setAppSetup(List<AppSetup> appSetup) {
+		this.appSetup = appSetup;
+	}
+
 	//bi-directional many-to-one association to MasNursingCare
 	@OneToMany(mappedBy="user")
 	@JsonBackReference
@@ -121,11 +144,13 @@ public class Users implements Serializable {
 	@OneToMany(mappedBy="user")	
 	@JsonBackReference
 	private List<TemplateApplication> templateApplications; 
-			
+	
+	
+
 	//bi-directional many-to-one association to MasEmployee
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="EMPLOYEE_ID")
-	private MasEmployee masEmployee;
+	@JoinColumn(name="HOSPITAL_ID")
+	private MasHospital masHospital;
 
 	public Users() {
 	}
@@ -313,7 +338,7 @@ public class Users implements Serializable {
 		return this.masHospitals;
 	}
 
-	public void setMasHospitals(List<MasHospital> masHospitals) {
+	public void setMasHospitals(MasHospital masHospital) {
 		this.masHospitals = masHospitals;
 	}
 
@@ -331,13 +356,12 @@ public class Users implements Serializable {
 		return masHospital;
 	}
 
-	public MasEmployee getMasEmployee() {
-		return this.masEmployee;
-	}
-
-	public void setMasEmployee(MasEmployee masEmployee) {
-		this.masEmployee = masEmployee;
-	}
+	/*
+	 * public MasEmployee getMasEmployee() { return this.masEmployee; }
+	 * 
+	 * public void setMasEmployee(MasEmployee masEmployee) { this.masEmployee =
+	 * masEmployee; }
+	 */
 	
 	public List<MasAppointmentType> getMasAppointmentSession() {
 		return masAppointmentSession;
@@ -361,6 +385,10 @@ public class Users implements Serializable {
 
 	public void setMasDisposal(List<MasDisposal> masDisposal) {
 		this.masDisposal = masDisposal;
+	}
+	
+	public String getServiceNo() {
+		return serviceNo;
 	}
 
 	public List<MasEmpanelledHospital> getEmpanelledHospitals() {

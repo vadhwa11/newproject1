@@ -155,7 +155,7 @@
 				 'url':jQuery('#applicationUrl').val()
 				 
 			} 
-		alert("params add: "+JSON.stringify(params)); 
+		//alert("params add: "+JSON.stringify(params)); 
 		 jQuery.ajax({
 			 crossOrigin: true,
 			    method: "POST",

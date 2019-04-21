@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.http.MediaType;
 import com.icg.jkt.service.UserManagementService;
 
 @RequestMapping("/user")
@@ -111,5 +111,62 @@ public class UserManagementController {
 	public String addTemplateApplication(@RequestBody Map<String, Object> requestObject, HttpServletRequest request, HttpServletResponse response) {
 		JSONObject jsonObject = new JSONObject(requestObject);
 		return userManagementService.addTemplateApplication(jsonObject, request, response);
+	}
+	
+	/*************************************
+	 * Role Rights
+	 ***************************************************************/
+	/**
+	 * 
+	 * @param Roles Right
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	
+	@RequestMapping(value = "/getRoleRightsList", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getRoleRightList(HttpServletRequest request, HttpServletResponse response) {
+		String roleList = "";
+		roleList = userManagementService.getRoleRightsList(request, response);
+		return roleList;
+	}
+	
+	@RequestMapping(value = "/getTemplateNameList", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getTemplateNameList(HttpServletRequest request, HttpServletResponse response) {
+		String tempNameList = "";
+		tempNameList = userManagementService.getTemplateNameList(request, response);
+		return tempNameList;
+	}
+	
+	
+	@RequestMapping(value = "/getAssingedTemplateNameList", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getAssingedTemplateNameList(@RequestBody Map<String, Object> roleId, HttpServletRequest request, HttpServletResponse response) {
+		String tempAssignNameList = "";
+		JSONObject json = new JSONObject(roleId);
+		tempAssignNameList = userManagementService.getAssingedTemplateNameList(json,request, response);
+		System.out.println();
+		return tempAssignNameList;
+	}
+	
+
+	@RequestMapping(value = "/saveRolesRight", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String saveRolesRight(@RequestBody Map<String, Object> command, HttpServletRequest request,
+			HttpServletResponse response) {
+		String saveRole = "";
+		JSONObject json = new JSONObject(command);
+		saveRole = userManagementService.saveRolesRight(json, request, response);
+		return saveRole;
+	}
+	
+	@RequestMapping(value="/getApplicationNameFormsAndReport", method=RequestMethod.POST,produces="application/json", consumes="application/json")
+	public String getApplicationNameFormsAndReport(@RequestBody Map<String, Object> requestObject, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		return userManagementService.getApplicationNameFormsAndReport(jsonObject, request, response);
+	}
+	
+	@RequestMapping(value="/updateAddFormsAndReport", method=RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE }, consumes={ MediaType.APPLICATION_JSON_VALUE})
+	public String updateAddFormsAndReport(@RequestBody Map<String, Object> requestObject, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		return userManagementService.updateAddFormsAndReport(jsonObject, request, response);
 	}
 }

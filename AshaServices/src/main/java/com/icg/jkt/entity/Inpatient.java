@@ -5,6 +5,10 @@ import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.sql.Timestamp;
@@ -17,6 +21,7 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="Inpatient.findAll", query="SELECT i FROM Inpatient i")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Inpatient implements Serializable {
 	private static final long serialVersionUID = 1L;
 

@@ -10,7 +10,9 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
 
 import com.icg.jkt.entity.MasApplication;
+import com.icg.jkt.entity.MasRole;
 import com.icg.jkt.entity.MasTemplate;
+import com.icg.jkt.entity.RoleTemplate;
 import com.icg.jkt.entity.TemplateApplication;
 import com.icg.jkt.entity.UserApplication;
 
@@ -35,5 +37,12 @@ public interface UserManagementDao {
 	String updateUserApplicationStatus(long appID);
 	Map<String, Object> getAllApplicationAndTemplates(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
 	String addTemplateApplication(TemplateApplication templateApplication);
+	
+	List<MasRole> getRoleRightsList();
+	List<MasTemplate> getTemplateNameList();
+	List<RoleTemplate> getAssingedTemplateNameList(JSONObject json);
+	String saveRolesRight(JSONObject json);
+	List<MasApplication> getApplicationNameFormsAndReport(JSONObject jsonObject);
+	String updateAddFormsAndReport(MasApplication masApplication);
 
 }

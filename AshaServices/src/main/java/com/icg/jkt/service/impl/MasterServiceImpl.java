@@ -32,12 +32,14 @@ import com.icg.jkt.entity.MasFrequency;
 import com.icg.jkt.entity.MasHospital;
 import com.icg.jkt.entity.MasIcd;
 import com.icg.jkt.entity.MasIdealWeight;
+import com.icg.jkt.entity.MasMainChargecode;
 import com.icg.jkt.entity.MasMaritalStatus;
 import com.icg.jkt.entity.MasMedicalCategory;
 import com.icg.jkt.entity.MasNursingCare;
 import com.icg.jkt.entity.MasRank;
 import com.icg.jkt.entity.MasRelation;
 import com.icg.jkt.entity.MasReligion;
+import com.icg.jkt.entity.MasRole;
 import com.icg.jkt.entity.MasSample;
 import com.icg.jkt.entity.MasServiceType;
 import com.icg.jkt.entity.MasState;
@@ -1121,458 +1123,6 @@ public class MasterServiceImpl implements MasterService {
 		return json.toString();
 	}
 
-	/*-------------------MAS RANK----------------------*/
-	@Override
-	public String addRank(JSONObject json, HttpServletRequest request, HttpServletResponse response) {
-
-		System.out.println("111" + json.get("rankCode"));
-		System.out.println("113" + json.get("rankName"));
-		System.out.println("112" + json.get("employeeCategoryId"));
-
-		JSONObject jsonObj = new JSONObject();
-		MasRank masRank = new MasRank();
-
-		if (!json.equals(null)) {
-
-			if (json.get("rankCode") == null) {
-				return "{\"status\":\"0\",\"msg\":\"rankCode is not contain in json data or it will be null or blank please check\"}";
-			}
-			if (json.get("rankName") == null) {
-				return "{\"status\":\"0\",\"msg\":\"rankName is not contain in json data or it will be null or blank please check\"}";
-			}
-
-			else {
-				masRank.setRankCode(json.get("rankCode").toString().toUpperCase());
-				masRank.setRankName(json.get("rankName").toString().toUpperCase());
-
-				long d = System.currentTimeMillis();
-				Date date = new Date(d);
-				masRank.setLastChgDate(date);
-
-				String lastChgTime = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
-
-				// masRank.setLastChgTime(lastChgTime);
-				// Users usr = new Users();
-				// usr.setUserId(new Long(1)); // userId will be fetch from session
-				// masRank.setLastChgBy(new Long(1));
-				masRank.setStatus("y");
-
-				MasEmployeeCategory employeeCategory = new MasEmployeeCategory();
-				employeeCategory.setEmployeeCategoryId(Long.parseLong(json.get("employeeCategoryId").toString()));
-				masRank.setMasEmployeeCategory(employeeCategory);
-
-				List<MasRank> masRank1 = md.validateMasRank(masRank.getRankCode().toString(),
-						masRank.getRankName().toString());
-				if (masRank1.size() != 0) {
-					if (masRank1 != null && masRank1.size() > 0) {
-						if (masRank1.get(0).getRankCode().equalsIgnoreCase(json.get("rankCode").toString())) {
-
-							return "{\"status\":\"2\",\"msg\":\"Rank Code is already Existing.\"}";
-						}
-						if (masRank1.get(0).getRankName().equalsIgnoreCase(json.get("rankName").toString())) {
-
-							return "{\"status\":\"2\",\"msg\":\"Rank Name is already Existing.\"}";
-						}
-					}
-				} else {
-					String masRankObj = md.addMasRank(masRank);
-					if (masRankObj != null && masRankObj.equalsIgnoreCase("200")) {
-						jsonObj.put("status", 1);
-						jsonObj.put("msg", "Rank has been Successfully Added !!");
-
-					} else if (masRankObj != null && masRankObj.equalsIgnoreCase("403")) {
-						jsonObj.put("status", 0);
-						jsonObj.put("msg", "You are not authorized person!!!");
-
-					} else {
-						jsonObj.put("msg", masRankObj);
-						jsonObj.put("status", 0);
-					}
-				}
-			}
-		} else {
-			jsonObj.put("msg", "Cannot Contains Any Data!!!");
-			jsonObj.put("status", 0);
-		}
-
-		return jsonObj.toString();
-
-	}
-
-	@Override
-	public String getAllRank(JSONObject jsonObj, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		List<MasRank> rankList = new ArrayList<MasRank>();
-		List list = new ArrayList();
-
-		if (jsonObj != null) {
-			Map<String, List<MasRank>> mapRank = md.getAllRank(jsonObj);
-			List totalMatches = new ArrayList();
-			if (mapRank.get("masRankList") != null) {
-				rankList = mapRank.get("masRankList");
-				totalMatches = mapRank.get("totalMatches");
-				for (MasRank rank : rankList) {
-					HashMap<String, Object> mapObj = new HashMap<String, Object>();
-
-					mapObj.put("rankId", rank.getRankId());
-					mapObj.put("rankName", rank.getRankName());
-					mapObj.put("rankCode", rank.getRankCode());
-					mapObj.put("status", rank.getStatus());
-					mapObj.put("employeeCategoryName", rank.getMasEmployeeCategory().getEmployeeCategoryName());
-					mapObj.put("employeeCategoryId", rank.getMasEmployeeCategory().getEmployeeCategoryId());
-					list.add(mapObj);
-				}
-
-				if (list != null && list.size() > 0) {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "successfully");
-					json.put("status", 1);
-				} else {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "No Record Found");
-					json.put("status", 0);
-				}
-
-			} else {
-				json.put("statut", 0);
-				json.put("msg", "No Record Found");
-			}
-
-		} else {
-			json.put("msg", "No Record Found");
-			json.put("status", 0);
-		}
-		return json.toString();
-	}
-
-	@Override
-	public String getRank(HashMap<String, Object> rank, HttpServletRequest request) {
-		JSONObject jsonObject = new JSONObject();
-		if (rank.get("rankName") == null && rank.get("rankName").toString().trim().equalsIgnoreCase("")) {
-
-			return "{\"status\":\"0\",\"msg\":\"rankCode is not available !!!\"}";
-		} else {
-			MasRank chkRank = md.chkRank(rank.get("rankName").toString());
-			if (chkRank != null) {
-				List<MasRank> masRankLst = md.getRank(rank.get("rankName").toString());
-				if (masRankLst != null && masRankLst.size() > 0) {
-					System.out.println("masRankLst :: " + masRankLst);
-					jsonObject.put("masRankLst", masRankLst);
-					jsonObject.put("msg", "List of rank successfully...");
-					jsonObject.put("status", 1);
-				} else {
-					return "{\"status\":\"0\",\"msg\":\"Data not found\"}";
-				}
-			} else {
-				return "{\"status\":\"0\",\"msg\":\"Data not found\"}";
-			}
-		}
-
-		return jsonObject.toString();
-	}
-
-	@Override
-	public String updateRank(HashMap<String, Object> rank, HttpServletRequest request, HttpServletResponse response) {
-
-		JSONObject json = new JSONObject();
-
-		System.out.println("rank_ SERVICE :: " + rank);
-
-		System.out.println("rankId SERVICE " + rank.get("rankId"));
-
-		if (rank.get("rankId") != null && !rank.get("rankId").toString().equalsIgnoreCase("")) {
-
-			System.out.println("Long.parseLong(rank.get(\"rankId\").toString() :: "
-					+ Long.parseLong(rank.get("rankId").toString()));
-			System.out.println("rank.get(\"rankCode\").toString() :: " + rank.get("rankCode").toString());
-			System.out.println("rank.get(\"rankName\").toString() :: " + rank.get("rankName").toString());
-			System.out.println("Long.parseLong(rank.get(\"employeeCategorId\").toString() :: "
-					+ Long.parseLong(rank.get("employeeCategoryId").toString()));
-
-			String rankUpdate = md.updateRank(Long.parseLong(rank.get("rankId").toString()),
-					rank.get("rankCode").toString(), rank.get("rankName").toString(),
-					Long.parseLong(rank.get("employeeCategoryId").toString()));
-			if (rankUpdate != null && !rankUpdate.equalsIgnoreCase("")) {
-				json.put("rankUpdate", rankUpdate);
-				json.put("msg", "Successfully Updated!!!");
-				json.put("status", 1);
-			} else if (rankUpdate == null && rankUpdate.equalsIgnoreCase("")) {
-				json.put("msg", "Not Updated!!!");
-				json.put("status", 0);
-			}
-
-			else {
-				return "{\"status\":\"0\",\"msg\":\"rankCode is not available !!!\"}";
-			}
-
-		} else {
-			return "{\"status\":\"0\",\"msg\":\"rankCode is not available !!!\"}";
-		}
-
-		return json.toString();
-
-	}
-
-	@Override
-	public String statusRank(HashMap<String, Object> rank, HttpServletRequest request, HttpServletResponse response) {
-
-		JSONObject json = new JSONObject();
-		if (rank.get("rankCode") != null && !rank.get("rankCode").toString().equalsIgnoreCase("")) {
-			MasRank chkRank = md.chkRank(rank.get("rankCode").toString());
-			if (chkRank != null) {
-				String masRankStatus = md.updateRankStatus(Long.parseLong(rank.get("rankId").toString()),
-						rank.get("rankCode").toString(), rank.get("status").toString());
-				if (masRankStatus != null && masRankStatus.equalsIgnoreCase("200")) {
-					json.put("masRankStatus", masRankStatus);
-					json.put("msg", "Status Active!!!");
-					json.put("status", 1);
-				} else {
-					// json.put("masCmdStatus", masCmdStatus);
-					json.put("msg", "Status InActive!!!");
-					json.put("status", 0);
-				}
-			}
-		} else {
-			return "{\"status\":\"0\",\"msg\":\"rankCode is not available !!!\"}";
-		}
-
-		return json.toString();
-
-	}
-
-	@Override
-	public String getEmployeeCategoryList(HttpServletRequest request, HttpServletResponse response) {
-		JSONObject jsonObj = new JSONObject();
-		List<MasEmployeeCategory> employeeCategoryList = md.getEmployeeCategoryList();
-		if (employeeCategoryList != null && employeeCategoryList.size() > 0) {
-
-			jsonObj.put("data", employeeCategoryList);
-			jsonObj.put("count", employeeCategoryList.size());
-			jsonObj.put("status", 1);
-		} else {
-			jsonObj.put("data", employeeCategoryList);
-			jsonObj.put("count", employeeCategoryList.size());
-			jsonObj.put("msg", "No Record Found");
-			jsonObj.put("status", 0);
-		}
-		return jsonObj.toString();
-	}
-
-	/********************************************************
-	 * TRADE MASTER
-	 *********************************************************/
-
-	@Override
-	public String addTrade(JSONObject json, HttpServletRequest request, HttpServletResponse response) {
-
-		JSONObject jsonObj = new JSONObject();
-		MasTrade masTrade = new MasTrade();
-		System.out.println("json - TRADE NAME :: " + json);
-		if (!json.equals(null)) {
-
-			if (json.get("tradeName") == null) {
-				return "{\"status\":\"0\",\"msg\":\"tradeName is not contain in json data or it will be null or blank please check\"}";
-			} else {
-				masTrade.setTradeName(json.get("tradeName").toString().toUpperCase());
-
-				long d = System.currentTimeMillis();
-				Date date = new Date(d);
-				masTrade.setLastChgDate(date);
-
-				String lastChgTime = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
-
-				// masRank.setLastChgTime(lastChgTime);
-				Users usr = new Users();
-				usr.setUserId(new Long(1)); // userId will be fetch from session
-				// masTrade.setLastChgBy(new Long(1));
-				masTrade.setStatus("y");
-
-				MasServiceType masServiceType = new MasServiceType();
-				masServiceType.setServiceTypeId(Long.parseLong(json.get("serviceTypeId").toString()));
-				masTrade.setMasServiceType(masServiceType);
-				;
-
-				List<MasTrade> masTrade1 = md.validateMasTrade(masTrade.getTradeName().toString());
-				if (masTrade1.size() != 0) {
-					if (masTrade1 != null && masTrade1.size() > 0) {
-						if (masTrade1.get(0).getTradeName().equalsIgnoreCase(json.get("tradeName").toString())) {
-
-							return "{\"status\":\"2\",\"msg\":\"Trade Name is already Existing.\"}";
-						}
-					}
-				} else {
-					String masTradeObj = md.addMasTrade(masTrade);
-					if (masTradeObj != null && masTradeObj.equalsIgnoreCase("200")) {
-						jsonObj.put("status", 1);
-						jsonObj.put("msg", "Trade has been Successfully Added !!");
-
-					} else if (masTradeObj != null && masTradeObj.equalsIgnoreCase("403")) {
-						jsonObj.put("status", 0);
-						jsonObj.put("msg", "You are not authorized person!!!");
-
-					} else {
-						jsonObj.put("msg", masTradeObj);
-						jsonObj.put("status", 0);
-					}
-				}
-			}
-		} else {
-			jsonObj.put("msg", "Cannot Contains Any Data!!!");
-			jsonObj.put("status", 0);
-		}
-
-		return jsonObj.toString();
-
-	}
-
-	@Override
-	public String getAllTrade(JSONObject jsonObj, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		List<MasTrade> tradeList = new ArrayList<MasTrade>();
-		List list = new ArrayList();
-
-		if (jsonObj != null) {
-			Map<String, List<MasTrade>> mapTrade = md.getAllTrade(jsonObj);
-			List totalMatches = new ArrayList();
-			if (mapTrade.get("masTradeList") != null) {
-				tradeList = mapTrade.get("masTradeList");
-				totalMatches = mapTrade.get("totalMatches");
-				for (MasTrade trade : tradeList) {
-					HashMap<String, Object> mapObj = new HashMap<String, Object>();
-
-					if (trade.getMasServiceType() != null) {
-						mapObj.put("tradeId", trade.getTradeId());
-						mapObj.put("tradeName", trade.getTradeName());
-						mapObj.put("status", trade.getStatus());
-						mapObj.put("serviceTypeName", trade.getMasServiceType().getServiceTypeName());
-						mapObj.put("serviceTypeId", trade.getMasServiceType().getServiceTypeId());
-						list.add(mapObj);
-					}
-				}
-				if (list != null && list.size() > 0) {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "successfully");
-					json.put("status", 1);
-				} else {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "No Record Found");
-					json.put("status", 0);
-				}
-
-			} else {
-				json.put("statut", 0);
-				json.put("msg", "No Record Found");
-			}
-
-		} else {
-			json.put("msg", "No Record Found");
-			json.put("status", 0);
-		}
-		return json.toString();
-	}
-
-	@Override
-	public String getTrade(HashMap<String, Object> trade, HttpServletRequest request) {
-		JSONObject jsonObject = new JSONObject();
-		if (trade.get("tradeName") == null && trade.get("tradeName").toString().trim().equalsIgnoreCase("")) {
-
-			return "{\"status\":\"0\",\"msg\":\"tradeName is not available !!!\"}";
-		} else {
-			MasTrade checkTrade = md.checkTrade(trade.get("tradeName").toString());
-			if (checkTrade != null) {
-				List<MasTrade> masTradeLst = md.getTrade(trade.get("tradeName").toString());
-				if (masTradeLst != null && masTradeLst.size() > 0) {
-					System.out.println("masTradeLst :: " + masTradeLst);
-					jsonObject.put("masTradeLst", masTradeLst);
-					jsonObject.put("msg", "List of Trade successfully...");
-					jsonObject.put("status", 1);
-				} else {
-					return "{\"status\":\"0\",\"msg\":\"Data not found\"}";
-				}
-			} else {
-				return "{\"status\":\"0\",\"msg\":\"Data not found\"}";
-			}
-		}
-
-		return jsonObject.toString();
-	}
-
-	@Override
-	public String updateTrade(HashMap<String, Object> trade, HttpServletRequest request, HttpServletResponse response) {
-
-		JSONObject json = new JSONObject();
-
-		if (trade.get("tradeId") != null && !trade.get("tradeId").toString().equalsIgnoreCase("")) {
-
-			String tradeUpdate = md.updateTrade(Long.parseLong(trade.get("tradeId").toString()),
-					trade.get("tradeName").toString(), Long.parseLong(trade.get("serviceTypeId").toString()));
-			if (tradeUpdate != null && !tradeUpdate.equalsIgnoreCase("")) {
-				json.put("tradeUpdate", tradeUpdate);
-				json.put("msg", "Successfully Updated!!!");
-				json.put("status", 1);
-			} else if (tradeUpdate == null && tradeUpdate.equalsIgnoreCase("")) {
-				json.put("msg", "Not Updated!!!");
-				json.put("status", 0);
-			}
-
-			else {
-				return "{\"status\":\"0\",\"msg\":\"tradeName is not available !!!\"}";
-			}
-		}
-
-		return json.toString();
-
-	}
-
-	@Override
-	public String statusTrade(HashMap<String, Object> trade, HttpServletRequest request, HttpServletResponse response) {
-
-		JSONObject json = new JSONObject();
-		if (trade.get("tradeName") != null && !trade.get("tradeName").toString().equalsIgnoreCase("")) {
-			MasTrade checkTrade = md.checkTrade(trade.get("tradeName").toString());
-			if (checkTrade != null) {
-				String masTradeStatus = md.updateTradeStatus(Long.parseLong(trade.get("tradeId").toString()),
-						trade.get("status").toString());
-				if (masTradeStatus != null && masTradeStatus.equalsIgnoreCase("200")) {
-					json.put("masTradeStatus", masTradeStatus);
-					json.put("msg", "Status Active!!!");
-					json.put("status", 1);
-				} else {
-					// json.put("masCmdStatus", masCmdStatus);
-					json.put("msg", "Status InActive!!!");
-					json.put("status", 0);
-				}
-			}
-		} else {
-			return "{\"status\":\"0\",\"msg\":\"tradeName is not available !!!\"}";
-		}
-
-		return json.toString();
-
-	}
-
-	@Override
-	public String getServiceTypeList(HttpServletRequest request, HttpServletResponse response) {
-		JSONObject jsonObj = new JSONObject();
-		List<MasServiceType> serviceTypeList = md.getServiceTypeList();
-		if (serviceTypeList != null && serviceTypeList.size() > 0) {
-
-			jsonObj.put("data", serviceTypeList);
-			jsonObj.put("count", serviceTypeList.size());
-			jsonObj.put("status", 1);
-		} else {
-			jsonObj.put("data", serviceTypeList);
-			jsonObj.put("count", serviceTypeList.size());
-			jsonObj.put("msg", "No Record Found");
-			jsonObj.put("status", 0);
-		}
-		return jsonObj.toString();
-	}
-
 	/*********************************
 	 * MAS APPOINTMENT TYPE
 	 *****************************************************************/
@@ -1951,346 +1501,6 @@ public class MasterServiceImpl implements MasterService {
 	}
 
 	/***************************************
-	 * MAS RELIGION
-	 ***********************************************************************/
-
-	@Override
-	public String getAllReligion(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		List<MasReligion> reliList = new ArrayList<MasReligion>();
-		List list = new ArrayList();
-		if (jsondata != null) {
-			Map<String, List<MasReligion>> mapReli = md.getAllReligion(jsondata);
-			List totalMatches = new ArrayList();
-			if (mapReli.get("religionList") != null) {
-				reliList = mapReli.get("religionList");
-				totalMatches = mapReli.get("totalMatches");
-				for (MasReligion religion : reliList) {
-					HashMap<String, Object> mapObj = new HashMap<String, Object>();
-					if (religion != null) {
-						mapObj.put("religionId", religion.getReligionId());
-						mapObj.put("religionCode", religion.getReligionCode());
-						mapObj.put("religionName", religion.getReligionName());
-						mapObj.put("status", religion.getStatus());
-
-						list.add(mapObj);
-					}
-				}
-
-				if (list != null && list.size() > 0) {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "successfully");
-					json.put("status", 1);
-				} else {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "No Record Found");
-					json.put("status", 0);
-				}
-
-			} else {
-				json.put("statut", 0);
-				json.put("msg", "No Record Found");
-			}
-
-		} else {
-			json.put("msg", "No Record Found");
-			json.put("status", 0);
-		}
-		return json.toString();
-	}
-
-	@Override
-	public String addReligion(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		if (jsondata != null) {
-			String status = "y";
-			Long lastChgBy = new Long(1);
-
-			long d = System.currentTimeMillis();
-			Date date = new Date(d);
-
-			MasReligion masReligion = new MasReligion();
-
-			masReligion.setReligionCode(jsondata.get("religionCode").toString().toUpperCase());
-			masReligion.setReligionName(jsondata.get("religionName").toString().toUpperCase());
-			// masReligion.setLastChgBy(lastChgBy);
-			masReligion.setStatus("Y");
-			masReligion.setLastChgDate(date);
-
-			List<MasReligion> checkReliList = md.validateReligion(masReligion.getReligionCode(),
-					masReligion.getReligionName());
-			if (checkReliList != null && checkReliList.size() > 0) {
-				if (checkReliList.get(0).getReligionCode().equalsIgnoreCase(jsondata.get("religionCode").toString())) {
-
-					json.put("status", 2);
-					json.put("msg", "checkReliList Code is already Existing");
-				}
-				if (checkReliList.get(0).getReligionName().equalsIgnoreCase(jsondata.get("religionName").toString())) {
-
-					json.put("status", 2);
-					json.put("msg", "Religion Name is already Existing");
-				}
-
-			} else {
-				String addReliObj = md.addReligion(masReligion);
-				if (addReliObj != null && addReliObj.equalsIgnoreCase("200")) {
-					json.put("status", 1);
-					json.put("msg", "Successfully Added");
-				} else {
-					json.put("status", 0);
-					json.put("msg", "Not Added");
-				}
-			}
-
-		} else {
-			json.put("msg", "No Record Found");
-			json.put("status", 0);
-		}
-
-		return json.toString();
-	}
-
-	@Override
-	public String updateReligionDetails(JSONObject jsonObject, HttpServletRequest request,
-			HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		if (jsonObject != null) {
-
-			if (jsonObject.get("religionCode").toString() != null
-					&& !jsonObject.get("religionCode").toString().trim().equalsIgnoreCase("")) {
-
-				String updatereligion = md.updateReligionDetails(
-						Long.parseLong(jsonObject.get("religionId").toString()),
-						jsonObject.get("religionCode").toString(), jsonObject.get("religionName").toString());
-
-				if (updatereligion != null && updatereligion.equalsIgnoreCase("200")) {
-					json.put("updatefreq", updatereligion);
-					json.put("msg", "Successfully Updated.");
-					json.put("status", 1);
-				} else {
-					json.put("msg", "Not Updated.");
-					json.put("status", 0);
-
-				}
-
-			} else {
-				json.put("msg", "Data Not Found");
-				json.put("status", 0);
-
-			}
-
-		}
-		return json.toString();
-	}
-
-	@Override
-	public String updateReligionStatus(JSONObject jsonObject, HttpServletRequest request,
-			HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-
-		if (jsonObject != null) {
-			if (jsonObject.get("religionCode").toString() != null
-					&& !jsonObject.get("religionCode").toString().trim().equalsIgnoreCase("")) {
-
-				MasReligion mReligion = md.checkReligion(jsonObject.get("religionCode").toString());
-
-				if (mReligion != null) {
-					String reliStatus = md.updateReligionStatus(Long.parseLong(jsonObject.get("religionId").toString()),
-							jsonObject.get("religionCode").toString(), jsonObject.get("status").toString());
-
-					if (reliStatus != null && reliStatus.equalsIgnoreCase("200")) {
-						json.put("reliStatus", reliStatus);
-						json.put("msg", "Status Updated Successfully");
-						json.put("status", 1);
-					} else {
-						json.put("msg", "Status Not Updated");
-						json.put("status", 0);
-					}
-				} else {
-					json.put("msg", "Data Not Found");
-				}
-
-			}
-		}
-
-		return json.toString();
-	}
-
-	/***************************************
-	 * MAS MARITAL STATUS
-	 ***********************************************************************/
-
-	@Override
-	public String getAllMaritalStatus(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		List<MasMaritalStatus> maritalStatusList = new ArrayList<MasMaritalStatus>();
-		List list = new ArrayList();
-		if (jsondata != null) {
-			Map<String, List<MasMaritalStatus>> mapMaritalStatus = md.getAllMaritalStatus(jsondata);
-			List totalMatches = new ArrayList();
-			if (mapMaritalStatus.get("maritalStatusList") != null) {
-				maritalStatusList = mapMaritalStatus.get("maritalStatusList");
-				totalMatches = mapMaritalStatus.get("totalMatches");
-				for (MasMaritalStatus maritalStatus : maritalStatusList) {
-					HashMap<String, Object> mapObj = new HashMap<String, Object>();
-					if (maritalStatus != null) {
-						mapObj.put("maritalStatusId", maritalStatus.getMaritalStatusId());
-						mapObj.put("maritalStatusCode", maritalStatus.getMaritalStatusCode());
-						mapObj.put("maritalStatusName", maritalStatus.getMaritalStatusName());
-						mapObj.put("status", maritalStatus.getStatus());
-
-						list.add(mapObj);
-					}
-				}
-
-				if (list != null && list.size() > 0) {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "successfully");
-					json.put("status", 1);
-				} else {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "No Record Found");
-					json.put("status", 0);
-				}
-
-			} else {
-				json.put("statut", 0);
-				json.put("msg", "No Record Found");
-			}
-
-		} else {
-			json.put("msg", "No Record Found");
-			json.put("status", 0);
-		}
-		return json.toString();
-	}
-
-	@Override
-	public String addMaritalStatus(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		if (jsondata != null) {
-			String status = "y";
-			Long lastChgBy = new Long(1);
-
-			long d = System.currentTimeMillis();
-			Date date = new Date(d);
-
-			MasMaritalStatus masMaritalStatus = new MasMaritalStatus();
-
-			masMaritalStatus.setMaritalStatusCode(jsondata.get("maritalStatusCode").toString().toUpperCase());
-			masMaritalStatus.setMaritalStatusName(jsondata.get("maritalStatusName").toString().toUpperCase());
-			// masMaritalStatus.setLastChgBy(lastChgBy);
-			masMaritalStatus.setStatus("Y");
-			// masMaritalStatus.setLastChgDate(date);
-
-			List<MasMaritalStatus> checkMaritalStatusList = md.validateMaritalStatus(
-					masMaritalStatus.getMaritalStatusCode(), masMaritalStatus.getMaritalStatusName());
-			if (checkMaritalStatusList != null && checkMaritalStatusList.size() > 0) {
-				if (checkMaritalStatusList.get(0).getMaritalStatusCode()
-						.equalsIgnoreCase(jsondata.get("maritalStatusCode").toString())) {
-
-					json.put("status", 2);
-					json.put("msg", "checkMaritalStatusList Code is already Existing");
-				}
-				if (checkMaritalStatusList.get(0).getMaritalStatusName()
-						.equalsIgnoreCase(jsondata.get("maritalStatusName").toString())) {
-
-					json.put("status", 2);
-					json.put("msg", "MaritalStatus Name is already Existing");
-				}
-
-			} else {
-				String addMaritalStatusObj = md.addMaritalStatus(masMaritalStatus);
-				if (addMaritalStatusObj != null && addMaritalStatusObj.equalsIgnoreCase("200")) {
-					json.put("status", 1);
-					json.put("msg", "Successfully Added");
-				} else {
-					json.put("status", 0);
-					json.put("msg", "Not Added");
-				}
-			}
-
-		} else {
-			json.put("msg", "No Record Found");
-			json.put("status", 0);
-		}
-
-		return json.toString();
-	}
-
-	@Override
-	public String updateMaritalStatusDetails(JSONObject jsonObject, HttpServletRequest request,
-			HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		System.out.println("jsonObject+jsonObject :: " + jsonObject);
-		if (jsonObject != null) {
-
-			if (jsonObject.get("maritalStatusCode").toString() != null
-					&& !jsonObject.get("maritalStatusCode").toString().trim().equalsIgnoreCase("")) {
-
-				String updateMaritalStatus = md.updateMaritalStatusDetails(
-						Long.parseLong(jsonObject.get("maritalStatusId").toString()),
-						jsonObject.get("maritalStatusCode").toString(), jsonObject.get("maritalStatusName").toString());
-
-				if (updateMaritalStatus != null && updateMaritalStatus.equalsIgnoreCase("200")) {
-					json.put("updateMaritalStatus", updateMaritalStatus);
-					json.put("msg", "Successfully Updated.");
-					json.put("status", 1);
-				} else {
-					json.put("msg", "Not Updated.");
-					json.put("status", 0);
-
-				}
-
-			} else {
-				json.put("msg", "Data Not Found");
-				json.put("status", 0);
-
-			}
-
-		}
-		return json.toString();
-	}
-
-	@Override
-	public String updateMaritalStatusStatus(JSONObject MaritalStatus, HttpServletRequest request,
-			HttpServletResponse response) {
-		JSONObject jsonObject = new JSONObject();
-
-		if (jsonObject != null) {
-			if (jsonObject.get("maritalStatusCode").toString() != null
-					&& !jsonObject.get("maritalStatusCode").toString().trim().equalsIgnoreCase("")) {
-
-				MasMaritalStatus mMaritalStatus = md.checkMaritalStatus(jsonObject.get("maritalStatusCode").toString());
-
-				if (mMaritalStatus != null) {
-					String maritalStatusStatus = md.updateMaritalStatusStatus(
-							Long.parseLong(jsonObject.get("maritalStatusId").toString()),
-							jsonObject.get("maritalStatusCode").toString(), jsonObject.get("status").toString());
-
-					if (maritalStatusStatus != null && maritalStatusStatus.equalsIgnoreCase("200")) {
-						jsonObject.put("maritalStatusStatus", maritalStatusStatus);
-						jsonObject.put("msg", "Status Updated Successfully");
-						jsonObject.put("status", 1);
-					} else {
-						jsonObject.put("msg", "Status Not Updated");
-						jsonObject.put("status", 0);
-					}
-				} else {
-					jsonObject.put("msg", "Data Not Found");
-				}
-
-			}
-		}
-
-		return jsonObject.toString();
-	}
-
-	/***************************************
 	 * MAS FREQUENCY
 	 ***********************************************************************/
 
@@ -2488,873 +1698,6 @@ public class MasterServiceImpl implements MasterService {
 		return json.toString();
 	}
 
-	/***************************************
-	 * MAS Medical Category
-	 ***********************************************************************/
-
-	@Override
-	public String getAllMedicalCategory(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		List<MasMedicalCategory> medicalCategoryList = new ArrayList<MasMedicalCategory>();
-		List list = new ArrayList();
-		System.out.println("jsondata+jsondata :: " + jsondata);
-		if (jsondata != null) {
-			Map<String, List<MasMedicalCategory>> mapMedicalCategory = md.getAllMedicalCategory(jsondata);
-			List totalMatches = new ArrayList();
-			if (mapMedicalCategory.get("medicalCategoryList") != null) {
-				medicalCategoryList = mapMedicalCategory.get("medicalCategoryList");
-				totalMatches = mapMedicalCategory.get("totalMatches");
-				for (MasMedicalCategory medicalCategory : medicalCategoryList) {
-					HashMap<String, Object> mapObj = new HashMap<String, Object>();
-					if (medicalCategory != null) {
-						mapObj.put("medicalCategoryId", medicalCategory.getMedicalCategoryId());
-						mapObj.put("medicalCategoryCode", medicalCategory.getMedicalCategoryCode());
-						mapObj.put("medicalCategoryName", medicalCategory.getMedicalCategoryName());
-						mapObj.put("status", medicalCategory.getStatus());
-
-						list.add(mapObj);
-					}
-				}
-
-				if (list != null && list.size() > 0) {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "successfully");
-					json.put("status", 1);
-				} else {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "No Record Found");
-					json.put("status", 0);
-				}
-
-			} else {
-				json.put("statut", 0);
-				json.put("msg", "No Record Found");
-			}
-
-		} else {
-			json.put("msg", "No Record Found");
-			json.put("status", 0);
-		}
-		return json.toString();
-	}
-
-	@Override
-	public String addMedicalCategory(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		if (jsondata != null) {
-			String status = "y";
-			Long lastChgBy = new Long(1);
-
-			long d = System.currentTimeMillis();
-			Date date = new Date(d);
-
-			MasMedicalCategory masMedicalCategory = new MasMedicalCategory();
-
-			masMedicalCategory.setMedicalCategoryCode(Long.parseLong((String) jsondata.get("medicalCategoryCode")));
-			masMedicalCategory.setMedicalCategoryName(jsondata.get("medicalCategoryName").toString().toUpperCase());
-			// masMaritalStatus.setLastChgBy(lastChgBy);
-			masMedicalCategory.setStatus("Y");
-			// masMaritalStatus.setLastChgDate(date);
-
-			List<MasMedicalCategory> checkMedicalCategoryList = md.validateMedicalCategory(
-					masMedicalCategory.getMedicalCategoryCode(), masMedicalCategory.getMedicalCategoryName());
-			if (checkMedicalCategoryList != null && checkMedicalCategoryList.size() > 0) {
-				if ((checkMedicalCategoryList.get(0).getMedicalCategoryCode() + "")
-						.equalsIgnoreCase((String) jsondata.get("medicalCategoryCode"))) {
-
-					json.put("status", 2);
-					json.put("msg", "checkMedicalCategoryList Code is already Existing");
-				}
-				if (checkMedicalCategoryList.get(0).getMedicalCategoryName()
-						.equalsIgnoreCase(jsondata.get("medicalCategoryName").toString())) {
-
-					json.put("status", 2);
-					json.put("msg", "MedicalCategory Name is already Existing");
-				}
-
-			} else {
-				String addmedicalCategoryObj = md.addMedicalCategory(masMedicalCategory);
-				if (addmedicalCategoryObj != null && addmedicalCategoryObj.equalsIgnoreCase("200")) {
-					json.put("status", 1);
-					json.put("msg", "Successfully Added");
-				} else {
-					json.put("status", 0);
-					json.put("msg", "Not Added");
-				}
-			}
-
-		} else {
-			json.put("msg", "No Record Found");
-			json.put("status", 0);
-		}
-
-		return json.toString();
-	}
-
-	@Override
-	public String updateMedicalCategoryDetails(JSONObject jsonObject, HttpServletRequest request,
-			HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		if (jsonObject != null) {
-
-			if (jsonObject.get("medicalCategoryCode").toString() != null
-					&& !jsonObject.get("medicalCategoryCode").toString().trim().equalsIgnoreCase("")) {
-
-				String updateMedicalCategory = md.updateMedicalCategoryDetails(
-						Long.parseLong(jsonObject.get("medicalCategoryId").toString()),
-						(Long.parseLong(jsonObject.get("medicalCategoryCode").toString())),
-						jsonObject.get("medicalCategoryName").toString());
-
-				if (updateMedicalCategory != null && updateMedicalCategory.equalsIgnoreCase("200")) {
-					json.put("updateMedicalCategory", updateMedicalCategory);
-					json.put("msg", "Successfully Updated.");
-					json.put("status", 1);
-				} else {
-					json.put("msg", "Not Updated.");
-					json.put("status", 0);
-
-				}
-
-			} else {
-				json.put("msg", "Data Not Found");
-				json.put("status", 0);
-
-			}
-
-		}
-		return json.toString();
-	}
-
-	@Override
-	public String updateMedicalCategoryStatus(JSONObject MedicalCategory, HttpServletRequest request,
-			HttpServletResponse response) {
-		JSONObject jsonObject = new JSONObject();
-
-		if (jsonObject != null) {
-			if (MedicalCategory.get("medicalCategoryCode").toString() != null
-					&& !MedicalCategory.get("medicalCategoryCode").toString().trim().equalsIgnoreCase("")) {
-
-				MasMedicalCategory mMedicalCategory = md
-						.checkMedicalCategory(Long.parseLong((MedicalCategory.get("medicalCategoryCode").toString())));
-
-				if (mMedicalCategory != null) {
-					String medicalCategoryStatus = md.updateMedicalCategoryStatus(
-							Long.parseLong(MedicalCategory.get("medicalCategoryId").toString()),
-							(Long.parseLong(MedicalCategory.get("medicalCategoryCode").toString())),
-							MedicalCategory.get("status").toString());
-
-					if (medicalCategoryStatus != null && medicalCategoryStatus.equalsIgnoreCase("200")) {
-						jsonObject.put("medicalCategoryStatus", medicalCategoryStatus);
-						jsonObject.put("msg", "Status Updated Successfully");
-						jsonObject.put("status", 1);
-					} else {
-						jsonObject.put("msg", "Status Not Updated");
-						jsonObject.put("status", 0);
-					}
-				} else {
-					jsonObject.put("msg", "Data Not Found");
-				}
-
-			}
-		}
-
-		return jsonObject.toString();
-	}
-
-	/***************************************
-	 * MAS Blood Group
-	 ***********************************************************************/
-
-	@Override
-	public String getAllBloodGroup(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		List<MasBloodGroup> bloodGroupList = new ArrayList<MasBloodGroup>();
-		List list = new ArrayList();
-		if (jsondata != null) {
-			Map<String, List<MasBloodGroup>> mapBloodGroup = md.getAllBloodGroup(jsondata);
-			List totalMatches = new ArrayList();
-			if (mapBloodGroup.get("bloodGroupList") != null) {
-				bloodGroupList = mapBloodGroup.get("bloodGroupList");
-				totalMatches = mapBloodGroup.get("totalMatches");
-				for (MasBloodGroup bloodGroup : bloodGroupList) {
-					HashMap<String, Object> mapObj = new HashMap<String, Object>();
-					if (bloodGroup != null) {
-						mapObj.put("bloodGroupId", bloodGroup.getBloodGroupId());
-						mapObj.put("bloodGroupCode", bloodGroup.getBloodGroupCode());
-						mapObj.put("bloodGroupName", bloodGroup.getBloodGroupName());
-						mapObj.put("status", bloodGroup.getStatus());
-
-						list.add(mapObj);
-					}
-				}
-
-				if (list != null && list.size() > 0) {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "successfully");
-					json.put("status", 1);
-				} else {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "No Record Found");
-					json.put("status", 0);
-				}
-
-			} else {
-				json.put("statut", 0);
-				json.put("msg", "No Record Found");
-			}
-
-		} else {
-			json.put("msg", "No Record Found");
-			json.put("status", 0);
-		}
-		return json.toString();
-	}
-
-	@Override
-	public String addBloodGroup(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		if (jsondata != null) {
-			String status = "y";
-			Long lastChgBy = new Long(1);
-
-			long d = System.currentTimeMillis();
-			Date date = new Date(d);
-
-			MasBloodGroup masBloodGroup = new MasBloodGroup();
-
-			masBloodGroup.setBloodGroupCode((String) jsondata.get("bloodGroupCode"));
-			masBloodGroup.setBloodGroupName(jsondata.get("bloodGroupName").toString().toUpperCase());
-			// masBloodGroup.setLastChgBy(lastChgBy);
-			masBloodGroup.setStatus("Y");
-			// masMaritalStatus.setLastChgDate(date);
-
-			List<MasBloodGroup> checkBloodGroupList = md.validateBloodGroup(masBloodGroup.getBloodGroupCode(),
-					masBloodGroup.getBloodGroupName());
-			if (checkBloodGroupList != null && checkBloodGroupList.size() > 0) {
-				if ((checkBloodGroupList.get(0).getBloodGroupCode() + "")
-						.equalsIgnoreCase((String) jsondata.get("bloodGroupCode"))) {
-
-					json.put("status", 2);
-					json.put("msg", "checkBloodGroupList Code is already Existing");
-				}
-				if (checkBloodGroupList.get(0).getBloodGroupName()
-						.equalsIgnoreCase(jsondata.get("bloodGroupName").toString())) {
-
-					json.put("status", 2);
-					json.put("msg", "BloodGroup Name is already Existing");
-				}
-
-			} else {
-				String addBloodGroupObj = md.addBloodGroup(masBloodGroup);
-				if (addBloodGroupObj != null && addBloodGroupObj.equalsIgnoreCase("200")) {
-					json.put("status", 1);
-					json.put("msg", "Successfully Added");
-				} else {
-					json.put("status", 0);
-					json.put("msg", "Not Added");
-				}
-			}
-
-		} else {
-			json.put("msg", "No Record Found");
-			json.put("status", 0);
-		}
-
-		return json.toString();
-	}
-
-	@Override
-	public String updateBloodGroupDetails(JSONObject jsonObject, HttpServletRequest request,
-			HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		if (jsonObject != null) {
-
-			if (jsonObject.get("bloodGroupCode").toString() != null
-					&& !jsonObject.get("bloodGroupCode").toString().trim().equalsIgnoreCase("")) {
-
-				String updateBloodGroup = md.updateBloodGroupDetails(
-						Long.parseLong(jsonObject.get("bloodGroupId").toString()),
-						(jsonObject.get("bloodGroupCode").toString()), jsonObject.get("bloodGroupName").toString());
-
-				if (updateBloodGroup != null && updateBloodGroup.equalsIgnoreCase("200")) {
-					json.put("updateBloodGroup", updateBloodGroup);
-					json.put("msg", "Successfully Updated.");
-					json.put("status", 1);
-				} else {
-					json.put("msg", "Not Updated.");
-					json.put("status", 0);
-
-				}
-
-			} else {
-				json.put("msg", "Data Not Found");
-				json.put("status", 0);
-
-			}
-
-		}
-		return json.toString();
-	}
-
-	@Override
-	public String updateBloodGroupStatus(JSONObject BloodGroup, HttpServletRequest request,
-			HttpServletResponse response) {
-		JSONObject jsonObject = new JSONObject();
-
-		if (jsonObject != null) {
-			if (BloodGroup.get("bloodGroupCode").toString() != null
-					&& !BloodGroup.get("bloodGroupCode").toString().trim().equalsIgnoreCase("")) {
-
-				MasBloodGroup mBloodGroup = md.checkBloodGroup(BloodGroup.get("bloodGroupCode").toString());
-
-				if (mBloodGroup != null) {
-					String bloodGroupStatus = md.updateBloodGroupStatus(
-							Long.parseLong(BloodGroup.get("bloodGroupId").toString()),
-							(BloodGroup.get("bloodGroupCode").toString()), BloodGroup.get("status").toString());
-
-					if (bloodGroupStatus != null && bloodGroupStatus.equalsIgnoreCase("200")) {
-						jsonObject.put("bloodGroupStatus", bloodGroupStatus);
-						jsonObject.put("msg", "Status Updated Successfully");
-						jsonObject.put("status", 1);
-					} else {
-						jsonObject.put("msg", "Status Not Updated");
-						jsonObject.put("status", 0);
-					}
-				} else {
-					jsonObject.put("msg", "Data Not Found");
-				}
-
-			}
-		}
-
-		return jsonObject.toString();
-	}
-
-	/***************************************
-	 * MAS Sample
-	 ***********************************************************************/
-
-	@Override
-	public String getAllSample(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		List<MasSample> sampleList = new ArrayList<MasSample>();
-		List list = new ArrayList();
-		System.out.println("jsondata_SERVICE" + jsondata);
-		if (jsondata != null) {
-			Map<String, List<MasSample>> mapSample = md.getAllSample(jsondata);
-			List totalMatches = new ArrayList();
-			if (mapSample.get("sampleList") != null) {
-				sampleList = mapSample.get("sampleList");
-				totalMatches = mapSample.get("totalMatches");
-				for (MasSample sample : sampleList) {
-					HashMap<String, Object> mapObj = new HashMap<String, Object>();
-					if (sample != null) {
-						mapObj.put("sampleId", sample.getSampleId());
-						mapObj.put("sampleCode", sample.getSampleCode());
-						mapObj.put("sampleDescription", sample.getSampleDescription());
-						mapObj.put("status", sample.getStatus());
-
-						list.add(mapObj);
-					}
-				}
-
-				if (list != null && list.size() > 0) {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "successfully");
-					json.put("status", 1);
-				} else {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "No Record Found");
-					json.put("status", 0);
-				}
-
-			} else {
-				json.put("statut", 0);
-				json.put("msg", "No Record Found");
-			}
-
-		} else {
-			json.put("msg", "No Record Found");
-			json.put("status", 0);
-		}
-		return json.toString();
-	}
-
-	@Override
-	public String addSample(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		System.out.println("jsondata + SAMPLE:::::" + jsondata);
-		if (jsondata != null) {
-			String status = "y";
-			Long lastChgBy = new Long(1);
-
-			long d = System.currentTimeMillis();
-			Date date = new Date(d);
-
-			MasSample masSample = new MasSample();
-
-			masSample.setSampleCode(jsondata.get("sampleCode").toString().toUpperCase());
-			masSample.setSampleDescription(jsondata.get("sampleDescription").toString().toUpperCase());
-			masSample.setLastChgBy(lastChgBy);
-			masSample.setStatus("Y");
-			// masMaritalStatus.setLastChgDate(date);
-
-			List<MasSample> checkSampleList = md.validateSample(masSample.getSampleCode(),
-					masSample.getSampleDescription());
-			if (checkSampleList != null && checkSampleList.size() > 0) {
-				if (checkSampleList.get(0).getSampleCode().equalsIgnoreCase(jsondata.get("sampleCode").toString())) {
-
-					json.put("status", 2);
-					json.put("msg", "checkSampleList Code is already Existing");
-				}
-				if (checkSampleList.get(0).getSampleDescription()
-						.equalsIgnoreCase(jsondata.get("sampleDescription").toString())) {
-
-					json.put("status", 2);
-					json.put("msg", "Sample Name is already Existing");
-				}
-
-			} else {
-				String addSampleObj = md.addSample(masSample);
-				if (addSampleObj != null && addSampleObj.equalsIgnoreCase("200")) {
-					json.put("status", 1);
-					json.put("msg", "Successfully Added");
-				} else {
-					json.put("status", 0);
-					json.put("msg", "Not Added");
-				}
-			}
-
-		} else {
-			json.put("msg", "No Record Found");
-			json.put("status", 0);
-		}
-
-		return json.toString();
-	}
-
-	@Override
-	public String updateSampleDetails(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		if (jsonObject != null) {
-
-			if (jsonObject.get("sampleCode").toString() != null
-					&& !jsonObject.get("sampleCode").toString().trim().equalsIgnoreCase("")) {
-
-				String updateSample = md.updateSampleDetails(Long.parseLong(jsonObject.get("sampleId").toString()),
-						jsonObject.get("sampleCode").toString(), jsonObject.get("sampleDescription").toString());
-
-				if (updateSample != null && updateSample.equalsIgnoreCase("200")) {
-					json.put("updateSample", updateSample);
-					json.put("msg", "Successfully Updated.");
-					json.put("status", 1);
-				} else {
-					json.put("msg", "Not Updated.");
-					json.put("status", 0);
-
-				}
-
-			} else {
-				json.put("msg", "Data Not Found");
-				json.put("status", 0);
-
-			}
-
-		}
-		return json.toString();
-	}
-
-	@Override
-	public String updateSampleStatus(JSONObject Sample, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject jsonObject = new JSONObject();
-
-		if (jsonObject != null) {
-			if (Sample.get("sampleCode").toString() != null
-					&& !Sample.get("sampleCode").toString().trim().equalsIgnoreCase("")) {
-
-				MasSample mSample = md.checkSample(Sample.get("sampleCode").toString());
-
-				if (mSample != null) {
-					String sampleStatus = md.updateSampleStatus(Long.parseLong(Sample.get("sampleId").toString()),
-							Sample.get("sampleCode").toString(), Sample.get("status").toString());
-
-					if (sampleStatus != null && sampleStatus.equalsIgnoreCase("200")) {
-						jsonObject.put("sampleStatus", sampleStatus);
-						jsonObject.put("msg", "Status Updated Successfully");
-						jsonObject.put("status", 1);
-					} else {
-						jsonObject.put("msg", "Status Not Updated");
-						jsonObject.put("status", 0);
-					}
-				} else {
-					jsonObject.put("msg", "Data Not Found");
-				}
-
-			}
-		}
-
-		return jsonObject.toString();
-	}
-
-	/***************************************
-	 * MAS EMPLOYEE CATEGORY
-	 ***********************************************************************/
-
-	@Override
-	public String getAllEmployeeCategory(JSONObject jsondata, HttpServletRequest request,
-			HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		List<MasEmployeeCategory> employeeCategoryList = new ArrayList<MasEmployeeCategory>();
-		List list = new ArrayList();
-		if (jsondata != null) {
-			Map<String, List<MasEmployeeCategory>> mapEmployeeCategory = md.getAllEmployeeCategory(jsondata);
-			List totalMatches = new ArrayList();
-			if (mapEmployeeCategory.get("employeeCategoryList") != null) {
-				employeeCategoryList = mapEmployeeCategory.get("employeeCategoryList");
-				totalMatches = mapEmployeeCategory.get("totalMatches");
-				for (MasEmployeeCategory employeeCategory : employeeCategoryList) {
-					HashMap<String, Object> mapObj = new HashMap<String, Object>();
-					if (employeeCategory != null) {
-						mapObj.put("employeeCategoryId", employeeCategory.getEmployeeCategoryId());
-						mapObj.put("employeeCategoryCode", employeeCategory.getEmployeeCategoryCode());
-						mapObj.put("employeeCategoryName", employeeCategory.getEmployeeCategoryName());
-						mapObj.put("status", employeeCategory.getStatus());
-
-						list.add(mapObj);
-					}
-				}
-
-				if (list != null && list.size() > 0) {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "successfully");
-					json.put("status", 1);
-				} else {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "No Record Found");
-					json.put("status", 0);
-				}
-
-			} else {
-				json.put("statut", 0);
-				json.put("msg", "No Record Found");
-			}
-
-		} else {
-			json.put("msg", "No Record Found");
-			json.put("status", 0);
-		}
-		return json.toString();
-	}
-
-	@Override
-	public String addEmployeeCategory(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		if (jsondata != null) {
-			String status = "y";
-			Long lastChgBy = new Long(1);
-
-			long d = System.currentTimeMillis();
-			Date date = new Date(d);
-
-			MasEmployeeCategory masEmployeeCategory = new MasEmployeeCategory();
-
-			masEmployeeCategory.setEmployeeCategoryCode(
-					Long.parseLong((jsondata.get("employeeCategoryCode")).toString().toUpperCase()));
-			masEmployeeCategory.setEmployeeCategoryName(jsondata.get("employeeCategoryName").toString().toUpperCase());
-			// masMaritalStatus.setLastChgBy(lastChgBy);
-			masEmployeeCategory.setStatus("Y");
-			// masMaritalStatus.setLastChgDate(date);
-
-			List<MasEmployeeCategory> checkEmployeeCategoryList = md.validateEmployeeCategory(
-					masEmployeeCategory.getEmployeeCategoryCode(), masEmployeeCategory.getEmployeeCategoryName());
-			if (checkEmployeeCategoryList != null && checkEmployeeCategoryList.size() > 0) {
-				if (checkEmployeeCategoryList.get(0).getEmployeeCategoryCode().toString()
-						.equalsIgnoreCase(jsondata.get("employeeCategoryCode").toString())) {
-
-					json.put("status", 2);
-					json.put("msg", "checkEmployeeCategoryList Code is already Existing");
-				}
-				if (checkEmployeeCategoryList.get(0).getEmployeeCategoryName()
-						.equalsIgnoreCase(jsondata.get("employeeCategoryName").toString())) {
-
-					json.put("status", 2);
-					json.put("msg", "EmployeeCategory Name is already Existing");
-				}
-
-			} else {
-				String addEmployeeCategoryObj = md.addEmployeeCategory(masEmployeeCategory);
-				if (addEmployeeCategoryObj != null && addEmployeeCategoryObj.equalsIgnoreCase("200")) {
-					json.put("status", 1);
-					json.put("msg", "Successfully Added");
-				} else {
-					json.put("status", 0);
-					json.put("msg", "Not Added");
-				}
-			}
-
-		} else {
-			json.put("msg", "No Record Found");
-			json.put("status", 0);
-		}
-
-		return json.toString();
-	}
-
-	@Override
-	public String updateEmployeeCategoryDetails(JSONObject jsonObject, HttpServletRequest request,
-			HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		if (jsonObject != null) {
-
-			if (jsonObject.get("employeeCategoryCode").toString() != null
-					&& !jsonObject.get("employeeCategoryCode").toString().trim().equalsIgnoreCase("")) {
-
-				String updateEmployeeCategory = md.updateEmployeeCategoryDetails(
-						Long.parseLong(jsonObject.get("employeeCategoryId").toString()),
-						jsonObject.get("employeeCategoryCode").toString(),
-						jsonObject.get("employeeCategoryName").toString());
-
-				if (updateEmployeeCategory != null && updateEmployeeCategory.equalsIgnoreCase("200")) {
-					json.put("updateEmployeeCategory", updateEmployeeCategory);
-					json.put("msg", "Successfully Updated.");
-					json.put("status", 1);
-				} else {
-					json.put("msg", "Not Updated.");
-					json.put("status", 0);
-
-				}
-
-			} else {
-				json.put("msg", "Data Not Found");
-				json.put("status", 0);
-
-			}
-
-		}
-		return json.toString();
-	}
-
-	@Override
-	public String updateEmployeeCategoryStatus(JSONObject EmployeeCategory, HttpServletRequest request,
-			HttpServletResponse response) {
-		JSONObject jsonObject = new JSONObject();
-
-		if (jsonObject != null) {
-			if (EmployeeCategory.get("employeeCategoryCode").toString() != null
-					&& !EmployeeCategory.get("employeeCategoryCode").toString().trim().equalsIgnoreCase("")) {
-
-				MasEmployeeCategory mEmployeeCategory = md
-						.checkEmployeeCategory(EmployeeCategory.get("employeeCategoryCode").toString());
-
-				if (mEmployeeCategory != null) {
-					String employeeCategoryStatus = md.updateEmployeeCategoryStatus(
-							Long.parseLong(EmployeeCategory.get("employeeCategoryId").toString()),
-							EmployeeCategory.get("employeeCategoryCode").toString(),
-							EmployeeCategory.get("status").toString());
-
-					if (employeeCategoryStatus != null && employeeCategoryStatus.equalsIgnoreCase("200")) {
-						jsonObject.put("employeeCategoryStatus", employeeCategoryStatus);
-						jsonObject.put("msg", "Status Updated Successfully");
-						jsonObject.put("status", 1);
-					} else {
-						jsonObject.put("msg", "Status Not Updated");
-						jsonObject.put("status", 0);
-					}
-				} else {
-					jsonObject.put("msg", "Data Not Found");
-				}
-
-			}
-		}
-
-		return jsonObject.toString();
-	}
-
-	/***************************************
-	 * MAS Administrative Sex
-	 ***********************************************************************/
-
-	@Override
-	public String getAllAdministrativeSex(JSONObject jsondata, HttpServletRequest request,
-			HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		List<MasAdministrativeSex> administrativeSexList = new ArrayList<MasAdministrativeSex>();
-		List list = new ArrayList();
-		if (jsondata != null) {
-			Map<String, List<MasAdministrativeSex>> mapAdministrativeSex = md.getAllAdministrativeSex(jsondata);
-			List totalMatches = new ArrayList();
-			if (mapAdministrativeSex.get("administrativeSexList") != null) {
-				administrativeSexList = mapAdministrativeSex.get("administrativeSexList");
-				totalMatches = mapAdministrativeSex.get("totalMatches");
-				for (MasAdministrativeSex administrativeSex : administrativeSexList) {
-					HashMap<String, Object> mapObj = new HashMap<String, Object>();
-					if (administrativeSex != null) {
-						mapObj.put("administrativeSexId", administrativeSex.getAdministrativeSexId());
-						mapObj.put("administrativeSexCode", administrativeSex.getAdministrativeSexCode());
-						mapObj.put("administrativeSexName", administrativeSex.getAdministrativeSexName());
-						mapObj.put("status", administrativeSex.getStatus());
-
-						list.add(mapObj);
-					}
-				}
-
-				if (list != null && list.size() > 0) {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "successfully");
-					json.put("status", 1);
-				} else {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "No Record Found");
-					json.put("status", 0);
-				}
-
-			} else {
-				json.put("statut", 0);
-				json.put("msg", "No Record Found");
-			}
-
-		} else {
-			json.put("msg", "No Record Found");
-			json.put("status", 0);
-		}
-		return json.toString();
-	}
-
-	@Override
-	public String addAdministrativeSex(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		if (jsondata != null) {
-			String status = "y";
-			Long lastChgBy = new Long(1);
-
-			long d = System.currentTimeMillis();
-			Date date = new Date(d);
-
-			MasAdministrativeSex masAdministrativeSex = new MasAdministrativeSex();
-
-			masAdministrativeSex
-					.setAdministrativeSexCode(jsondata.get("administrativeSexCode").toString().toUpperCase());
-			masAdministrativeSex
-					.setAdministrativeSexName(jsondata.get("administrativeSexName").toString().toUpperCase());
-			// masMaritalStatus.setLastChgBy(lastChgBy);
-			masAdministrativeSex.setStatus("Y");
-			// masMaritalStatus.setLastChgDate(date);
-
-			List<MasAdministrativeSex> checkAdministrativeSexList = md.validateAdministrativeSex(
-					masAdministrativeSex.getAdministrativeSexCode(), masAdministrativeSex.getAdministrativeSexName());
-			if (checkAdministrativeSexList != null && checkAdministrativeSexList.size() > 0) {
-				if (checkAdministrativeSexList.get(0).getAdministrativeSexCode()
-						.equalsIgnoreCase(jsondata.get("administrativeSexCode").toString())) {
-
-					json.put("status", 2);
-					json.put("msg", "checkAdministrativeSexList Code is already Existing");
-				}
-				if (checkAdministrativeSexList.get(0).getAdministrativeSexName()
-						.equalsIgnoreCase(jsondata.get("administrativeSexName").toString())) {
-
-					json.put("status", 2);
-					json.put("msg", "AdministrativeSex Name is already Existing");
-				}
-
-			} else {
-				String addAdministrativeSexObj = md.addAdministrativeSex(masAdministrativeSex);
-				if (addAdministrativeSexObj != null && addAdministrativeSexObj.equalsIgnoreCase("200")) {
-					json.put("status", 1);
-					json.put("msg", "Successfully Added");
-				} else {
-					json.put("status", 0);
-					json.put("msg", "Not Added");
-				}
-			}
-
-		} else {
-			json.put("msg", "No Record Found");
-			json.put("status", 0);
-		}
-
-		return json.toString();
-	}
-
-	@Override
-	public String updateAdministrativeSexDetails(JSONObject jsonObject, HttpServletRequest request,
-			HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		if (jsonObject != null) {
-
-			if (jsonObject.get("administrativeSexCode").toString() != null
-					&& !jsonObject.get("administrativeSexCode").toString().trim().equalsIgnoreCase("")) {
-
-				String updateAdministrativeSex = md.updateAdministrativeSexDetails(
-						Long.parseLong(jsonObject.get("administrativeSexId").toString()),
-						jsonObject.get("administrativeSexCode").toString(),
-						jsonObject.get("administrativeSexName").toString());
-
-				if (updateAdministrativeSex != null && updateAdministrativeSex.equalsIgnoreCase("200")) {
-					json.put("updateAdministrativeSex", updateAdministrativeSex);
-					json.put("msg", "Successfully Updated.");
-					json.put("status", 1);
-				} else {
-					json.put("msg", "Not Updated.");
-					json.put("status", 0);
-
-				}
-
-			} else {
-				json.put("msg", "Data Not Found");
-				json.put("status", 0);
-
-			}
-
-		}
-		return json.toString();
-	}
-
-	@Override
-	public String updateAdministrativeSexStatus(JSONObject AdministrativeSex, HttpServletRequest request,
-			HttpServletResponse response) {
-		JSONObject jsonObject = new JSONObject();
-
-		if (jsonObject != null) {
-			if (AdministrativeSex.get("administrativeSexCode").toString() != null
-					&& !AdministrativeSex.get("administrativeSexCode").toString().trim().equalsIgnoreCase("")) {
-
-				MasAdministrativeSex mAdministrativeSex = md
-						.checkAdministrativeSex(AdministrativeSex.get("administrativeSexCode").toString());
-
-				if (mAdministrativeSex != null) {
-					String administrativeSexStatus = md.updateAdministrativeSexStatus(
-							Long.parseLong(AdministrativeSex.get("administrativeSexId").toString()),
-							AdministrativeSex.get("administrativeSexCode").toString(),
-							AdministrativeSex.get("status").toString());
-
-					if (administrativeSexStatus != null && administrativeSexStatus.equalsIgnoreCase("200")) {
-						jsonObject.put("administrativeSexStatus", administrativeSexStatus);
-						jsonObject.put("msg", "Status Updated Successfully");
-						jsonObject.put("status", 1);
-					} else {
-						jsonObject.put("msg", "Status Not Updated");
-						jsonObject.put("status", 0);
-					}
-				} else {
-					jsonObject.put("msg", "Data Not Found");
-				}
-
-			}
-		}
-
-		return jsonObject.toString();
-	}
-
 	/*************************
 	 * MAS EMPANELLED HOSPITAL
 	 ************************************************/
@@ -3550,168 +1893,6 @@ public class MasterServiceImpl implements MasterService {
 
 		}
 		return json.toString();
-	}
-
-	/***************************************
-	 * MAS ItemUnit
-	 ***********************************************************************/
-
-	@Override
-	public String getAllItemUnit(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		List<MasStoreUnit> ItemUnitList = new ArrayList<MasStoreUnit>();
-		List list = new ArrayList();
-		if (jsondata != null) {
-			Map<String, List<MasStoreUnit>> mapItemUnit = md.getAllItemUnit(jsondata);
-			List totalMatches = new ArrayList();
-			if (mapItemUnit.get("ItemUnitList") != null) {
-				ItemUnitList = mapItemUnit.get("ItemUnitList");
-				totalMatches = mapItemUnit.get("totalMatches");
-				for (MasStoreUnit ItemUnit : ItemUnitList) {
-					HashMap<String, Object> mapObj = new HashMap<String, Object>();
-					if (ItemUnit != null) {
-						mapObj.put("storeUnitId", ItemUnit.getStoreUnitId());
-						mapObj.put("storeUnitName", ItemUnit.getStoreUnitName());
-						mapObj.put("status", ItemUnit.getStatus());
-
-						list.add(mapObj);
-					}
-				}
-
-				if (list != null && list.size() > 0) {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "successfully");
-					json.put("status", 1);
-				} else {
-					json.put("data", list);
-					json.put("count", totalMatches.size());
-					json.put("msg", "No Record Found");
-					json.put("status", 0);
-				}
-
-			} else {
-				json.put("statut", 0);
-				json.put("msg", "No Record Found");
-			}
-
-		} else {
-			json.put("msg", "No Record Found");
-			json.put("status", 0);
-		}
-		return json.toString();
-	}
-
-	@Override
-	public String addItemUnit(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		if (jsondata != null) {
-			String status = "y";
-			Long lastChgBy = new Long(1);
-
-			long d = System.currentTimeMillis();
-			Date date = new Date(d);
-
-			MasStoreUnit masStoreUnit = new MasStoreUnit();
-
-			masStoreUnit.setStoreUnitName(jsondata.get("storeUnitName").toString().toUpperCase());
-			masStoreUnit.setLastChgBy(lastChgBy);
-			masStoreUnit.setStatus("Y");
-			// masMaritalStatus.setLastChgDate(date);
-
-			List<MasStoreUnit> checkItemUnitList = md.validateItemUnit(masStoreUnit.getStoreUnitName());
-			if (checkItemUnitList != null && checkItemUnitList.size() > 0) {
-
-				if (checkItemUnitList.get(0).getStoreUnitName()
-						.equalsIgnoreCase(jsondata.get("storeUnitName").toString())) {
-
-					json.put("status", 2);
-					json.put("msg", "Item Unit Name is already Existing");
-				}
-
-			} else {
-				String addItemUnitObj = md.addItemUnit(masStoreUnit);
-				if (addItemUnitObj != null && addItemUnitObj.equalsIgnoreCase("200")) {
-					json.put("status", 1);
-					json.put("msg", "Successfully Added");
-				} else {
-					json.put("status", 0);
-					json.put("msg", "Not Added");
-				}
-			}
-
-		} else {
-			json.put("msg", "No Record Found");
-			json.put("status", 0);
-		}
-
-		return json.toString();
-	}
-
-	@Override
-	public String updateItemUnitDetails(JSONObject jsonObject, HttpServletRequest request,
-			HttpServletResponse response) {
-		JSONObject json = new JSONObject();
-		if (jsonObject != null) {
-
-			if (jsonObject.get("storeUnitName").toString() != null
-					&& !jsonObject.get("storeUnitName").toString().trim().equalsIgnoreCase("")) {
-
-				String updateItemUnit = md.updateItemUnitDetails(
-						Long.parseLong(jsonObject.get("storeUnitId").toString()),
-						jsonObject.get("storeUnitName").toString());
-
-				if (updateItemUnit != null && updateItemUnit.equalsIgnoreCase("200")) {
-					json.put("updateItemUnit", updateItemUnit);
-					json.put("msg", "Successfully Updated.");
-					json.put("status", 1);
-				} else {
-					json.put("msg", "Not Updated.");
-					json.put("status", 0);
-
-				}
-
-			} else {
-				json.put("msg", "Data Not Found");
-				json.put("status", 0);
-
-			}
-
-		}
-		return json.toString();
-	}
-
-	@Override
-	public String updateItemUnitStatus(JSONObject ItemUnit, HttpServletRequest request, HttpServletResponse response) {
-		JSONObject jsonObject = new JSONObject();
-
-		if (jsonObject != null) {
-			if (ItemUnit.get("storeUnitName").toString() != null
-					&& !ItemUnit.get("storeUnitName").toString().trim().equalsIgnoreCase("")) {
-
-				MasStoreUnit mItemUnit = md.checkItemUnit(ItemUnit.get("storeUnitName").toString());
-
-				if (mItemUnit != null) {
-					String itemUnitStatus = md.updateItemUnitStatus(
-							Long.parseLong(ItemUnit.get("storeUnitId").toString()),
-							ItemUnit.get("storeUnitName").toString(), ItemUnit.get("status").toString());
-
-					if (itemUnitStatus != null && itemUnitStatus.equalsIgnoreCase("200")) {
-						jsonObject.put("itemUnitStatus", itemUnitStatus);
-						jsonObject.put("msg", "Status Updated Successfully");
-						jsonObject.put("status", 1);
-					} else {
-						jsonObject.put("msg", "Status Not Updated");
-						jsonObject.put("status", 0);
-					}
-				} else {
-					jsonObject.put("msg", "Data Not Found");
-				}
-
-			}
-		}
-
-		return jsonObject.toString();
 	}
 
 	/*************************************
@@ -4099,5 +2280,2554 @@ public class MasterServiceImpl implements MasterService {
 	public String addIdealWeight(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	/*-------------------MAS RANK----------------------*/
+	@Override
+	public String addRank(JSONObject json, HttpServletRequest request, HttpServletResponse response) {
+
+		JSONObject jsonObj = new JSONObject();
+		MasRank masRank = new MasRank();
+		
+		if(!json.equals(null)) {
+			
+			if(json.get("rankCode")==null) {
+				return "{\"status\":\"0\",\"msg\":\"rankCode is not contain in json data or it will be null or blank please check\"}";
+			}
+			if(json.get("rankName")==null) {
+				return "{\"status\":\"0\",\"msg\":\"rankName is not contain in json data or it will be null or blank please check\"}";
+			}
+			
+			
+		else {
+			masRank.setRankCode(json.get("rankCode").toString().toUpperCase());
+			masRank.setRankName(json.get("rankName").toString().toUpperCase());			
+			
+			long d = System.currentTimeMillis();
+			Date date = new Date(d);			
+			masRank.setLastChgDate(date);			
+			
+			String lastChgTime = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
+			
+			//masRank.setLastChgTime(lastChgTime);
+			//Users usr = new Users();
+			//usr.setUserId(new Long(1)); // userId will be fetch from session
+			//masRank.setLastChgBy(new Long(1));
+			masRank.setStatus("y");
+			
+			MasEmployeeCategory employeeCategory = new MasEmployeeCategory();	
+			employeeCategory.setEmployeeCategoryId(Long.parseLong(json.get("employeeCategoryId").toString()));
+			masRank.setMasEmployeeCategory(employeeCategory);
+			
+			
+			List<MasRank> masRank1 = md.validateMasRank(masRank.getRankCode().toString(),masRank.getRankName().toString());  
+			if(masRank1.size()!=0) {
+				if(masRank1!=null && masRank1.size()>0) {
+					if(masRank1.get(0).getRankCode().equalsIgnoreCase(json.get("rankCode").toString())) {
+					
+						return "{\"status\":\"2\",\"msg\":\"Rank Code is already Existing.\"}";
+					}
+					if(masRank1.get(0).getRankName().equalsIgnoreCase(json.get("rankName").toString())) {
+						
+						return "{\"status\":\"2\",\"msg\":\"Rank Name is already Existing.\"}";
+					}
+				}
+			}else {
+				String masRankObj = md.addMasRank(masRank);
+				if(masRankObj!=null && masRankObj.equalsIgnoreCase("200")) {
+					jsonObj.put("status", 1);
+					jsonObj.put("msg", "Rank has been Successfully Added !!");
+					
+				}else if(masRankObj!=null && masRankObj.equalsIgnoreCase("403")) {
+					jsonObj.put("status", 0);
+					jsonObj.put("msg", "You are not authorized person!!!");
+					
+				}else {
+					jsonObj.put("msg", masRankObj);
+					jsonObj.put("status", 0);
+				}
+			}
+		}
+		}else {
+			jsonObj.put("msg", "Cannot Contains Any Data!!!");
+			jsonObj.put("status", 0);
+		}
+		
+		return jsonObj.toString();
+
+	}
+
+	@Override
+	public String getAllRank(JSONObject jsonObj, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<MasRank> rankList = new ArrayList<MasRank>();
+		List list = new ArrayList();
+		
+		if(jsonObj!=null) {
+			Map<String, List<MasRank>> mapRank = md.getAllRank(jsonObj);
+			List totalMatches = new ArrayList();
+			if(mapRank.get("masRankList")!=null) {
+				rankList = mapRank.get("masRankList");
+				totalMatches = mapRank.get("totalMatches");
+				for(MasRank rank :rankList) {
+					HashMap<String, Object> mapObj = new HashMap<String, Object>();
+					
+					mapObj.put("rankId", rank.getRankId()) ;
+					mapObj.put("rankName", rank.getRankName()) ;
+					mapObj.put("rankCode", rank.getRankCode()) ;
+					mapObj.put("status", rank.getStatus()) ;
+					mapObj.put("employeeCategoryName", rank.getMasEmployeeCategory().getEmployeeCategoryName());
+					mapObj.put("employeeCategoryId", rank.getMasEmployeeCategory().getEmployeeCategoryId());
+					list.add(mapObj);
+				}
+				
+				
+				if(list!=null && list.size()>0) {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "successfully");
+					json.put("status", 1);
+				}else {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "No Record Found");
+					json.put("status", 0);
+				}
+				
+			}else {
+				json.put("statut", 0);
+				json.put("msg", "No Record Found");
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String getRank(HashMap<String, Object> rank, HttpServletRequest request) {
+		JSONObject jsonObject = new JSONObject();
+		if(rank.get("rankName") == null && rank.get("rankName").toString().trim().equalsIgnoreCase("")) {
+			
+			return "{\"status\":\"0\",\"msg\":\"rankCode is not available !!!\"}";
+		}else {
+			MasRank chkRank =  md.chkRank(rank.get("rankName").toString());
+			if(chkRank!=null) {
+				List<MasRank> masRankLst =  md.getRank(rank.get("rankName").toString());
+				if(masRankLst!=null && masRankLst.size()>0) {
+					System.out.println("masRankLst :: "+masRankLst);
+					jsonObject.put("masRankLst", masRankLst);
+					jsonObject.put("msg", "List of rank successfully...");
+					jsonObject.put("status", 1);
+				}else {
+					return "{\"status\":\"0\",\"msg\":\"Data not found\"}";
+				}
+			}else {
+				return "{\"status\":\"0\",\"msg\":\"Data not found\"}";
+			}
+		}
+
+	return jsonObject.toString();
+	}
+
+	@Override
+	public String updateRank(HashMap<String, Object> rank, HttpServletRequest request, HttpServletResponse response) {
+
+		JSONObject json = new JSONObject();
+		
+		if(rank.get("rankId")!=null && !rank.get("rankId").toString().equalsIgnoreCase("")) {
+			List<MasRank> msRankList = md.validateMasRankUpdate(rank.get("rankCode").toString(), rank.get("rankName").toString());
+			if(msRankList.size() > 0) {
+				return "{\"status\":\"0\",\"msg\":\"rankCode is already exist !!!\"}";
+			}
+					String rankUpdate = md.updateRank(Long.parseLong(rank.get("rankId").toString()),
+												rank.get("rankCode").toString(),
+												rank.get("rankName").toString(), 
+												Long.parseLong(rank.get("employeeCategoryId").toString()));
+				if(rankUpdate!=null && !rankUpdate.equalsIgnoreCase("")) {
+					json.put("rankUpdate", rankUpdate);
+					json.put("msg", "Successfully Updated!!!");
+					json.put("status", 1);
+				}else if(rankUpdate == null && rankUpdate.equalsIgnoreCase("")) {
+					json.put("msg", "Not Updated!!!");
+					json.put("status", 0);
+				}
+				
+				else {
+					return "{\"status\":\"0\",\"msg\":\"rankCode is not available !!!\"}";
+				}
+			
+		}else {
+			return "{\"status\":\"0\",\"msg\":\"rankCode is not available !!!\"}";
+		}
+		
+		return json.toString();
+
+	}
+
+	@Override
+	public String statusRank(HashMap<String, Object> rank, HttpServletRequest request, HttpServletResponse response) {
+
+		JSONObject json = new JSONObject();
+		if(rank.get("rankCode")!=null && !rank.get("rankCode").toString().equalsIgnoreCase("")) {
+			MasRank chkRank =  md.chkRank(rank.get("rankCode").toString());
+			if(chkRank!=null) {
+				String masRankStatus = md.updateRankStatus(Long.parseLong(rank.get("rankId").toString()),rank.get("rankCode").toString(), rank.get("status").toString());
+				if(masRankStatus!=null && masRankStatus.equalsIgnoreCase("200")) {
+					json.put("masRankStatus", masRankStatus);
+					json.put("msg", "Status Updated Successfully");
+					json.put("status", 1);
+				}else {
+					//json.put("masCmdStatus", masCmdStatus);
+					json.put("msg", "Status Not Updated");
+					json.put("status", 0);
+				}
+			}
+		}else {
+			return "{\"status\":\"0\",\"msg\":\"rankCode is not available !!!\"}";
+		}
+			
+		return json.toString();
+
+	}
+
+	@Override
+	public String getEmployeeCategoryList(HttpServletRequest request, HttpServletResponse response) {
+		JSONObject jsonObj = new JSONObject();
+		List<MasEmployeeCategory> employeeCategoryList = md.getEmployeeCategoryList();
+		if(employeeCategoryList!=null && employeeCategoryList.size()>0) {
+			
+			jsonObj.put("data", employeeCategoryList);
+			jsonObj.put("count", employeeCategoryList.size());				
+			jsonObj.put("status", 1);
+		}else {
+			jsonObj.put("data", employeeCategoryList);
+			jsonObj.put("count", employeeCategoryList.size());
+			jsonObj.put("msg", "No Record Found");		
+			jsonObj.put("status", 0);
+		}
+		return jsonObj.toString();
+	}
+	/******************************************************** TRADE MASTER *********************************************************/
+
+	@Override
+	public String addTrade(JSONObject json, HttpServletRequest request, HttpServletResponse response) {
+
+		JSONObject jsonObj = new JSONObject();
+		MasTrade masTrade = new MasTrade();
+		System.out.println("json - TRADE NAME :: " + json);
+		if(!json.equals(null)) {
+			
+			if(json.get("tradeName")==null) {
+				return "{\"status\":\"0\",\"msg\":\"tradeName is not contain in json data or it will be null or blank please check\"}";
+			}
+		else {
+			masTrade.setTradeName(json.get("tradeName").toString().toUpperCase());			
+			
+			long d = System.currentTimeMillis();
+			Date date = new Date(d);			
+			masTrade.setLastChgDate(date);			
+			
+			String lastChgTime = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
+			
+			//masRank.setLastChgTime(lastChgTime);
+			Users usr = new Users();
+			usr.setUserId(new Long(1)); // userId will be fetch from session
+			//masTrade.setLastChgBy(new Long(1));
+			masTrade.setStatus("y");
+			
+			MasServiceType masServiceType = new MasServiceType();	
+			masServiceType.setServiceTypeId(Long.parseLong(json.get("serviceTypeId").toString()));
+			masTrade.setMasServiceType(masServiceType);;
+			
+			
+			List<MasTrade> masTrade1 = md.validateMasTrade(masTrade.getTradeName().toString());  
+			if(masTrade1.size()!=0) {
+				if(masTrade1!=null && masTrade1.size()>0) {
+					if(masTrade1.get(0).getTradeName().equalsIgnoreCase(json.get("tradeName").toString())) {
+						
+						return "{\"status\":\"2\",\"msg\":\"Trade Name is already Existing.\"}";
+					}
+				}
+			}else {
+				String masTradeObj = md.addMasTrade(masTrade);
+				if(masTradeObj!=null && masTradeObj.equalsIgnoreCase("200")) {
+					jsonObj.put("status", 1);
+					jsonObj.put("msg", "Trade has been Successfully Added !!");
+					
+				}else if(masTradeObj!=null && masTradeObj.equalsIgnoreCase("403")) {
+					jsonObj.put("status", 0);
+					jsonObj.put("msg", "You are not authorized person!!!");
+					
+				}else {
+					jsonObj.put("msg", masTradeObj);
+					jsonObj.put("status", 0);
+				}
+			}
+		}
+		}else {
+			jsonObj.put("msg", "Cannot Contains Any Data!!!");
+			jsonObj.put("status", 0);
+		}
+		
+		return jsonObj.toString();
+
+	}
+
+	@Override
+	public String getAllTrade(JSONObject jsonObj, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<MasTrade> tradeList = new ArrayList<MasTrade>();
+		List list = new ArrayList();
+		
+		if(jsonObj!=null) {
+			Map<String, List<MasTrade>> mapTrade = md.getAllTrade(jsonObj);
+			List totalMatches = new ArrayList();
+			if(mapTrade.get("masTradeList")!=null) {
+				tradeList = mapTrade.get("masTradeList");
+				totalMatches = mapTrade.get("totalMatches");
+				for(MasTrade trade :tradeList) {
+					HashMap<String, Object> mapObj = new HashMap<String, Object>();
+				
+					if(trade.getMasServiceType() != null )
+					{
+					mapObj.put("tradeId", trade.getTradeId()) ;
+					mapObj.put("tradeName", trade.getTradeName()) ;
+					mapObj.put("status", trade.getStatus()) ;
+					mapObj.put("serviceTypeName", trade.getMasServiceType().getServiceTypeName());
+					mapObj.put("serviceTypeId", trade.getMasServiceType().getServiceTypeId());
+					list.add(mapObj);
+				} 
+				}
+				if(list!=null && list.size()>0) {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "successfully");
+					json.put("status", 1);
+				}else {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "No Record Found");
+					json.put("status", 0);
+				}
+				
+			}else {
+				json.put("statut", 0);
+				json.put("msg", "No Record Found");
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String getTrade(HashMap<String, Object> trade, HttpServletRequest request) {
+		JSONObject jsonObject = new JSONObject();
+		if(trade.get("tradeName") == null && trade.get("tradeName").toString().trim().equalsIgnoreCase("")) {
+			
+			return "{\"status\":\"0\",\"msg\":\"tradeName is not available !!!\"}";
+		}else {
+			MasTrade checkTrade =  md.checkTrade(trade.get("tradeName").toString());
+			if(checkTrade!=null) {
+				List<MasTrade> masTradeLst =  md.getTrade(trade.get("tradeName").toString());
+				if(masTradeLst!=null && masTradeLst.size()>0) {
+					System.out.println("masTradeLst :: "+masTradeLst);
+					jsonObject.put("masTradeLst", masTradeLst);
+					jsonObject.put("msg", "List of Trade successfully...");
+					jsonObject.put("status", 1);
+				}else {
+					return "{\"status\":\"0\",\"msg\":\"Data not found\"}";
+				}
+			}else {
+				return "{\"status\":\"0\",\"msg\":\"Data not found\"}";
+			}
+		}
+
+	return jsonObject.toString();
+	}
+
+	@Override
+	public String updateTrade(HashMap<String, Object> trade, HttpServletRequest request, HttpServletResponse response) {
+
+		JSONObject json = new JSONObject();
+		
+		if(trade.get("tradeId")!=null && !trade.get("tradeId").toString().equalsIgnoreCase("")) {
+			
+			List<MasTrade> msTradeList = md.validateMasTradeUpdate(trade.get("tradeName").toString());
+			if(msTradeList.size() > 0) {
+				return "{\"status\":\"0\",\"msg\":\"Trade Name is already exist !!!\"}";
+			}
+
+				String tradeUpdate = md.updateTrade(Long.parseLong(trade.get("tradeId").toString()),
+												trade.get("tradeName").toString(), 
+												Long.parseLong(trade.get("serviceTypeId").toString()));
+				if(tradeUpdate!=null && !tradeUpdate.equalsIgnoreCase("")) {
+					json.put("tradeUpdate", tradeUpdate);
+					json.put("msg", "Successfully Updated!!!");
+					json.put("status", 1);
+				}else if( tradeUpdate == null && tradeUpdate.equalsIgnoreCase("")) {
+					json.put("msg", "Not Updated!!!");
+					json.put("status", 0);
+				}
+				
+				else {
+					return "{\"status\":\"0\",\"msg\":\"tradeName is not available !!!\"}";
+				}
+		}
+		
+		return json.toString();
+
+	}
+
+	@Override
+	public String statusTrade(HashMap<String, Object> trade, HttpServletRequest request, HttpServletResponse response) {
+
+		JSONObject json = new JSONObject();
+		if(trade.get("tradeName")!=null && !trade.get("tradeName").toString().equalsIgnoreCase("")) {
+			MasTrade checkTrade =  md.checkTrade(trade.get("tradeName").toString());
+			if(checkTrade!=null) {
+				String masTradeStatus = md.updateTradeStatus(Long.parseLong(trade.get("tradeId").toString()), trade.get("status").toString());
+				if(masTradeStatus!=null && masTradeStatus.equalsIgnoreCase("200")) {
+					json.put("masTradeStatus", masTradeStatus);
+					json.put("msg", "Status Updated Successfully");
+					json.put("status", 1);
+				}else {
+					//json.put("masCmdStatus", masCmdStatus);
+					json.put("msg", "Status Not Updated");
+					json.put("status", 0);
+				}
+			}
+		}else {
+			return "{\"status\":\"0\",\"msg\":\"tradeName is not available !!!\"}";
+		}
+			
+		return json.toString();
+
+	}
+
+	@Override
+	public String getServiceTypeList(HttpServletRequest request, HttpServletResponse response) {
+		JSONObject jsonObj = new JSONObject();
+		List<MasServiceType> serviceTypeList = md.getServiceTypeList();
+		if(serviceTypeList!=null && serviceTypeList.size()>0) {
+			
+			jsonObj.put("data", serviceTypeList);
+			jsonObj.put("count", serviceTypeList.size());				
+			jsonObj.put("status", 1);
+		}else {
+			jsonObj.put("data", serviceTypeList);
+			jsonObj.put("count", serviceTypeList.size());
+			jsonObj.put("msg", "No Record Found");		
+			jsonObj.put("status", 0);
+		}
+		return jsonObj.toString();
+	}
+
+	/***************************************MAS RELIGION***********************************************************************/
+
+	@Override
+	public String getAllReligion(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<MasReligion> reliList = new ArrayList<MasReligion>();
+		List list = new ArrayList();
+		if(jsondata!=null) {
+			Map<String, List<MasReligion>> mapReli = md.getAllReligion(jsondata);
+			List totalMatches = new ArrayList();
+			if(mapReli.get("religionList")!=null) {
+				reliList = mapReli.get("religionList");
+				totalMatches = mapReli.get("totalMatches");
+				for(MasReligion religion :reliList) {
+					HashMap<String, Object> mapObj = new HashMap<String, Object>();
+					if(religion!=null) {
+						mapObj.put("religionId", religion.getReligionId()) ;					
+						mapObj.put("religionCode", religion.getReligionCode()) ;					
+						mapObj.put("religionName", religion.getReligionName()) ;
+						mapObj.put("status", religion.getStatus());
+						
+					list.add(mapObj);
+				 }
+				}
+				
+				if(list!=null && list.size()>0) {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "successfully");
+					json.put("status", 1);
+				}else {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "No Record Found");
+					json.put("status", 0);
+				}
+				
+			}else {
+				json.put("statut", 0);
+				json.put("msg", "No Record Found");
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String addReligion(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsondata!=null) {
+			String status = "y";
+			Long lastChgBy = new Long(1);
+					
+			long d = System.currentTimeMillis();
+			Date date = new Date(d);
+				
+			MasReligion masReligion = new MasReligion();
+			
+			masReligion.setReligionCode(jsondata.get("religionCode").toString().toUpperCase());
+			masReligion.setReligionName(jsondata.get("religionName").toString().toUpperCase());
+			//masReligion.setLastChgBy(lastChgBy);
+			masReligion.setStatus("Y");
+			masReligion.setLastChgDate(date);
+			
+			List<MasReligion> checkReliList = md.validateReligion(masReligion.getReligionCode(),masReligion.getReligionName());
+			if(checkReliList!=null && checkReliList.size()>0) {
+				if(checkReliList.get(0).getReligionCode().equalsIgnoreCase(jsondata.get("religionCode").toString())) {
+					
+					json.put("status", 2);
+					json.put("msg", "checkReliList Code is already Existing");
+				}
+				if(checkReliList.get(0).getReligionName().equalsIgnoreCase(jsondata.get("religionName").toString())) {
+					
+					json.put("status", 2);
+					json.put("msg", "Religion Name is already Existing");
+				}
+				
+			}else {
+				String addReliObj = md.addReligion(masReligion);
+				if(addReliObj!=null && addReliObj.equalsIgnoreCase("200")) {
+					json.put("status", 1);
+					json.put("msg", "Successfully Added");
+				}else {
+					json.put("status", 0);
+					json.put("msg", "Not Added");
+				}
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		
+		return json.toString();
+	}
+
+	@Override
+	public String updateReligionDetails(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsonObject!=null) {
+			
+			if(jsonObject.get("religionCode").toString()!= null && !jsonObject.get("religionCode").toString().trim().equalsIgnoreCase("")) {
+				
+				List<MasReligion> msReligionList = md.validateReligionUpdate(jsonObject.get("religionCode").toString(),jsonObject.get("religionName").toString());
+				if(msReligionList.size() > 0) {
+					return "{\"status\":\"0\",\"msg\":\"Religion Name is already exist !!!\"}";
+				}
+				
+					String updatereligion = md.updateReligionDetails(Long.parseLong(jsonObject.get("religionId").toString()),
+																		   jsonObject.get("religionCode").toString(),
+																			jsonObject.get("religionName").toString());
+																			
+																			
+					
+					if(updatereligion!=null && updatereligion.equalsIgnoreCase("200")) {
+						json.put("updatefreq", updatereligion);
+						json.put("msg", "Successfully Updated.");
+						json.put("status", 1);
+					}else {					
+						json.put("msg", "Not Updated.");
+						json.put("status", 0);
+						
+					}
+					
+				}else {
+					json.put("msg", "Data Not Found");
+					json.put("status", 0);
+					
+				}
+				
+			}
+		return json.toString();
+	}
+
+	@Override
+	public String updateReligionStatus(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		
+		if(jsonObject!=null) {
+			if(jsonObject.get("religionCode").toString() != null && !jsonObject.get("religionCode").toString().trim().equalsIgnoreCase("")) {
+				
+				MasReligion mReligion = md.checkReligion(jsonObject.get("religionCode").toString()); 
+				
+				if(mReligion!=null) {
+					String reliStatus = md.updateReligionStatus(Long.parseLong(jsonObject.get("religionId").toString()),
+															jsonObject.get("religionCode").toString(), 
+															jsonObject.get("status").toString());
+					
+					if(reliStatus!=null && reliStatus.equalsIgnoreCase("200")) {
+						json.put("reliStatus", reliStatus);
+						json.put("msg", "Status Updated Successfully");
+						json.put("status", 1);
+					}else {					
+						json.put("msg", "Status Not Updated");
+						json.put("status", 0);
+					}
+				}else {
+					json.put("msg", "Data Not Found");
+				}
+				
+			}
+		}
+		
+		return json.toString();
+	}
+
+	/***************************************MAS MARITAL STATUS***********************************************************************/
+
+	@Override
+	public String getAllMaritalStatus(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<MasMaritalStatus> maritalStatusList = new ArrayList<MasMaritalStatus>();
+		List list = new ArrayList();
+		if(jsondata!=null) {
+			Map<String, List<MasMaritalStatus>> mapMaritalStatus = md.getAllMaritalStatus(jsondata);
+			List totalMatches = new ArrayList();
+			if(mapMaritalStatus.get("maritalStatusList")!=null) {
+				maritalStatusList = mapMaritalStatus.get("maritalStatusList");
+				totalMatches = mapMaritalStatus.get("totalMatches");
+				for(MasMaritalStatus maritalStatus :maritalStatusList) {
+					HashMap<String, Object> mapObj = new HashMap<String, Object>();
+					if(maritalStatus!=null) {
+						mapObj.put("maritalStatusId", maritalStatus.getMaritalStatusId()) ;					
+						mapObj.put("maritalStatusCode", maritalStatus.getMaritalStatusCode()) ;					
+						mapObj.put("maritalStatusName", maritalStatus.getMaritalStatusName()) ;
+						mapObj.put("status", maritalStatus.getStatus());
+						
+					list.add(mapObj);
+				 }
+				}
+				
+				if(list!=null && list.size()>0) {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "successfully");
+					json.put("status", 1);
+				}else {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "No Record Found");
+					json.put("status", 0);
+				}
+				
+			}else {
+				json.put("statut", 0);
+				json.put("msg", "No Record Found");
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String addMaritalStatus(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsondata!=null) {
+			String status = "y";
+			Long lastChgBy = new Long(1);
+					
+			long d = System.currentTimeMillis();
+			Date date = new Date(d);
+				
+			MasMaritalStatus masMaritalStatus = new MasMaritalStatus();
+			
+			masMaritalStatus.setMaritalStatusCode(jsondata.get("maritalStatusCode").toString().toUpperCase());
+			masMaritalStatus.setMaritalStatusName(jsondata.get("maritalStatusName").toString().toUpperCase());
+			//masMaritalStatus.setLastChgBy(lastChgBy);
+			masMaritalStatus.setStatus("Y");
+			//masMaritalStatus.setLastChgDate(date);
+			
+			List<MasMaritalStatus> checkMaritalStatusList = md.validateMaritalStatus(masMaritalStatus.getMaritalStatusCode(),masMaritalStatus.getMaritalStatusName());
+			if(checkMaritalStatusList!=null && checkMaritalStatusList.size()>0) {
+				if(checkMaritalStatusList.get(0).getMaritalStatusCode().equalsIgnoreCase(jsondata.get("maritalStatusCode").toString())) {
+					
+					json.put("status", 2);
+					json.put("msg", "checkMaritalStatusList Code is already Existing");
+				}
+				if(checkMaritalStatusList.get(0).getMaritalStatusName().equalsIgnoreCase(jsondata.get("maritalStatusName").toString())) {
+					
+					json.put("status", 2);
+					json.put("msg", "MaritalStatus Name is already Existing");
+				}
+				
+			}else {
+				String addMaritalStatusObj = md.addMaritalStatus(masMaritalStatus);
+				if(addMaritalStatusObj!=null && addMaritalStatusObj.equalsIgnoreCase("200")) {
+					json.put("status", 1);
+					json.put("msg", "Successfully Added");
+				}else {
+					json.put("status", 0);
+					json.put("msg", "Not Added");
+				}
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		
+		return json.toString();
+	}
+
+	@Override
+	public String updateMaritalStatusDetails(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		System.out.println("jsonObject+jsonObject :: "+ jsonObject);
+		if(jsonObject!=null) {
+			
+			if(jsonObject.get("maritalStatusCode").toString()!= null && !jsonObject.get("maritalStatusCode").toString().trim().equalsIgnoreCase("")) {
+				
+				List<MasMaritalStatus> msMaritalStatusList = md.validateMaritalStatusUpdate(jsonObject.get("maritalStatusCode").toString(),jsonObject.get("maritalStatusCode").toString());
+				if(msMaritalStatusList.size() > 0) {
+					return "{\"status\":\"0\",\"msg\":\"Marital Status Name is already exist !!!\"}";
+				}
+				
+					String updateMaritalStatus = md.updateMaritalStatusDetails(Long.parseLong(jsonObject.get("maritalStatusId").toString()),
+																		   jsonObject.get("maritalStatusCode").toString(),
+																			jsonObject.get("maritalStatusName").toString());
+																				
+					if(updateMaritalStatus!=null && updateMaritalStatus.equalsIgnoreCase("200")) {
+						json.put("updateMaritalStatus", updateMaritalStatus);
+						json.put("msg", "Successfully Updated.");
+						json.put("status", 1);
+					}else {					
+						json.put("msg", "Not Updated.");
+						json.put("status", 0);
+						
+					}
+				
+				}else {
+					json.put("msg", "Data Not Found");
+					json.put("status", 0);
+					
+				}
+				
+			}
+		return json.toString();
+	}
+
+	@Override
+	public String updateMaritalStatusStatus(JSONObject MaritalStatus, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject();
+		
+		if(jsonObject!=null) {
+			if(MaritalStatus.get("maritalStatusCode").toString() != null && !MaritalStatus.get("maritalStatusCode").toString().trim().equalsIgnoreCase("")) {
+				
+				MasMaritalStatus mMaritalStatus = md.checkMaritalStatus(MaritalStatus.get("maritalStatusCode").toString()); 
+				
+				if(mMaritalStatus!=null) {
+					String maritalStatusStatus = md.updateMaritalStatusStatus(Long.parseLong(MaritalStatus.get("maritalStatusId").toString()),
+							MaritalStatus.get("maritalStatusCode").toString(), 
+							MaritalStatus.get("status").toString());
+					
+					if(maritalStatusStatus!=null && maritalStatusStatus.equalsIgnoreCase("200")) {
+						jsonObject.put("maritalStatusStatus", maritalStatusStatus);
+						jsonObject.put("msg", "Status Updated Successfully");
+						jsonObject.put("status", 1);
+					}else {					
+						jsonObject.put("msg", "Status Not Updated");
+						jsonObject.put("status", 0);
+					}
+				}else {
+					jsonObject.put("msg", "Data Not Found");
+				}
+				
+			}
+		}
+		
+		return jsonObject.toString();
+	}
+
+	/***************************************MAS EMPLOYEE CATEGORY***********************************************************************/
+
+	@Override
+	public String getAllEmployeeCategory(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<MasEmployeeCategory> employeeCategoryList = new ArrayList<MasEmployeeCategory>();
+		List list = new ArrayList();
+		if(jsondata!=null) {
+			Map<String, List<MasEmployeeCategory>> mapEmployeeCategory = md.getAllEmployeeCategory(jsondata);
+			List totalMatches = new ArrayList();
+			if(mapEmployeeCategory.get("employeeCategoryList")!=null) {
+				employeeCategoryList = mapEmployeeCategory.get("employeeCategoryList");
+				totalMatches = mapEmployeeCategory.get("totalMatches");
+				for(MasEmployeeCategory employeeCategory :employeeCategoryList) {
+					HashMap<String, Object> mapObj = new HashMap<String, Object>();
+					if(employeeCategory!=null) {
+						mapObj.put("employeeCategoryId", employeeCategory.getEmployeeCategoryId()) ;					
+						mapObj.put("employeeCategoryCode", employeeCategory.getEmployeeCategoryCode()) ;					
+						mapObj.put("employeeCategoryName", employeeCategory.getEmployeeCategoryName()) ;
+						mapObj.put("status", employeeCategory.getStatus());
+						
+					list.add(mapObj);
+				 }
+				}
+				
+				if(list!=null && list.size()>0) {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "successfully");
+					json.put("status", 1);
+				}else {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "No Record Found");
+					json.put("status", 0);
+				}
+				
+			}else {
+				json.put("statut", 0);
+				json.put("msg", "No Record Found");
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String addEmployeeCategory(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsondata!=null) {
+			String status = "y";
+			Long lastChgBy = new Long(1);
+					
+			long d = System.currentTimeMillis();
+			Date date = new Date(d);
+				
+			MasEmployeeCategory masEmployeeCategory = new MasEmployeeCategory();
+			
+			masEmployeeCategory.setEmployeeCategoryCode(Long.parseLong((jsondata.get("employeeCategoryCode")).toString().toUpperCase()));
+			masEmployeeCategory.setEmployeeCategoryName(jsondata.get("employeeCategoryName").toString().toUpperCase());
+			//masMaritalStatus.setLastChgBy(lastChgBy);
+			masEmployeeCategory.setStatus("Y");
+			//masMaritalStatus.setLastChgDate(date);
+			
+			List<MasEmployeeCategory> checkEmployeeCategoryList = md.validateEmployeeCategory(masEmployeeCategory.getEmployeeCategoryCode(),masEmployeeCategory.getEmployeeCategoryName());
+			if(checkEmployeeCategoryList!=null && checkEmployeeCategoryList.size()>0) {
+				if(checkEmployeeCategoryList.get(0).getEmployeeCategoryCode().toString().equalsIgnoreCase(jsondata.get("employeeCategoryCode").toString())) {
+					
+					json.put("status", 2);
+					json.put("msg", "checkEmployeeCategoryList Code is already Existing");
+				}
+				if(checkEmployeeCategoryList.get(0).getEmployeeCategoryName().equalsIgnoreCase(jsondata.get("employeeCategoryName").toString())) {
+					
+					json.put("status", 2);
+					json.put("msg", "EmployeeCategory Name is already Existing");
+				}
+				
+			}else {
+				String addEmployeeCategoryObj = md.addEmployeeCategory(masEmployeeCategory);
+				if(addEmployeeCategoryObj!=null && addEmployeeCategoryObj.equalsIgnoreCase("200")) {
+					json.put("status", 1);
+					json.put("msg", "Successfully Added");
+				}else {
+					json.put("status", 0);
+					json.put("msg", "Not Added");
+				}
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		
+		return json.toString();
+	}
+
+	@Override
+	public String updateEmployeeCategoryDetails(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsonObject!=null) {
+			
+			if(jsonObject.get("employeeCategoryCode").toString()!= null && !jsonObject.get("employeeCategoryCode").toString().trim().equalsIgnoreCase("")) {
+				
+				List<MasEmployeeCategory> msEmployeeCategoryList = md.validateEmployeeCategoryUpdate(Long.parseLong(jsonObject.get("employeeCategoryCode").toString()), jsonObject.get("employeeCategoryName").toString());
+				if(msEmployeeCategoryList.size() > 0) {
+					return "{\"status\":\"0\",\"msg\":\"EmployeeCategory Name is already exist !!!\"}";
+				}
+				
+					String updateEmployeeCategory = md.updateEmployeeCategoryDetails(Long.parseLong(jsonObject.get("employeeCategoryId").toString()),
+																		   jsonObject.get("employeeCategoryCode").toString(),
+																			jsonObject.get("employeeCategoryName").toString());
+					
+					if(updateEmployeeCategory!=null && updateEmployeeCategory.equalsIgnoreCase("200")) {
+						json.put("updateEmployeeCategory", updateEmployeeCategory);
+						json.put("msg", "Successfully Updated.");
+						json.put("status", 1);
+					}else {					
+						json.put("msg", "Not Updated.");
+						json.put("status", 0);
+						
+					}
+					
+				}else {
+					json.put("msg", "Data Not Found");
+					json.put("status", 0);
+				}
+				}
+		return json.toString();
+	}
+
+
+	@Override
+	public String updateEmployeeCategoryStatus(JSONObject EmployeeCategory, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject();
+		
+		if(jsonObject!=null) {
+			if(EmployeeCategory.get("employeeCategoryCode").toString() != null && !EmployeeCategory.get("employeeCategoryCode").toString().trim().equalsIgnoreCase("")) {
+				
+				MasEmployeeCategory mEmployeeCategory = md.checkEmployeeCategory(EmployeeCategory.get("employeeCategoryCode").toString()); 
+				
+				if(mEmployeeCategory!=null) {
+					String employeeCategoryStatus = md.updateEmployeeCategoryStatus(Long.parseLong(EmployeeCategory.get("employeeCategoryId").toString()),
+							EmployeeCategory.get("employeeCategoryCode").toString(), 
+							EmployeeCategory.get("status").toString());
+					
+					if(employeeCategoryStatus!=null && employeeCategoryStatus.equalsIgnoreCase("200")) {
+						jsonObject.put("employeeCategoryStatus", employeeCategoryStatus);
+						jsonObject.put("msg", "Status Updated Successfully");
+						jsonObject.put("status", 1);
+					}else {					
+						jsonObject.put("msg", "Status Not Updated");
+						jsonObject.put("status", 0);
+					}
+				}else {
+					jsonObject.put("msg", "Data Not Found");
+				}
+				
+			}
+		}
+		
+		return jsonObject.toString();
+	}
+
+	/***************************************MAS Administrative Sex***********************************************************************/
+
+	@Override
+	public String getAllAdministrativeSex(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<MasAdministrativeSex> administrativeSexList = new ArrayList<MasAdministrativeSex>();
+		List list = new ArrayList();
+		if(jsondata!=null) {
+			Map<String, List<MasAdministrativeSex>> mapAdministrativeSex = md.getAllAdministrativeSex(jsondata);
+			List totalMatches = new ArrayList();
+			if(mapAdministrativeSex.get("administrativeSexList")!=null) {
+				administrativeSexList = mapAdministrativeSex.get("administrativeSexList");
+				totalMatches = mapAdministrativeSex.get("totalMatches");
+				for(MasAdministrativeSex administrativeSex :administrativeSexList) {
+					HashMap<String, Object> mapObj = new HashMap<String, Object>();
+					if(administrativeSex!=null) {
+						mapObj.put("administrativeSexId", administrativeSex.getAdministrativeSexId()) ;					
+						mapObj.put("administrativeSexCode", administrativeSex.getAdministrativeSexCode()) ;					
+						mapObj.put("administrativeSexName", administrativeSex.getAdministrativeSexName()) ;
+						mapObj.put("status", administrativeSex.getStatus());
+						
+					list.add(mapObj);
+				 }
+				}
+				
+				if(list!=null && list.size()>0) {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "successfully");
+					json.put("status", 1);
+				}else {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "No Record Found");
+					json.put("status", 0);
+				}
+				
+			}else {
+				json.put("statut", 0);
+				json.put("msg", "No Record Found");
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String addAdministrativeSex(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsondata!=null) {
+			String status = "y";
+			Long lastChgBy = new Long(1);
+					
+			long d = System.currentTimeMillis();
+			Date date = new Date(d);
+				
+			MasAdministrativeSex masAdministrativeSex = new MasAdministrativeSex();
+			
+			masAdministrativeSex.setAdministrativeSexCode(jsondata.get("administrativeSexCode").toString().toUpperCase());
+			masAdministrativeSex.setAdministrativeSexName(jsondata.get("administrativeSexName").toString().toUpperCase());
+			//masMaritalStatus.setLastChgBy(lastChgBy);
+			masAdministrativeSex.setStatus("Y");
+			//masMaritalStatus.setLastChgDate(date);
+			
+			List<MasAdministrativeSex> checkAdministrativeSexList = md.validateAdministrativeSex(masAdministrativeSex.getAdministrativeSexCode(),masAdministrativeSex.getAdministrativeSexName());
+			if(checkAdministrativeSexList!=null && checkAdministrativeSexList.size()>0) {
+				if(checkAdministrativeSexList.get(0).getAdministrativeSexCode().equalsIgnoreCase(jsondata.get("administrativeSexCode").toString())) {
+					
+					json.put("status", 2);
+					json.put("msg", "checkAdministrativeSexList Code is already Existing");
+				}
+				if(checkAdministrativeSexList.get(0).getAdministrativeSexName().equalsIgnoreCase(jsondata.get("administrativeSexName").toString())) {
+					
+					json.put("status", 2);
+					json.put("msg", "AdministrativeSex Name is already Existing");
+				}
+				
+			}else {
+				String addAdministrativeSexObj = md.addAdministrativeSex(masAdministrativeSex);
+				if(addAdministrativeSexObj!=null && addAdministrativeSexObj.equalsIgnoreCase("200")) {
+					json.put("status", 1);
+					json.put("msg", "Successfully Added");
+				}else {
+					json.put("status", 0);
+					json.put("msg", "Not Added");
+				}
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		
+		return json.toString();
+	}
+
+	@Override
+	public String updateAdministrativeSexDetails(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsonObject!=null) {
+			
+			if(jsonObject.get("administrativeSexCode").toString()!= null && !jsonObject.get("administrativeSexCode").toString().trim().equalsIgnoreCase("")) {
+				
+				List<MasAdministrativeSex> msAdministrativeSexList = md.validateAdministrativeSexUpdate(jsonObject.get("administrativeSexCode").toString(),jsonObject.get("administrativeSexName").toString());
+				if(msAdministrativeSexList.size() > 0) {
+					return "{\"status\":\"0\",\"msg\":\"Gender Name is already exist !!!\"}";
+				}
+				
+					String updateAdministrativeSex = md.updateAdministrativeSexDetails(Long.parseLong(jsonObject.get("administrativeSexId").toString()),
+																		   jsonObject.get("administrativeSexCode").toString(),
+																			jsonObject.get("administrativeSexName").toString());
+																			
+																			
+					
+					if(updateAdministrativeSex!=null && updateAdministrativeSex.equalsIgnoreCase("200")) {
+						json.put("updateAdministrativeSex", updateAdministrativeSex);
+						json.put("msg", "Successfully Updated.");
+						json.put("status", 1);
+					}else {					
+						json.put("msg", "Not Updated.");
+						json.put("status", 0);
+						
+					}
+					
+				}else {
+					json.put("msg", "Data Not Found");
+					json.put("status", 0);
+					
+				}
+				
+			}
+		return json.toString();
+	}
+
+	@Override
+	public String updateAdministrativeSexStatus(JSONObject AdministrativeSex, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject();
+		
+		if(jsonObject!=null) {
+			if(AdministrativeSex.get("administrativeSexCode").toString() != null && !AdministrativeSex.get("administrativeSexCode").toString().trim().equalsIgnoreCase("")) {
+				
+				MasAdministrativeSex mAdministrativeSex = md.checkAdministrativeSex(AdministrativeSex.get("administrativeSexCode").toString()); 
+				
+				if(mAdministrativeSex!=null) {
+					String administrativeSexStatus = md.updateAdministrativeSexStatus(Long.parseLong(AdministrativeSex.get("administrativeSexId").toString()),
+							AdministrativeSex.get("administrativeSexCode").toString(), 
+							AdministrativeSex.get("status").toString());
+					
+					if(administrativeSexStatus!=null && administrativeSexStatus.equalsIgnoreCase("200")) {
+						jsonObject.put("administrativeSexStatus", administrativeSexStatus);
+						jsonObject.put("msg", "Status Updated Successfully");
+						jsonObject.put("status", 1);
+					}else {					
+						jsonObject.put("msg", "Status Not Updated");
+						jsonObject.put("status", 0);
+					}
+				}else {
+					jsonObject.put("msg", "Data Not Found");
+				}
+				
+			}
+		}
+		
+		return jsonObject.toString();
+	}
+
+	/***************************************MAS Medical Category***********************************************************************/
+
+	@Override
+	public String getAllMedicalCategory(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<MasMedicalCategory> medicalCategoryList = new ArrayList<MasMedicalCategory>();
+		List list = new ArrayList();
+		System.out.println("jsondata+jsondata :: "+ jsondata);
+		if(jsondata!=null) {
+			Map<String, List<MasMedicalCategory>> mapMedicalCategory = md.getAllMedicalCategory(jsondata);
+			List totalMatches = new ArrayList();
+			if(mapMedicalCategory.get("medicalCategoryList")!=null) {
+				medicalCategoryList = mapMedicalCategory.get("medicalCategoryList");
+				totalMatches = mapMedicalCategory.get("totalMatches");
+				for(MasMedicalCategory medicalCategory :medicalCategoryList) {
+					HashMap<String, Object> mapObj = new HashMap<String, Object>();
+					if(medicalCategory!=null) {
+						mapObj.put("medicalCategoryId", medicalCategory.getMedicalCategoryId()) ;					
+						mapObj.put("medicalCategoryCode", medicalCategory.getMedicalCategoryCode()) ;					
+						mapObj.put("medicalCategoryName", medicalCategory.getMedicalCategoryName()) ;
+						mapObj.put("status", medicalCategory.getStatus());
+						
+					list.add(mapObj);
+				 }
+				}
+				
+				if(list!=null && list.size()>0) {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "successfully");
+					json.put("status", 1);
+				}else {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "No Record Found");
+					json.put("status", 0);
+				}
+				
+			}else {
+				json.put("statut", 0);
+				json.put("msg", "No Record Found");
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String addMedicalCategory(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsondata!=null) {
+			String status = "y";
+			Long lastChgBy = new Long(1);
+					
+			long d = System.currentTimeMillis();
+			Date date = new Date(d);
+				
+			MasMedicalCategory masMedicalCategory = new MasMedicalCategory();
+			
+			masMedicalCategory.setMedicalCategoryCode(Long.parseLong((String)jsondata.get("medicalCategoryCode")));
+			masMedicalCategory.setMedicalCategoryName(jsondata.get("medicalCategoryName").toString().toUpperCase());
+			//masMaritalStatus.setLastChgBy(lastChgBy);
+			masMedicalCategory.setStatus("Y");
+			//masMaritalStatus.setLastChgDate(date);
+			
+			List<MasMedicalCategory> checkMedicalCategoryList = md.validateMedicalCategory(masMedicalCategory.getMedicalCategoryCode(),masMedicalCategory.getMedicalCategoryName());
+			if(checkMedicalCategoryList!=null && checkMedicalCategoryList.size()>0) {
+				if((checkMedicalCategoryList.get(0).getMedicalCategoryCode()+"").equalsIgnoreCase((String)jsondata.get("medicalCategoryCode"))) {
+					
+					json.put("status", 2);
+					json.put("msg", "checkMedicalCategoryList Code is already Existing");
+				}
+				if(checkMedicalCategoryList.get(0).getMedicalCategoryName().equalsIgnoreCase(jsondata.get("medicalCategoryName").toString())) {
+					
+					json.put("status", 2);
+					json.put("msg", "MedicalCategory Name is already Existing");
+				}
+				
+			}else {
+				String addmedicalCategoryObj = md.addMedicalCategory(masMedicalCategory);
+				if(addmedicalCategoryObj!=null && addmedicalCategoryObj.equalsIgnoreCase("200")) {
+					json.put("status", 1);
+					json.put("msg", "Successfully Added");
+				}else {
+					json.put("status", 0);
+					json.put("msg", "Not Added");
+				}
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		
+		return json.toString();
+	}
+
+	@Override
+	public String updateMedicalCategoryDetails(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsonObject!=null) {
+			
+			if(jsonObject.get("medicalCategoryCode").toString()!= null && !jsonObject.get("medicalCategoryCode").toString().trim().equalsIgnoreCase("")) {
+				
+				List<MasMedicalCategory> msMedicalCategoryList = md.validateMedicalCategoryUpdate(Long.parseLong(jsonObject.get("medicalCategoryCode").toString()),jsonObject.get("medicalCategoryName").toString());
+				if(msMedicalCategoryList.size() > 0) {
+					return "{\"status\":\"0\",\"msg\":\"MedicalCategory Name is already exist !!!\"}";
+				}
+					String updateMedicalCategory = md.updateMedicalCategoryDetails(Long.parseLong(jsonObject.get("medicalCategoryId").toString()),
+																		   (Long.parseLong(jsonObject.get("medicalCategoryCode").toString())),
+																			jsonObject.get("medicalCategoryName").toString());
+																			
+																			
+					
+					if(updateMedicalCategory!=null && updateMedicalCategory.equalsIgnoreCase("200")) {
+						json.put("updateMedicalCategory", updateMedicalCategory);
+						json.put("msg", "Successfully Updated.");
+						json.put("status", 1);
+					}else {					
+						json.put("msg", "Not Updated.");
+						json.put("status", 0);
+						
+					}
+					
+				}else {
+					json.put("msg", "Data Not Found");
+					json.put("status", 0);
+					
+				}
+				
+			}
+		return json.toString();
+	}
+
+	@Override
+	public String updateMedicalCategoryStatus(JSONObject MedicalCategory, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject();
+		
+		if(jsonObject!=null) {
+			if(MedicalCategory.get("medicalCategoryCode").toString() != null && !MedicalCategory.get("medicalCategoryCode").toString().trim().equalsIgnoreCase("")) {
+				
+				MasMedicalCategory mMedicalCategory = md.checkMedicalCategory(Long.parseLong((MedicalCategory.get("medicalCategoryCode").toString()))); 
+				
+				if(mMedicalCategory!=null) {
+					String medicalCategoryStatus = md.updateMedicalCategoryStatus(Long.parseLong(MedicalCategory.get("medicalCategoryId").toString()),
+							(Long.parseLong(MedicalCategory.get("medicalCategoryCode").toString())), 
+							MedicalCategory.get("status").toString());
+					
+					if(medicalCategoryStatus!=null && medicalCategoryStatus.equalsIgnoreCase("200")) {
+						jsonObject.put("medicalCategoryStatus", medicalCategoryStatus);
+						jsonObject.put("msg", "Status Updated Successfully");
+						jsonObject.put("status", 1);
+					}else {					
+						jsonObject.put("msg", "Status Not Updated");
+						jsonObject.put("status", 0);
+					}
+				}else {
+					jsonObject.put("msg", "Data Not Found");
+				}
+				
+			}
+		}
+		
+		return jsonObject.toString();
+	}
+
+	/***************************************MAS Blood Group***********************************************************************/
+
+	@Override
+	public String getAllBloodGroup(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<MasBloodGroup> bloodGroupList = new ArrayList<MasBloodGroup>();
+		List list = new ArrayList();
+		if(jsondata!=null) {
+			Map<String, List<MasBloodGroup>> mapBloodGroup = md.getAllBloodGroup(jsondata);
+			List totalMatches = new ArrayList();
+			if(mapBloodGroup.get("bloodGroupList")!=null) {
+				bloodGroupList = mapBloodGroup.get("bloodGroupList");
+				totalMatches = mapBloodGroup.get("totalMatches");
+				for(MasBloodGroup bloodGroup :bloodGroupList) {
+					HashMap<String, Object> mapObj = new HashMap<String, Object>();
+					if(bloodGroup!=null) {
+						mapObj.put("bloodGroupId", bloodGroup.getBloodGroupId()) ;					
+						mapObj.put("bloodGroupCode", bloodGroup.getBloodGroupCode()) ;					
+						mapObj.put("bloodGroupName", bloodGroup.getBloodGroupName()) ;
+						mapObj.put("status", bloodGroup.getStatus());
+						
+					list.add(mapObj);
+				 }
+				}
+				
+				if(list!=null && list.size()>0) {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "successfully");
+					json.put("status", 1);
+				}else {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "No Record Found");
+					json.put("status", 0);
+				}
+				
+			}else {
+				json.put("statut", 0);
+				json.put("msg", "No Record Found");
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String addBloodGroup(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsondata!=null) {
+			String status = "y";
+			Long lastChgBy = new Long(1);
+					
+			long d = System.currentTimeMillis();
+			Date date = new Date(d);
+				
+			MasBloodGroup masBloodGroup = new MasBloodGroup();
+			
+			masBloodGroup.setBloodGroupCode((String)jsondata.get("bloodGroupCode"));
+			masBloodGroup.setBloodGroupName(jsondata.get("bloodGroupName").toString().toUpperCase());
+			//masBloodGroup.setLastChgBy(lastChgBy);
+			masBloodGroup.setStatus("Y");
+			//masMaritalStatus.setLastChgDate(date);
+			
+			List<MasBloodGroup> checkBloodGroupList = md.validateBloodGroup(masBloodGroup.getBloodGroupCode(),masBloodGroup.getBloodGroupName());
+			if(checkBloodGroupList!=null && checkBloodGroupList.size()>0) {
+				if((checkBloodGroupList.get(0).getBloodGroupCode()+"").equalsIgnoreCase((String)jsondata.get("bloodGroupCode"))) {
+					
+					json.put("status", 2);
+					json.put("msg", "checkBloodGroupList Code is already Existing");
+				}
+				if(checkBloodGroupList.get(0).getBloodGroupName().equalsIgnoreCase(jsondata.get("bloodGroupName").toString())) {
+					
+					json.put("status", 2);
+					json.put("msg", "BloodGroup Name is already Existing");
+				}
+				
+			}else {
+				String addBloodGroupObj = md.addBloodGroup(masBloodGroup);
+				if(addBloodGroupObj!=null && addBloodGroupObj.equalsIgnoreCase("200")) {
+					json.put("status", 1);
+					json.put("msg", "Successfully Added");
+				}else {
+					json.put("status", 0);
+					json.put("msg", "Not Added");
+				}
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		
+		return json.toString();
+	}
+
+	@Override
+	public String updateBloodGroupDetails(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsonObject!=null) {
+			
+			if(jsonObject.get("bloodGroupCode").toString()!= null && !jsonObject.get("bloodGroupCode").toString().trim().equalsIgnoreCase("")) {
+				
+				List<MasBloodGroup> msBloodGroupList = md.validateBloodGroupUpdate(jsonObject.get("bloodGroupCode").toString(),jsonObject.get("bloodGroupName").toString());
+				if(msBloodGroupList.size() > 0) {
+					return "{\"status\":\"0\",\"msg\":\"BloodGroup Name is already exist !!!\"}";
+				}
+				
+					String updateBloodGroup = md.updateBloodGroupDetails(Long.parseLong(jsonObject.get("bloodGroupId").toString()),
+																		   (jsonObject.get("bloodGroupCode").toString()),
+																			jsonObject.get("bloodGroupName").toString());
+																			
+																			
+					
+					if(updateBloodGroup!=null && updateBloodGroup.equalsIgnoreCase("200")) {
+						json.put("updateBloodGroup", updateBloodGroup);
+						json.put("msg", "Successfully Updated.");
+						json.put("status", 1);
+					}else {					
+						json.put("msg", "Not Updated.");
+						json.put("status", 0);
+						
+					}
+					
+				}else {
+					json.put("msg", "Data Not Found");
+					json.put("status", 0);
+					
+				}
+				
+			}
+		return json.toString();
+	}
+
+	@Override
+	public String updateBloodGroupStatus(JSONObject BloodGroup, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject();
+		
+		if(jsonObject!=null) {
+			if(BloodGroup.get("bloodGroupCode").toString() != null && !BloodGroup.get("bloodGroupCode").toString().trim().equalsIgnoreCase("")) {
+				
+				MasBloodGroup mBloodGroup = md.checkBloodGroup(BloodGroup.get("bloodGroupCode").toString()); 
+				
+				if(mBloodGroup!=null) {
+					String bloodGroupStatus = md.updateBloodGroupStatus(Long.parseLong(BloodGroup.get("bloodGroupId").toString()),
+							(BloodGroup.get("bloodGroupCode").toString()), 
+							BloodGroup.get("status").toString());
+					
+					if(bloodGroupStatus!=null && bloodGroupStatus.equalsIgnoreCase("200")) {
+						jsonObject.put("bloodGroupStatus", bloodGroupStatus);
+						jsonObject.put("msg", "Status Updated Successfully");
+						jsonObject.put("status", 1);
+					}else {					
+						jsonObject.put("msg", "Status Not Updated");
+						jsonObject.put("status", 0);
+					}
+				}else {
+					jsonObject.put("msg", "Data Not Found");
+				}
+				
+			}
+		}
+		
+		return jsonObject.toString();
+	}
+
+
+	/***************************************MAS Sample***********************************************************************/
+
+	@Override
+	public String getAllSample(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<MasSample> sampleList = new ArrayList<MasSample>();
+		List list = new ArrayList();
+		System.out.println("jsondata_SERVICE"+jsondata);
+		if(jsondata!=null) {
+			Map<String, List<MasSample>> mapSample = md.getAllSample(jsondata);
+			List totalMatches = new ArrayList();
+			if(mapSample.get("sampleList")!=null) {
+				sampleList = mapSample.get("sampleList");
+				totalMatches = mapSample.get("totalMatches");
+				for(MasSample sample :sampleList) {
+					HashMap<String, Object> mapObj = new HashMap<String, Object>();
+					if(sample!=null) {
+						mapObj.put("sampleId", sample.getSampleId()) ;					
+						mapObj.put("sampleCode", sample.getSampleCode()) ;					
+						mapObj.put("sampleDescription", sample.getSampleDescription()) ;
+						mapObj.put("status", sample.getStatus());
+						
+					list.add(mapObj);
+				 }
+				}
+				
+				if(list!=null && list.size()>0) {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "successfully");
+					json.put("status", 1);
+				}else {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "No Record Found");
+					json.put("status", 0);
+				}
+				
+			}else {
+				json.put("statut", 0);
+				json.put("msg", "No Record Found");
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String addSample(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		System.out.println("jsondata + SAMPLE:::::"+jsondata);
+		if(jsondata!=null) {
+			String status = "y";
+			//Long lastChgBy = new Long(1);
+					
+			long d = System.currentTimeMillis();
+			Date date = new Date(d);
+				
+			MasSample masSample = new MasSample();
+			
+			masSample.setSampleCode(jsondata.get("sampleCode").toString().toUpperCase());
+			masSample.setSampleDescription(jsondata.get("sampleDescription").toString().toUpperCase());
+			//masSample.setLastChgBy(lastChgBy);
+			masSample.setStatus("Y");
+			//masMaritalStatus.setLastChgDate(date);
+			
+			List<MasSample> checkSampleList = md.validateSample(masSample.getSampleCode(),masSample.getSampleDescription());
+			if(checkSampleList!=null && checkSampleList.size()>0) {
+				if(checkSampleList.get(0).getSampleCode().equalsIgnoreCase(jsondata.get("sampleCode").toString())) {
+					
+					json.put("status", 2);
+					json.put("msg", "checkSampleList Code is already Existing");
+				}
+				if(checkSampleList.get(0).getSampleDescription().equalsIgnoreCase(jsondata.get("sampleDescription").toString())) {
+					
+					json.put("status", 2);
+					json.put("msg", "Sample Name is already Existing");
+				}
+				
+			}else {
+				String addSampleObj = md.addSample(masSample);
+				if(addSampleObj!=null && addSampleObj.equalsIgnoreCase("200")) {
+					json.put("status", 1);
+					json.put("msg", "Successfully Added");
+				}else {
+					json.put("status", 0);
+					json.put("msg", "Not Added");
+				}
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		
+		return json.toString();
+	}
+
+	@Override
+	public String updateSampleDetails(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsonObject!=null) {
+			
+			if(jsonObject.get("sampleCode").toString()!= null && !jsonObject.get("sampleCode").toString().trim().equalsIgnoreCase("")) {
+				
+				List<MasSample> msSampleList = md.validateSampleUpdate(jsonObject.get("sampleCode").toString(),jsonObject.get("sampleDescription").toString());
+				if(msSampleList.size() > 0) {
+					return "{\"status\":\"0\",\"msg\":\"Sample Name is already exist !!!\"}";
+				}
+				
+					String updateSample = md.updateSampleDetails(Long.parseLong(jsonObject.get("sampleId").toString()),
+																		   jsonObject.get("sampleCode").toString(),
+																			jsonObject.get("sampleDescription").toString());
+					
+					if(updateSample!=null && updateSample.equalsIgnoreCase("200")) {
+						json.put("updateSample", updateSample);
+						json.put("msg", "Successfully Updated.");
+						json.put("status", 1);
+					}else {					
+						json.put("msg", "Not Updated.");
+						json.put("status", 0);
+						
+					}
+					
+				}else {
+					json.put("msg", "Data Not Found");
+					json.put("status", 0);
+					
+				}
+				
+			}
+		return json.toString();
+	}
+
+	@Override
+	public String updateSampleStatus(JSONObject Sample, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject();
+		
+		if(jsonObject!=null) {
+			if(Sample.get("sampleCode").toString() != null && !Sample.get("sampleCode").toString().trim().equalsIgnoreCase("")) {
+				
+				MasSample mSample = md.checkSample(Sample.get("sampleCode").toString()); 
+				
+				if(mSample!=null) {
+					String sampleStatus = md.updateSampleStatus(Long.parseLong(Sample.get("sampleId").toString()),
+							Sample.get("sampleCode").toString(), 
+							Sample.get("status").toString());
+					
+					if(sampleStatus!=null && sampleStatus.equalsIgnoreCase("200")) {
+						jsonObject.put("sampleStatus", sampleStatus);
+						jsonObject.put("msg", "Status Updated Successfully");
+						jsonObject.put("status", 1);
+					}else {					
+						jsonObject.put("msg", "Status Not Updated");
+						jsonObject.put("status", 0);
+					}
+				}else {
+					jsonObject.put("msg", "Data Not Found");
+				}
+				
+			}
+		}
+		
+		return jsonObject.toString();
+	}
+
+	/***************************************MAS UOM***********************************************************************/
+
+	@Override
+	public String getAllUOM(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<MasUOM> UOMList = new ArrayList<MasUOM>();
+		List list = new ArrayList();
+		if(jsondata!=null) {
+			Map<String, List<MasUOM>> mapUOM = md.getAllUOM(jsondata);
+			List totalMatches = new ArrayList();
+			if(mapUOM.get("UOMList")!=null) {
+				UOMList = mapUOM.get("UOMList");
+				totalMatches = mapUOM.get("totalMatches");
+				for(MasUOM UOM :UOMList) {
+					HashMap<String, Object> mapObj = new HashMap<String, Object>();
+					if(UOM!=null) {
+						mapObj.put("UOMId", UOM.getUOMId()) ;					
+						mapObj.put("UOMCode", UOM.getUOMCode()) ;					
+						mapObj.put("UOMName", UOM.getUOMName()) ;
+						mapObj.put("status", UOM.getUOMStatus());
+						
+					list.add(mapObj);
+				 }
+				}
+				
+				if(list!=null && list.size()>0) {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "successfully");
+					json.put("status", 1);
+				}else {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "No Record Found");
+					json.put("status", 0);
+				}
+				
+			}else {
+				json.put("statut", 0);
+				json.put("msg", "No Record Found");
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String addUOM(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsondata!=null) {
+			String status = "y";
+			Long lastChgBy = new Long(1);
+					
+			long d = System.currentTimeMillis();
+			Date date = new Date(d);
+				
+			MasUOM masUOM = new MasUOM();
+			
+			masUOM.setUOMCode(jsondata.get("UOMCode").toString().toUpperCase());
+			masUOM.setUOMName(jsondata.get("UOMName").toString().toUpperCase());
+			//masUOM.setLastChgBy(lastChgBy);
+			masUOM.setUOMStatus("Y");
+			//masMaritalStatus.setLastChgDate(date);
+			
+			List<MasUOM> checkUOMList = md.validateUOM(masUOM.getUOMCode(),masUOM.getUOMName());
+			if(checkUOMList!=null && checkUOMList.size()>0) {
+				if(checkUOMList.get(0).getUOMCode().equalsIgnoreCase(jsondata.get("UOMCode").toString())) {
+					
+					json.put("status", 2);
+					json.put("msg", "checkUOMList Code is already Existing");
+				}
+				if(checkUOMList.get(0).getUOMName().equalsIgnoreCase(jsondata.get("UOMName").toString())) {
+					
+					json.put("status", 2);
+					json.put("msg", "UOM Name is already Existing");
+				}
+				
+			}else {
+				String addUOMObj = md.addUOM(masUOM);
+				if(addUOMObj!=null && addUOMObj.equalsIgnoreCase("200")) {
+					json.put("status", 1);
+					json.put("msg", "Successfully Added");
+				}else {
+					json.put("status", 0);
+					json.put("msg", "Not Added");
+				}
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		
+		return json.toString();
+	}
+
+	@Override
+	public String updateUOMDetails(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsonObject!=null) {
+			
+			if(jsonObject.get("UOMCode").toString()!= null && !jsonObject.get("UOMCode").toString().trim().equalsIgnoreCase("")) {
+				
+				List<MasUOM> msUOMList = md.validateUOMUpdate(jsonObject.get("UOMCode").toString(),jsonObject.get("UOMName").toString());
+				if(msUOMList.size() > 0) {
+					return "{\"status\":\"0\",\"msg\":\"UOM Name is already exist !!!\"}";
+				}
+				
+					String updateUOM = md.updateUOMDetails(Long.parseLong(jsonObject.get("UOMId").toString()),
+																		   jsonObject.get("UOMCode").toString(),
+																			jsonObject.get("UOMName").toString());
+																			
+																			
+					
+					if(updateUOM!=null && updateUOM.equalsIgnoreCase("200")) {
+						json.put("updateUOM", updateUOM);
+						json.put("msg", "Successfully Updated.");
+						json.put("status", 1);
+					}else {					
+						json.put("msg", "Not Updated.");
+						json.put("status", 0);
+						
+					}
+					
+				}else {
+					json.put("msg", "Data Not Found");
+					json.put("status", 0);
+					
+				}
+				
+			}
+		return json.toString();
+	}
+
+	@Override
+	public String updateUOMStatus(JSONObject UOM, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject();
+		if(UOM!=null) {
+			if(UOM.get("UOMCode").toString() != null && !UOM.get("UOMCode").toString().trim().equalsIgnoreCase("")) {
+				
+				MasUOM mUOM = md.checkUOM(UOM.get("UOMCode").toString()); 
+				
+				if(mUOM!=null) {
+					String UOMStatus = md.updateUOMStatus(Long.parseLong(UOM.get("UOMId").toString()),
+							UOM.get("UOMCode").toString(), 
+							UOM.get("status").toString());
+					
+					if(UOMStatus!=null && UOMStatus.equalsIgnoreCase("200")) {
+						jsonObject.put("UOMStatus", UOMStatus);
+						jsonObject.put("msg", "Status Updated Successfully");
+						jsonObject.put("status", 1);
+					}else {					
+						jsonObject.put("msg", "Status Not Updated");
+						jsonObject.put("status", 0);
+					}
+				}else {
+					jsonObject.put("msg", "Data Not Found");
+				}
+				
+			}
+		}
+		
+		return jsonObject.toString();
+	}
+
+	/***************************************MAS ItemUnit***********************************************************************/
+
+	@Override
+	public String getAllItemUnit(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<MasStoreUnit> ItemUnitList = new ArrayList<MasStoreUnit>();
+		List list = new ArrayList();
+		if(jsondata!=null) {
+			Map<String, List<MasStoreUnit>> mapItemUnit = md.getAllItemUnit(jsondata);
+			List totalMatches = new ArrayList();
+			if(mapItemUnit.get("ItemUnitList")!=null) {
+				ItemUnitList = mapItemUnit.get("ItemUnitList");
+				totalMatches = mapItemUnit.get("totalMatches");
+				for(MasStoreUnit ItemUnit :ItemUnitList) {
+					HashMap<String, Object> mapObj = new HashMap<String, Object>();
+					if(ItemUnit!=null) {
+						mapObj.put("storeUnitId", ItemUnit.getStoreUnitId()) ;									
+						mapObj.put("storeUnitName", ItemUnit.getStoreUnitName()) ;
+						mapObj.put("status", ItemUnit.getStatus());
+						
+					list.add(mapObj);
+				 }
+				}
+				
+				if(list!=null && list.size()>0) {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "successfully");
+					json.put("status", 1);
+				}else {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "No Record Found");
+					json.put("status", 0);
+				}
+				
+			}else {
+				json.put("statut", 0);
+				json.put("msg", "No Record Found");
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String addItemUnit(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsondata!=null) {
+			String status = "y";
+			Long lastChgBy = new Long(1);
+					
+			long d = System.currentTimeMillis();
+			Date date = new Date(d);
+				
+			MasStoreUnit masStoreUnit = new MasStoreUnit();
+			
+			masStoreUnit.setStoreUnitName(jsondata.get("storeUnitName").toString().toUpperCase());
+			masStoreUnit.setLastChgBy(lastChgBy);
+			masStoreUnit.setStatus("Y");
+			//masMaritalStatus.setLastChgDate(date);
+			
+			List<MasStoreUnit> checkItemUnitList = md.validateItemUnit(masStoreUnit.getStoreUnitName());
+			if(checkItemUnitList!=null && checkItemUnitList.size()>0) {
+				
+				if(checkItemUnitList.get(0).getStoreUnitName().equalsIgnoreCase(jsondata.get("storeUnitName").toString())) {
+					
+					json.put("status", 2);
+					json.put("msg", "Item Unit Name is already Existing");
+				}
+				
+			}else {
+				String addItemUnitObj = md.addItemUnit(masStoreUnit);
+				if(addItemUnitObj!=null && addItemUnitObj.equalsIgnoreCase("200")) {
+					json.put("status", 1);
+					json.put("msg", "Successfully Added");
+				}else {
+					json.put("status", 0);
+					json.put("msg", "Not Added");
+				}
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		
+		return json.toString();
+	}
+
+	@Override
+	public String updateItemUnitDetails(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsonObject!=null) {
+			
+			if(jsonObject.get("storeUnitName").toString()!= null && !jsonObject.get("storeUnitName").toString().trim().equalsIgnoreCase("")) {
+				
+				List<MasStoreUnit> msStoreUnitList = md.validateItemUnitUpdate(jsonObject.get("storeUnitName").toString());
+				if(msStoreUnitList.size() > 0) {
+					return "{\"status\":\"0\",\"msg\":\"StoreUnit Name is already exist !!!\"}";
+				}
+				
+					String updateItemUnitStatus = md.updateItemUnitDetails(Long.parseLong(jsonObject.get("storeUnitId").toString()),
+																			jsonObject.get("storeUnitName").toString());
+					
+					if(updateItemUnitStatus!=null && updateItemUnitStatus.equalsIgnoreCase("200")) {
+						json.put("updateItemUnitStatus", updateItemUnitStatus);
+						json.put("msg", "Successfully Updated.");
+						json.put("status", 1);
+					}else {					
+						json.put("msg", "Not Updated.");
+						json.put("status", 0);
+						
+					}
+					
+				}else {
+					json.put("msg", "Data Not Found");
+					json.put("status", 0);
+					
+				}
+				
+			}
+		return json.toString();
+	}
+
+	@Override
+	public String updateItemUnitStatus(JSONObject ItemUnit, HttpServletRequest request,
+			HttpServletResponse response) {
+		
+		JSONObject jsonObject = new JSONObject();
+		if(ItemUnit!=null) {
+			if(ItemUnit.get("storeUnitName").toString() != null && !ItemUnit.get("storeUnitName").toString().trim().equalsIgnoreCase("")) {
+				
+				MasStoreUnit mItemUnit = md.checkItemUnit(ItemUnit.get("storeUnitName").toString()); 
+				
+				if(mItemUnit!=null) {
+					String itemUnitStatus = md.updateItemUnitStatus(Long.parseLong(ItemUnit.get("storeUnitId").toString()),
+							ItemUnit.get("storeUnitName").toString(), 
+							ItemUnit.get("status").toString());
+					
+					if(itemUnitStatus!=null && itemUnitStatus.equalsIgnoreCase("200")) {
+						jsonObject.put("itemUnitStatus", itemUnitStatus);
+						jsonObject.put("msg", "Status Updated Successfully");
+						jsonObject.put("status", 1);
+					}else {					
+						jsonObject.put("msg", "Status Not Updated");
+						jsonObject.put("status", 0);
+					}
+				}else {
+					jsonObject.put("msg", "Data Not Found");
+				}
+				
+			}
+		}
+		
+		return jsonObject.toString();
+	}
+
+	
+
+	/******************************************************** MAINCHARGECODE MASTER *********************************************************/
+
+	@Override
+	public String addMainChargecode(JSONObject json, HttpServletRequest request, HttpServletResponse response) {
+
+		JSONObject jsonObj = new JSONObject();
+		MasMainChargecode masMainChargecode = new MasMainChargecode();
+		if(!json.equals(null)) {
+			
+			if(json.get("mainChargecodeCode")==null) {
+				return "{\"status\":\"0\",\"msg\":\"MainChargecode Code is not contain in json data or it will be null or blank please check\"}";
+			}
+			
+			if(json.get("mainChargecodeName")==null) {
+				return "{\"status\":\"0\",\"msg\":\"MainChargecode Name is not contain in json data or it will be null or blank please check\"}";
+			}
+			
+		else {
+			masMainChargecode.setMainChargecodeCode(json.get("mainChargecodeCode").toString().toUpperCase());
+			masMainChargecode.setMainChargecodeName(json.get("mainChargecodeName").toString().toUpperCase());
+					/*
+					 * long d = System.currentTimeMillis(); Date date = new Date(d);
+					 * users.setLastChgDate(date);
+					 */		
+			
+			//String lastChgTime = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
+			
+			//masRank.setLastChgTime(lastChgTime);
+			MasMainChargecode usr = new MasMainChargecode();
+			usr.setMainChargecodeId(new Long(1)); // userId will be fetch from session
+			//masTrade.setLastChgBy(new Long(1));
+			masMainChargecode.setStatus("y");
+			
+			MasDepartment masDepartment = new MasDepartment();	
+			masDepartment.setDepartmentId(Long.parseLong(json.get("departmentId").toString()));
+			masMainChargecode.setMasDepartment(masDepartment);;
+			
+			
+			List<MasMainChargecode> masMainChargecode1 = md.validateMainChargecode(masMainChargecode.getMainChargecodeCode().toString(),masMainChargecode.getMainChargecodeName().toString());  
+			if(masMainChargecode1.size()!=0) {
+				if(masMainChargecode1!=null && masMainChargecode1.size()>0) {
+					if(masMainChargecode1.get(0).getMainChargecodeCode().equalsIgnoreCase(json.get("mainChargecodeCode").toString())) {
+						
+						return "{\"status\":\"2\",\"msg\":\"MainChargecode Code is already Existing.\"}";
+					}
+					
+					if(masMainChargecode1.get(0).getMainChargecodeName().equalsIgnoreCase(json.get("mainChargecodeName").toString())) {
+						
+						return "{\"status\":\"2\",\"msg\":\"MainChargecode Name is already Existing.\"}";
+					}
+				}
+			}else {
+				String masMainChargecodeObj = md.addMainChargecode(masMainChargecode);
+				if(masMainChargecodeObj!=null && masMainChargecodeObj.equalsIgnoreCase("200")) {
+					jsonObj.put("status", 1);
+					jsonObj.put("msg", "MainChargecode has been Successfully Added !!");
+					
+				}else if(masMainChargecodeObj!=null && masMainChargecodeObj.equalsIgnoreCase("403")) {
+					jsonObj.put("status", 0);
+					jsonObj.put("msg", "You are not authorized person!!!");
+					
+				}else {
+					jsonObj.put("msg", masMainChargecodeObj);
+					jsonObj.put("status", 0);
+				}
+			}
+		}
+		}else {
+			jsonObj.put("msg", "Cannot Contains Any Data!!!");
+			jsonObj.put("status", 0);
+		}
+		
+		return jsonObj.toString();
+
+	}
+
+	@Override
+	public String getAllMainChargecode(JSONObject jsonObj, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<MasMainChargecode> mainChargecodeList = new ArrayList<MasMainChargecode>();
+		List list = new ArrayList();
+		if(jsonObj!=null) {
+			Map<String, List<MasMainChargecode>> mapMainChargecode = md.getAllMainChargecode(jsonObj);
+			List totalMatches = new ArrayList();
+			if(mapMainChargecode.get("mainChargecodeList")!=null) {
+				mainChargecodeList = mapMainChargecode.get("mainChargecodeList");
+				totalMatches = mapMainChargecode.get("totalMatches");
+				for(MasMainChargecode mainChargecode :mainChargecodeList) {
+					HashMap<String, Object> mapObj = new HashMap<String, Object>();
+				
+					if(mainChargecode.getMasDepartment() != null )
+					{
+					mapObj.put("mainChargecodeId", mainChargecode.getMainChargecodeId()) ;
+					mapObj.put("mainChargecodeCode", mainChargecode.getMainChargecodeCode()) ;
+					mapObj.put("mainChargecodeName", mainChargecode.getMainChargecodeName()) ;
+					mapObj.put("status", mainChargecode.getStatus()) ;
+					mapObj.put("departmentName", mainChargecode.getMasDepartment().getDepartmentName());
+					mapObj.put("departmentId", mainChargecode.getMasDepartment().getDepartmentId());
+									
+					list.add(mapObj);
+					}
+				}
+				if(list!=null && list.size()>0) {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "successfully");
+					json.put("status", 1);
+				}else {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "No Record Found");
+					json.put("status", 0);
+				}
+				
+			}else {
+				json.put("statut", 0);
+				json.put("msg", "No Record Found");
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String updateMainChargecodeDetails(HashMap<String, Object> mainChargecode, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(mainChargecode.get("mainChargecodeId")!=null && !mainChargecode.get("mainChargecodeId").toString().equalsIgnoreCase("")) {
+
+			List<MasMainChargecode> mainChargecodeList = md.validateMainChargecodeUpdate(mainChargecode.get("mainChargecodeCode").toString(),mainChargecode.get("mainChargecodeName").toString());
+			if(mainChargecodeList.size() > 0) {
+				return "{\"status\":\"0\",\"msg\":\"MainChargecode Name is already exist !!!\"}";
+			}
+			
+				String mainChargecodeUpdate = md.updateMainChargecode(Long.parseLong(mainChargecode.get("mainChargecodeId").toString()),
+						mainChargecode.get("mainChargecodeCode").toString(),mainChargecode.get("mainChargecodeName").toString(),
+												Long.parseLong(mainChargecode.get("departmentId").toString()));
+				if(mainChargecodeUpdate!=null && !mainChargecodeUpdate.equalsIgnoreCase("")) {
+					json.put("mainChargecodeUpdate", mainChargecodeUpdate);
+					json.put("msg", "Successfully Updated!!!");
+					json.put("status", 1);
+				}else if( mainChargecodeUpdate == null && mainChargecodeUpdate.equalsIgnoreCase("")) {
+					json.put("msg", "Not Updated!!!");
+					json.put("status", 0);
+				}
+				
+				else {
+					return "{\"status\":\"0\",\"msg\":\"MainChargecode Code is not available !!!\"}";
+				}
+		}
+		
+		return json.toString();
+
+	}
+
+	@Override
+	public String updateMainChargecodeStatus(HashMap<String, Object> mainChargecode, HttpServletRequest request, HttpServletResponse response) {
+
+		JSONObject json = new JSONObject();
+		if(mainChargecode.get("mainChargecodeCode")!=null && !mainChargecode.get("mainChargecodeName").toString().equalsIgnoreCase("")) {
+			MasMainChargecode checkMainChargecode =  md.checkMainChargecode(mainChargecode.get("mainChargecodeCode").toString());
+			if(checkMainChargecode!=null) {
+				String mainChargecodeStatus = md.updateMainChargecodeStatus(Long.parseLong(mainChargecode.get("mainChargecodeId").toString()),mainChargecode.get("mainChargecodeCode").toString(),mainChargecode.get("status").toString());
+				if(mainChargecodeStatus!=null && mainChargecodeStatus.equalsIgnoreCase("200")) {
+					json.put("mainChargecodeStatus", mainChargecodeStatus);
+					json.put("msg", "Status Updated Succsefully");
+					json.put("status", 1);
+				}else {
+					json.put("msg", "Status Not Updated");
+					json.put("status", 0);
+				}
+			}
+		}else {
+			return "{\"status\":\"0\",\"msg\":\"MainChargecode code is not available !!!\"}";
+		}
+			
+		return json.toString();
+
+	}
+
+	@Override
+	public String getDepartmentList(HttpServletRequest request, HttpServletResponse response) {
+		JSONObject jsonObj = new JSONObject();
+		List<MasDepartment> departmentList = md.getDepartmentsList();
+		if(departmentList!=null && departmentList.size()>0) {
+			
+			jsonObj.put("data", departmentList);
+			jsonObj.put("count", departmentList.size());				
+			jsonObj.put("status", 1);
+		}else {
+			jsonObj.put("data", departmentList);
+			jsonObj.put("count", departmentList.size());
+			jsonObj.put("msg", "No Record Found");		
+			jsonObj.put("status", 0);
+		}
+		return jsonObj.toString();
+	}
+	
+	/******************************************************** USERS MASTER *********************************************************/
+
+	@Override
+	public String addUsers(JSONObject json, HttpServletRequest request, HttpServletResponse response) {
+
+		JSONObject jsonObj = new JSONObject();
+		Users users = new Users();
+		if(!json.equals(null)) {
+			
+			if(json.get("loginName")==null) {
+				return "{\"status\":\"0\",\"msg\":\"Login Name is not contain in json data or it will be null or blank please check\"}";
+			}
+			
+			if(json.get("firstName")==null) {
+				return "{\"status\":\"0\",\"msg\":\"First Name is not contain in json data or it will be null or blank please check\"}";
+			}
+			
+		else {
+			users.setLoginName(json.get("loginName").toString().toUpperCase());
+			users.setUserName(json.get("loginName").toString().toUpperCase());
+			users.setPassword(json.get("loginName").toString().toUpperCase());
+			users.setLastName(json.get("firstName").toString().toUpperCase());
+			users.setFirstName(json.get("firstName").toString().toUpperCase());
+					/*
+					 * long d = System.currentTimeMillis(); Date date = new Date(d);
+					 * users.setLastChgDate(date);
+					 */		
+			
+			//String lastChgTime = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
+			
+			//masRank.setLastChgTime(lastChgTime);
+			Users usr = new Users();
+			usr.setUserId(new Long(1)); // userId will be fetch from session
+			//masTrade.setLastChgBy(new Long(1));
+			users.setStatus("y");
+			
+			MasHospital masHospital = new MasHospital();	
+			masHospital.setHospitalId(Long.parseLong(json.get("hospitalId").toString()));
+			//users.setMasHospital(masHospital);;
+			
+			
+			List<Users> users1 = md.validateUsers(users.getLoginName().toString(),users.getFirstName().toString());  
+			if(users1.size()!=0) {
+				if(users1!=null && users1.size()>0) {
+					if(users1.get(0).getLoginName().equalsIgnoreCase(json.get("loginName").toString())) {
+						
+						return "{\"status\":\"2\",\"msg\":\"Login Name is already Existing.\"}";
+					}
+	            if(users1.get(0).getLoginName().equalsIgnoreCase(json.get("loginName").toString())) {
+						
+						return "{\"status\":\"2\",\"msg\":\"Login Name is already Existing.\"}";
+					}
+					
+					if(users1.get(0).getFirstName().equalsIgnoreCase(json.get("firstName").toString())) {
+						
+						return "{\"status\":\"2\",\"msg\":\"First Name is already Existing.\"}";
+					}
+				}
+			}else {
+				String masUsersObj = md.addUsers(users);
+				if(masUsersObj!=null && masUsersObj.equalsIgnoreCase("200")) {
+					jsonObj.put("status", 1);
+					jsonObj.put("msg", "User has been Successfully Added !!");
+					
+				}else if(masUsersObj!=null && masUsersObj.equalsIgnoreCase("403")) {
+					jsonObj.put("status", 0);
+					jsonObj.put("msg", "You are not authorized person!!!");
+					
+				}else {
+					jsonObj.put("msg", masUsersObj);
+					jsonObj.put("status", 0);
+				}
+			}
+		}
+		}else {
+			jsonObj.put("msg", "Cannot Contains Any Data!!!");
+			jsonObj.put("status", 0);
+		}
+		
+		return jsonObj.toString();
+
+	}
+
+	@Override
+	public String getAllUsers(JSONObject jsonObj, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<Users> userList = new ArrayList<Users>();
+		List list = new ArrayList();
+		if(jsonObj!=null) {
+			Map<String, List<Users>> mapUsers = md.getAllUsers(jsonObj);
+			List totalMatches = new ArrayList();
+			if(mapUsers.get("usersList")!=null) {
+				userList = mapUsers.get("usersList");
+				totalMatches = mapUsers.get("totalMatches");
+				for(Users users :userList) {
+					HashMap<String, Object> mapObj = new HashMap<String, Object>();
+				
+					if(users.getMasHospital() != null )
+					{
+					mapObj.put("userId", users.getUserId()) ;
+					mapObj.put("loginName", users.getLoginName()) ;
+					mapObj.put("firstName", users.getFirstName()) ;
+					mapObj.put("status", users.getStatus()) ;
+					mapObj.put("hospitalName", users.getMasHospital().getHospitalName());
+					mapObj.put("hospitalId", users.getMasHospital().getHospitalId());
+									
+					list.add(mapObj);
+					}
+				}
+				if(list!=null && list.size()>0) {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "successfully");
+					json.put("status", 1);
+				}else {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "No Record Found");
+					json.put("status", 0);
+				}
+				
+			}else {
+				json.put("statut", 0);
+				json.put("msg", "No Record Found");
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String updateUsersDetails(HashMap<String, Object> users, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(users.get("userId")!=null && !users.get("userId").toString().equalsIgnoreCase("")) {
+
+			List<Users> usersList = md.validateUsersUpdate(users.get("loginName").toString(),users.get("firstName").toString());
+			if(usersList.size() > 0) {
+				return "{\"status\":\"0\",\"msg\":\"User Name is already exist !!!\"}";
+			}
+			
+				String usersUpdate = md.updateUsers(Long.parseLong(users.get("userId").toString()),
+						users.get("loginName").toString(),users.get("firstName").toString(),
+												Long.parseLong(users.get("hospitalId").toString()));
+				if(usersUpdate!=null && !usersUpdate.equalsIgnoreCase("")) {
+					json.put("usersUpdate", usersUpdate);
+					json.put("msg", "Successfully Updated!!!");
+					json.put("status", 1);
+				}else if( usersUpdate == null && usersUpdate.equalsIgnoreCase("")) {
+					json.put("msg", "Not Updated!!!");
+					json.put("status", 0);
+				}
+				
+				else {
+					return "{\"status\":\"0\",\"msg\":\"Login Name is not available !!!\"}";
+				}
+		}
+		
+		return json.toString();
+
+	}
+
+	@Override
+	public String updateUsersStatus(HashMap<String, Object> users, HttpServletRequest request, HttpServletResponse response) {
+
+		JSONObject json = new JSONObject();
+		if(users.get("loginName")!=null && !users.get("loginName").toString().equalsIgnoreCase("")) {
+			Users checkUsers =  md.checkUsers(users.get("loginName").toString());
+			if(checkUsers!=null) {
+				String usersStatus = md.updateUsersStatus(Long.parseLong(users.get("userId").toString()),users.get("loginName").toString(),users.get("status").toString());
+				if(usersStatus!=null && usersStatus.equalsIgnoreCase("200")) {
+					json.put("usersStatus", usersStatus);
+					json.put("msg", "Status Updated Successfully");
+					json.put("status", 1);
+				}else {
+					json.put("msg", "Status Not Updated");
+					json.put("status", 0);
+				}
+			}
+		}else {
+			return "{\"status\":\"0\",\"msg\":\"loginName is not available !!!\"}";
+		}
+			
+		return json.toString();
+
+	}
+
+	@Override
+	public String getHospitalList(HttpServletRequest request, HttpServletResponse response) {
+		JSONObject jsonObj = new JSONObject();
+		List<MasHospital> hospitalList = md.getHospitalList();
+		if(hospitalList!=null && hospitalList.size()>0) {
+			
+			jsonObj.put("data", hospitalList);
+			jsonObj.put("count", hospitalList.size());				
+			jsonObj.put("status", 1);
+		}else {
+			jsonObj.put("data", hospitalList);
+			jsonObj.put("count", hospitalList.size());
+			jsonObj.put("msg", "No Record Found");		
+			jsonObj.put("status", 0);
+		}
+		return jsonObj.toString();
+	}
+
+	
+	/***************************************MAS ROLE***********************************************************************/
+
+	@Override
+	public String getAllRole(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<MasRole> roleList = new ArrayList<MasRole>();
+		List list = new ArrayList();
+		if(jsondata!=null) {
+			Map<String, List<MasRole>> mapRole = md.getAllRole(jsondata);
+			List totalMatches = new ArrayList();
+			if(mapRole.get("roleList")!=null) {
+				roleList = mapRole.get("roleList");
+				totalMatches = mapRole.get("totalMatches");
+				for(MasRole role :roleList) {
+					HashMap<String, Object> mapObj = new HashMap<String, Object>();
+					if(role!=null) {
+						mapObj.put("roleId", role.getRoleId()) ;					
+						mapObj.put("roleCode", role.getRoleCode()) ;					
+						mapObj.put("roleName", role.getRoleName()) ;
+						mapObj.put("status", role.getStatus());
+						
+					list.add(mapObj);
+				 }
+				}
+				
+				if(list!=null && list.size()>0) {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "successfully");
+					json.put("status", 1);
+				}else {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "No Record Found");
+					json.put("status", 0);
+				}
+				
+			}else {
+				json.put("statut", 0);
+				json.put("msg", "No Record Found");
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String addRole(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsondata!=null) {
+			String status = "y";
+			Long lastChgBy = new Long(1);
+					
+			long d = System.currentTimeMillis();
+			Date date = new Date(d);
+				
+			MasRole masRole = new MasRole();
+			
+			masRole.setRoleCode((jsondata.get("roleCode")).toString().toUpperCase());
+			masRole.setRoleName(jsondata.get("roleName").toString().toUpperCase());
+			//masMaritalStatus.setLastChgBy(lastChgBy);
+			masRole.setStatus("Y");
+			//masMaritalStatus.setLastChgDate(date);
+			
+			List<MasRole> checkRoleList = md.validateRole(masRole.getRoleCode(),masRole.getRoleName());
+			if(checkRoleList!=null && checkRoleList.size()>0) {
+				if(checkRoleList.get(0).getRoleCode().toString().equalsIgnoreCase(jsondata.get("roleCode").toString())) {
+					
+					json.put("status", 2);
+					json.put("msg", "checkRoleList Code is already Existing");
+				}
+				if(checkRoleList.get(0).getRoleName().equalsIgnoreCase(jsondata.get("roleName").toString())) {
+					
+					json.put("status", 2);
+					json.put("msg", "Role Name is already Existing");
+				}
+				
+			}else {
+				String addRoleObj = md.addRole(masRole);
+				if(addRoleObj!=null && addRoleObj.equalsIgnoreCase("200")) {
+					json.put("status", 1);
+					json.put("msg", "Successfully Added");
+				}else {
+					json.put("status", 0);
+					json.put("msg", "Not Added");
+				}
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		
+		return json.toString();
+	}
+
+	@Override
+	public String updateRoleDetails(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsonObject!=null) {
+			
+			if(jsonObject.get("roleCode").toString()!= null && !jsonObject.get("roleCode").toString().trim().equalsIgnoreCase("")) {
+				
+				List<MasRole> msRoleList = md.validateRoleUpdate(jsonObject.get("roleCode").toString(), jsonObject.get("roleName").toString());
+				if(msRoleList.size() > 0) {
+					return "{\"status\":\"0\",\"msg\":\"Role Name is already exist !!!\"}";
+				}
+				
+					String updateRole = md.updateRoleDetails(Long.parseLong(jsonObject.get("roleId").toString()),
+																		   jsonObject.get("roleCode").toString(),
+																			jsonObject.get("roleName").toString());
+					
+					if(updateRole!=null && updateRole.equalsIgnoreCase("200")) {
+						json.put("updateRole", updateRole);
+						json.put("msg", "Successfully Updated.");
+						json.put("status", 1);
+					}else {					
+						json.put("msg", "Not Updated.");
+						json.put("status", 0);
+						
+					}
+					
+				}else {
+					json.put("msg", "Data Not Found");
+					json.put("status", 0);
+				}
+				}
+		return json.toString();
+	}
+
+
+	@Override
+	public String updateRoleStatus(JSONObject role, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject();
+		
+		if(jsonObject!=null) {
+			if(role.get("roleCode").toString() != null && !role.get("roleCode").toString().trim().equalsIgnoreCase("")) {
+				
+				MasRole mRole = md.checkRole(role.get("roleCode").toString()); 
+				
+				if(mRole!=null) {
+					String roleStatus = md.updateRoleStatus(Long.parseLong(role.get("roleId").toString()),
+							role.get("roleCode").toString(), 
+							role.get("status").toString());
+					
+					if(roleStatus!=null && roleStatus.equalsIgnoreCase("200")) {
+						jsonObject.put("roleStatus", roleStatus);
+						jsonObject.put("msg", "Status Updated Successfully");
+						jsonObject.put("status", 1);
+					}else {					
+						jsonObject.put("msg", "Status Not Updated");
+						jsonObject.put("status", 0);
+					}
+				}else {
+					jsonObject.put("msg", "Data Not Found");
+				}
+				
+			}
+		}
+		
+		return jsonObject.toString();
 	}
 }

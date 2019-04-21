@@ -126,7 +126,7 @@ function searchUsersList(){
 		 return false;
 	 }
 	 
-	var firstName= jQuery("#searchUsers").attr("checked", true).val().toUpperCase();
+	var loginName= jQuery("#searchUsers").attr("checked", true).val().toUpperCase();
 		
 	var nPageNo=1;
 	var url = "getAllUsers";

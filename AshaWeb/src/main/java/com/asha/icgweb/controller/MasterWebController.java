@@ -33,7 +33,7 @@ public class MasterWebController {
 	@Autowired
 	MasterService masterService;
 	
-	String IpAndPortNo = HMSUtil.getProperties("urlextension.properties", "LOCAL_IP");
+	String IpAndPortNo = HMSUtil.getProperties("urlextension.properties", "OSB_IP_AND_PORT");
 	String IpAndPortNoLocal = HMSUtil.getProperties("urlextension.properties", "LOCAL_IP_AND_PORT");
 	
 	
@@ -1416,5 +1416,60 @@ public class MasterWebController {
 		String URL = HMSUtil.getProperties("urlextension.properties", "getDepartmentList");
 		String OSBURL = IpAndPortNo + URL; 
 		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+	}
+	
+	/**************************************
+	 * Role Master
+	 **************************************************/
+	/**
+	 * @param RoleMaster
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+
+	@RequestMapping(value = "/roleMaster", method = RequestMethod.GET)
+	public ModelAndView roleMaster(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView("roleMaster");
+		return mav;
+	}
+
+	@RequestMapping(value = "/addRole", method = RequestMethod.POST)
+	public String addRole(@RequestBody Map<String, Object> rolePayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String responseObj = "";
+		JSONObject jsonObject = new JSONObject(rolePayload);
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "addRole");
+		String OSBURL = IpAndPortNo + URL;
+		responseObj = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObj;
+	}
+
+	@RequestMapping(value = "/getAllRole", method = RequestMethod.POST)
+	public String getAllRole(@RequestBody String rolePayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "getAllRole");
+		String OSBURL = IpAndPortNo + URL;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, rolePayload);
+	}
+
+	@RequestMapping(value = "/updateRoleDetails", method = RequestMethod.POST)
+	public String updateRoleDetails(@RequestBody String rolePayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateRoleDetails");
+		String OSBURL = IpAndPortNo + URL;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, rolePayload);
+	}
+
+	@RequestMapping(value = "/updateRoleStatus", method = RequestMethod.POST)
+	public String updateRoleStatus(@RequestBody String rolePayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String URL = HMSUtil.getProperties("urlextension.properties", "updateRoleStatus");
+		String OSBURL = IpAndPortNo + URL;
+		return  RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, rolePayload);
 	}
 }

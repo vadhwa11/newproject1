@@ -1,0 +1,95 @@
+package com.icg.jkt.entity;
+
+import java.io.Serializable;
+import javax.persistence.*;
+import java.sql.Timestamp;
+
+
+/**
+ * The persistent class for the ROLE_TEMPLATE database table.
+ * 
+ */
+@Entity
+@Table(name="ROLE_TEMPLATE")
+@NamedQuery(name="RoleTemplate.findAll", query="SELECT r FROM RoleTemplate r")
+public class RoleTemplate implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@SequenceGenerator(name="ROLE_TEMPLATE_ROLETEMPLATEID_GENERATOR", sequenceName="ROLE_TEMPLATE_ID")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ROLE_TEMPLATE_ROLETEMPLATEID_GENERATOR")
+	@Column(name="ROLE_TEMPLATE_ID")
+	private long roleTemplateId;
+
+	@Column(name="LAST_CHG_DATE")
+	private Timestamp lastChgDate;
+
+	private String status;
+
+	//bi-directional many-to-one association to MasRole
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="ROLE_ID")
+	private MasRole masRole;
+
+	//bi-directional many-to-one association to MasTemplate
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="TEMPLATE_ID")
+	private MasTemplate masTemplate;
+
+	//bi-directional many-to-one association to User
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="LAST_CHG_BY")
+	private Users user;
+
+	public RoleTemplate() {
+	}
+
+	public long getRoleTemplateId() {
+		return this.roleTemplateId;
+	}
+
+	public void setRoleTemplateId(long roleTemplateId) {
+		this.roleTemplateId = roleTemplateId;
+	}
+
+	public Timestamp getLastChgDate() {
+		return this.lastChgDate;
+	}
+
+	public void setLastChgDate(Timestamp lastChgDate) {
+		this.lastChgDate = lastChgDate;
+	}
+
+	public String getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public MasRole getMasRole() {
+		return this.masRole;
+	}
+
+	public void setMasRole(MasRole masRole) {
+		this.masRole = masRole;
+	}
+
+	public MasTemplate getMasTemplate() {
+		return this.masTemplate;
+	}
+
+	public void setMasTemplate(MasTemplate masTemplate) {
+		this.masTemplate = masTemplate;
+	}
+
+	public Users getUser() {
+		return this.user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
+	}
+
+}

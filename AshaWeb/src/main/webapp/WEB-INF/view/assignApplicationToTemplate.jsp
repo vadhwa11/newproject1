@@ -103,7 +103,7 @@
 			contentType: "application/json; charset=utf-8",
 		    dataType: "json",
 		    success: function(result){		    	
-			var combo = "<option value='0'>Select Template</option>" ;		    	
+			var combo = "<option value='0'>Module Name</option>" ;		    	
 		    	for(var i=0;i<result.listObjModule.length;i++){
 		    		comboArray[i] = result.listObjModule[i].applicationId;		    		
 		    		combo += '<option value='+result.listObjModule[i].applicationId+'>' +result.listObjModule[i].applicationName+ '</option>';		    		    		
@@ -140,50 +140,32 @@
 			    		var checkbox_name = '';
 			    		var checkbox = '';
 			    		var parentId = dataList[i].parentId;
-			    		//alert(parentId);
+			    		//alert("parentId:: "+parentId);
 			    		htmlTable = htmlTable+"<input type='hidden' name='applicationId' value="+dataList[i].applicationId+" id='applicationId"+i+"'/>";
+			    		htmlTable = htmlTable+"<input type='hidden' name='templateId' value="+dataList[i].templateId+" id='templateId"+i+"'/>";
+			    		
 			    		htmlTable = htmlTable+"<tr id='"+dataList[i].applicationId+"' >";			
 			 			htmlTable = htmlTable +"<td style='width: 150px;'>"+rownum+"</td>";
-			 			if(parentId!=0){
-			 			htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].applicationName2+"&nbsp;"+"&gt;"+"&gt;"+"&nbsp"+dataList[i].applicationName+"</td>";
-			 			}
-			 			else{
-			 				htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].applicationName+"</td>";
-			 				
-			 			}
-			 			
-			 			var appId=dataList[i].applicationId;
-			 			
-			 			for(j=0;j<tempList.length;j++){
-			 				//alert("appId :: "+appId);
-			 				//alert("tempList[i].appId :: "+tempList[i].appId);
-			 				var apppp=tempList[i].appId;
-			 				if(appId==apppp || parentId == '0'){
-				 				checkboxvalue='checked=checked';
-				 				break;
+				 			if(parentId!=0){
+				 				htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].applicationName2+"&nbsp;"+"&gt;"+"&gt;"+"&nbsp"+dataList[i].applicationName+"</td>";
 				 			}
-			 				 
-				 			else {
-				 				checkboxvalue='';
+				 			else{
+				 				htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].applicationName+"</td>";
+				 				
+				 				//htmlTable =htmlTable +"<td style='width: 150px;'><input type='checkbox' checked name='checkBoxTemp' "+checkboxvalue+" id='checkBoxTemp"+i+"'></td>";
 				 			}
-			 				
-			 			}
-			 			//alert("checkboxvalue>>>"+checkboxvalue);
 			 			
-			 			htmlTable =htmlTable +"<td style='width: 150px;'><input type='checkbox' name='checkBoxTemp' "+checkboxvalue+" id='checkBoxTemp"+i+"'></td>"; 
-			 			/*  $.each(tempList, function(ij, item) {
-			 			if(appId == item.appId){
-			 				checkboxvalue="checked";
-			 				break;
-			 			}
-			 			else{
-			 				checkboxvalue="";
-			 			}
+			 				var appId=dataList[i].applicationId;
 			 			
-			 			 
-			 			}); 
-			 			htmlTable =htmlTable +"<td style='width: 150px;'><input type='checkbox' name='checkBoxTemp' '"+checkboxvalue+"' id='checkBoxTemp"+i+"'></td>"; */
-			 			//htmlTable = htmlTable +"<td style='width: 150px;'>"+checkbox+"</td>";
+			 				if(dataList[i].status == 'Y' || dataList[i].status =='y'){
+			 					htmlTable =htmlTable +"<td style='width: 150px;'><input type='checkbox' checked name='checkBoxTemp' "+checkboxvalue+" id='checkBoxTemp"+i+"'></td>";
+			 				}
+			 				else if(dataList[i].parentId == 0){
+			 					htmlTable =htmlTable +"<td style='width: 150px;'><input type='checkbox' checked name='checkBoxTemp' "+checkboxvalue+" id='checkBoxTemp"+i+"'></td>";
+			 				}else{
+			 					htmlTable =htmlTable +"<td style='width: 150px;'><input type='checkbox' name='checkBoxTemp' "+checkboxvalue+" id='checkBoxTemp"+i+"'></td>";
+			 				}
+			 			
 			 			htmlTable = htmlTable+"</tr>";
 			 			rownum++;
 			 		}
@@ -199,49 +181,62 @@
 			})
 	}
 	
-	var urgentValuearray=[];
+	var checkBoxArray=[];
 	var applicationIdAarray=[];
+	var templateIdArray=[];
 	function addTemplateApplication(){
-		var tempId = $j('#selectTemplate').find('option:selected').val();
-		
+		var tempId = $j('#selectTemplate').find('option:selected').val();		
 		var tbl = document.getElementById('tblListOfApplicationTemplateWise');
+		
 		lastRow = tbl.rows.length;
+		//alert("lastRow ::"+lastRow);
 		var labMarkValue = ''; 
 		 for(var j=0;j<lastRow;j++){
-		    var chkf = 'checkBoxTemp'+j+'';
-		    var applicationId = 'applicationId'+j+'';
-		if(document.getElementById(chkf).checked == true){
-		  var yurgent='Y';
-		  urgent=yurgent;
-		  }
-		  else
-		  {
-		      var nUrgent='N';
-		      urgent=nUrgent;
-		  }
-		    urgentValuearray.push(urgent);
-		   var applicattttt= document.getElementById(applicationId).value;
-		    applicationIdAarray.push(applicattttt);
+		    var chkbox = 'checkBoxTemp'+j+'';
+		    var statusflag='';
+		    if(document.getElementById(chkbox).checked == true){
+		    	var yflag='y';
+		    		statusflag=yflag;
+		    		checkBoxArray.push(statusflag);			    		
+		    }else{
+		    	var nflag='n';
+		    	statusflag=nflag;
+		    	checkBoxArray.push(statusflag);
+		    }
+				//alert("checkBoxArray ::"+checkBoxArray);
+				
+			var applicationId = document.getElementById('applicationId'+j).value;		    
+		    applicationIdAarray.push(applicationId);	
 		    
-		}
-		 // alert("applicattttt"+applicationIdAarray);
-		 
-		 //$('#tempCheckValue').val(urgentValuearray);
-		 var params={'urgentValuearray':urgentValuearray,
-				 'applicationId':applicationIdAarray,
-				 'templateId':tempId}
-		 
-		 jQuery.ajax({
+		    var templatesId = document.getElementById('templateId'+j).value;
+		    templateIdArray.push(templatesId);
+		    //alert("templateIdArray ::"+templateIdArray)
+		 } 
+		    var params={
+				 	'applicationIdAarray':applicationIdAarray,
+				 	'templateId':tempId,
+				 	'checkBoxArray':checkBoxArray,
+				 	'templateIdArray':templateIdArray}
+		    //alert(JSON.stringify(params));
+		    jQuery.ajax({
 				method:"POST",
 				data: JSON.stringify(params),
 				url:"addTemplateApplication",				
 				contentType: "application/json; charset=utf-8",
 			    dataType: "json",
 			    success: function(result){
-			    	
-			    	console.log(result)
-			    }
+			    	if(result.status==1){			    		
+			        	document.getElementById("messageId").innerHTML = result.msg;
+			        	$j('#messageId').toggle(5000);   
+			    	console.log(result);
+			    	}
+			    },
+				error : function(msg) {
+					alert("An error has occurred while contacting the server");
+				}
 			    });
+			//}
+		 
 	}
 	</script>
 

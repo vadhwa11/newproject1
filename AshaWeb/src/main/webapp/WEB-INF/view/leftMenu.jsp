@@ -98,12 +98,7 @@
                             <i class="mdi mdi-menu"></i>
                         </button>
                     </li>
-                    <!-- <li class="hide-phone app-search"> -->
-                        <!-- <form role="search" class=""> -->
-                            <!-- <input type="text" placeholder="Search..." class="form-control"> -->
-                            <!-- <a href="#"><i class="fa fa-search"></i></a> -->
-                        <!-- </form> -->
-                    <!-- </li> -->
+                    
                 </ul>
 
             </nav>
@@ -147,113 +142,16 @@
                                 
                             </ul>
                         </li>
-
-						 <li>
-                            <a href="javascript: void(0);"><i class="ion-ios-list"></i><span> Medical Exam </span> <span class="menu-arrow"></span></a>
-                            <ul class="nav-second-level" aria-expanded="false">
-                                <li><a href="${pageContext.request.contextPath}/exam/medicalExam">Medical Exam</a></li>                                
-                                <li><a href="#">Reports </a></li>                           
-                            </ul>
-                        </li>
-                         <li>
-                            <a href="javascript: void(0);"><i class="ion-ios-list"></i><span> Medical Board </span> <span class="menu-arrow"></span></a>
-                            <ul class="nav-second-level" aria-expanded="false">
-                                <li><a href="#">Department Return </a></li>
-                                <li><a href="#">Opening Balance Entry </a></li>
-                                <li><a href="#">Pending Prescription </a></li>
-                                <li><a href="#">MR Receive </a></li>
-                                <li><a href="#">Reports </a></li>                           
-                            </ul>
-                        </li>
-                        
-                        <li>
-                            <a href="javascript: void(0);"><i class="ion-md-mail"></i>  <span> Laboratory </span><span class="menu-arrow"></span></a>
-                            <ul class="nav-second-level" aria-expanded="false">
-                                <li><a href="#">Inbox</a></li>
-                                <li><a href="#">Compose Mail</a></li>
-                                <li><a href="#">View Mail</a></li>
-                                <li><a href="#">Email Templates</a></li>
-                            </ul>
-                        </li>
-						
-						<li>
-                            <a href="javascript: void(0);"><i class="ion-md-map"></i> <span> Radiology </span> <span class="menu-arrow"></span></a>
-                            <ul class="nav-second-level" aria-expanded="false">
-                                <li><a href="#"> Google Map</a></li>
-                                <li><a href="#"> Vector Map</a></li>
-                            </ul>
-                        </li>
-                        
-                        <li>
-                            <a href="javascript: void(0);"><i class="ion-ios-list"></i><span> Dispensary </span> <span class="menu-arrow"></span></a>
-                            <ul class="nav-second-level" aria-expanded="false">
-                                <li><a href="#">Department Return </a></li>
-                                <li><a href="#">Opening Balance Entry </a></li>
-                                <li><a href="#">Pending Prescription </a></li>
-                                <li><a href="#">MR Receive </a></li>
-                                <li><a href="#">Reports </a></li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <a href="javascript: void(0);"><i class="ion-md-pie"></i><span> Stores </span> <span class="menu-arrow"></span></a>
-                            <ul class="nav-second-level" aria-expanded="false">
-                                <!-- <li><a href="#">Morris Chart</a></li>
-                                    <li><a href="#">Chartjs</a></li>
-                                    <li><a href="#">Flot Chart</a></li>
-                                    <li><a href="#">Rickshaw Chart</a></li>
-                                    <li><a href="#">Peity Chart</a></li>
-                                    <li><a href="#">C3 Chart</a></li>
-                                    <li><a href="#">Other Chart</a></li> -->
-                            </ul>
-                        </li>
-
-                        <li>
-                            <a href="javascript: void(0);"><i class="ion-md-copy"></i> <span> Ward </span> <span class="menu-arrow"></span></a>
-                            <ul class="nav-second-level" aria-expanded="false">
-                                <li><a href="#">Nursing Station    </a></li>
-                                <li><a href="#">Reports </a></li>
-                                <li><a href="#">IP Admission </a></li>
-                           </ul>
-                        </li>
-
- 						<li>
-                            <a href="javascript: void(0);"><i class="ion-md-copy"></i> <span> MI Administration </span> <span class="menu-arrow"></span></a>
-                            <ul class="nav-second-level" aria-expanded="false">
-                                <li><a href="#">Nursing Station    </a></li>
-                                <li><a href="#">Reports </a></li>
-                                <li><a href="#">IP Admission </a></li>
-                           </ul>
-                        </li>
-                        
-                        <li>
-                            <a href="javascript: void(0);"><i class="ion-md-copy"></i> <span> FWC </span> <span class="menu-arrow"></span></a>
-                            <ul class="nav-second-level" aria-expanded="false">
-                                <li><a href="#">Nursing Station    </a></li>
-                                <li><a href="#">Reports </a></li>
-                                <li><a href="#">IP Admission </a></li>
-                           </ul>
-                        </li>
-                        
-                        <li>
-                            <a href="javascript: void(0);"><i class="ion-md-copy"></i> <span> SHO </span> <span class="menu-arrow"></span></a>
-                            <ul class="nav-second-level" aria-expanded="false">
-                                <li><a href="#">Nursing Station    </a></li>
-                                <li><a href="#">Reports </a></li>
-                                <li><a href="#">IP Admission </a></li>
-                           </ul>
-                        </li>
-                        
                         <li>
                             <a href="javascript: void(0);"><i class="ion-md-copy"></i> <span> User Management </span> <span class="menu-arrow"></span></a>
                             <ul class="nav-second-level" aria-expanded="false">
-                            <li><a href="${pageContext.request.contextPath}/addFormsAndReports">Add Form / Reports</a></li>
-                                <li><a href="${pageContext.request.contextPath}/manageUserApplication">Manage User Application</a></li>
-                                <li><a href="${pageContext.request.contextPath}/manageTemplate">Manage Template</a></li>
-                                <li><a href="${pageContext.request.contextPath}/assignApplicationToTemplate">Assign Application To Template</a></li>
-                                <li><a href="${pageContext.request.contextPath}/assignTemplateToRole">Assign Template To Role</a></li>
-                                <li><a href="${pageContext.request.contextPath}/manageRole">Manage Role</a></li>
-                                
+                            <li><a href="${pageContext.request.contextPath}/user/manageUserApplication">Manage User Application</a></li>
+                            <li><a href="${pageContext.request.contextPath}/user/addFormsAndReports">Add Form / Reports</a></li>                                
+                            <li><a href="${pageContext.request.contextPath}/user/manageTemplate">Manage Template</a></li>
+                            <li><a href="${pageContext.request.contextPath}/user/roleRights">Role Rights</a></li>
+                            <li><a href="${pageContext.request.contextPath}/user/assignApplicationToTemplate">Assign Application To Template</a></li>
+                            <li><a href="${pageContext.request.contextPath}/user/assignTemplateToRole">Assign Template To Role</a></li>
+                            <li><a href="${pageContext.request.contextPath}/user/manageRole">Manage Role</a></li>                                
                             </ul>
                         </li>
                         
@@ -276,15 +174,17 @@
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/sampleContainerMaster">Sample Container Master </a></li>
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/uomMaster">Unit of Measurement Master </a></li>
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/itemUnitMaster">Item Unit Master </a></li>
-                                <%-- <li><a href="${pageContext.request.contextPath}/v0.1/master/usersMaster">Users Master </a></li>
+                                <li><a href="${pageContext.request.contextPath}/v0.1/master/usersMaster">Users Master </a></li>
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/mainChargeCodeMaster">MainChargeCode Master </a></li>
-                                --%> <li><a href="${pageContext.request.contextPath}/v0.1/master/disposalMaster">Disposal Type Master </a></li>
+                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/disposalMaster">Disposal Type Master </a></li>
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/idealWeightMaster">Ideal Weight Master </a></li>
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/frequencyMaster">Frequency Master </a></li>
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/appointmentTypeMaster">Appointment Type </a></li>
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/empanelledHospitalMaster">Empanelled Hospital Master </a></li>                                
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/physiotherapyMaster">Physiotherapy Master </a></li>
-                                <li><a href="${pageContext.request.contextPath}/v0.1/master/serviceTypeMaster">Service Type</a></li>                                
+                                <li><a href="${pageContext.request.contextPath}/v0.1/master/serviceTypeMaster">Service Type</a></li>
+                                <li><a href="${pageContext.request.contextPath}/v0.1/master/roleMaster">Roles</a></li>
+                                <li><a href="${pageContext.request.contextPath}/v0.1/master/usersMaster">Users</a></li>
                             </ul>
                         </li>
                         

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -22,13 +23,16 @@ import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToBeanResultTransformer;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.icg.jkt.dao.UserManagementDao;
 import com.icg.jkt.entity.MasApplication;
+import com.icg.jkt.entity.MasRole;
 import com.icg.jkt.entity.MasTemplate;
+import com.icg.jkt.entity.RoleTemplate;
 import com.icg.jkt.entity.TemplateApplication;
 import com.icg.jkt.entity.UserApplication;
 import com.icg.jkt.entity.Users;
@@ -179,7 +183,7 @@ public class UserManagementDaoImpl implements UserManagementDao {
 	@Override
 	public Map<String, List<MasTemplate>> getAllTemplate(JSONObject jsonObject) {
 		int pageSize = Integer.parseInt(HMSUtil.getProperties("adt.properties", "pageSize").trim());
-		int pageNo = Integer.parseInt(HMSUtil.getProperties("adt.properties", "pageNo").trim());
+		int pageNo = 0;
 		long hospitalId = 1;
 		Map<String, List<MasTemplate>> mapObj = new HashMap<String, List<MasTemplate>>();
 		List<MasTemplate> templateList = new ArrayList<MasTemplate>();
@@ -240,7 +244,7 @@ public class UserManagementDaoImpl implements UserManagementDao {
 				if (jsonObject.get("appName").toString().length() > 0
 						&& !jsonObject.get("appName").toString().trim().equalsIgnoreCase("")) {
 					criteria1.add(Restrictions.like("appName", appName));
-					//criteria1.add(Restrictions.eq("url", "#"));
+					//criteria1.add(Restrictions.eq("status", "y"));
 				}
 			}
 
@@ -320,9 +324,9 @@ public class UserManagementDaoImpl implements UserManagementDao {
 								masTemplate.setTemplateCode(jsonObject.get("templateCode").toString().toUpperCase());
 								masTemplate.setTemplateName(jsonObject.get("templateName").toString().toUpperCase());
 
-								Users user = new Users();
+								/*Users user = new Users();
 								user.setUserId(new Long(1));
-								masTemplate.setUser(user);
+								masTemplate.setUser(user);*/
 
 								masTemplate.setLastChgDate(timestamp);
 								session.update(masTemplate);
@@ -571,20 +575,38 @@ public class UserManagementDaoImpl implements UserManagementDao {
 		try {
 			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
 			//Criteria criteria = session.createCriteria(MasApplication.class)
-			String entityQuery = "select ma1.name,ma1.parent_id,ma1.app_id,ma1.url,ma2.name as name2 " + 
+			String entityQuery = "select ma1.name, ma1.parent_id, ma1.app_id, ma1.url,ma2.name as name2, t.status as status, t.TEMP_APP_ID as TEMP_APP_ID " + 
+								" from MAS_APPLICATION ma1 " + 
+								" left join mas_application ma2 on ma1.parent_id=ma2.app_id " + 
+								" left outer join TEMPLATE_APPLICATION t on ma1.app_id=t.app_id " + 
+								" where ma1.parent_id='"+parentId+"' " + 
+								" union all " + 
+								" select ma1.name,ma1.parent_id,ma1.app_id,ma1.url,ma2.name as name2, t.status as status, t.TEMP_APP_ID as TEMP_APP_ID " + 
+								" from MAS_APPLICATION ma1 " + 
+								" left join mas_application ma2 on ma1.parent_id=ma2.app_id " + 
+								" left outer join TEMPLATE_APPLICATION t on ma1.app_id=t.app_id " + 
+								" where ma1.parent_id in ( select app_id from mas_application where parent_id='A1') " + 
+								" union all " + 
+								" select ma1.name,ma1.parent_id,ma1.app_id,ma1.url,ma2.name as name2,t.status as status, t.TEMP_APP_ID as TEMP_APP_ID " + 
+								" from MAS_APPLICATION ma1 " + 
+								" left join mas_application ma2 on ma1.parent_id=ma2.app_id " + 
+								" left outer join TEMPLATE_APPLICATION t on ma1.app_id=t.app_id " + 
+								" where ma1.app_id ='"+parentId+"'";
+			
+			/*String entityQuery = "select ma1.name,ma1.parent_id,ma1.app_id,ma1.url,ma2.name as name2,ma1.status as maStatus" + 
 					" from MAS_APPLICATION ma1 " + 
 					" left join mas_application ma2 on ma1.parent_id=ma2.app_id " + 
 					" where ma1.parent_id='"+parentId+"'" + 
 					" union all " + 
-					" select ma1.name,ma1.parent_id,ma1.app_id,ma1.url,ma2.name as name2 " + 
+					" select ma1.name,ma1.parent_id,ma1.app_id,ma1.url,ma2.name as name2,ma1.status as maStatus " + 
 					" from MAS_APPLICATION ma1 " + 
 					" left join mas_application ma2 on ma1.parent_id=ma2.app_id " + 
 					" where ma1.parent_id in ( select app_id from mas_application where parent_id='"+parentId+"') " + 
 					" union all " + 
-					" select ma1.name,ma1.parent_id,ma1.app_id,ma1.url,ma2.name as name2 " + 
+					" select ma1.name,ma1.parent_id,ma1.app_id,ma1.url,ma2.name as name2,ma1.status as maStatus " + 
 					" from MAS_APPLICATION ma1 " + 
 					" left join mas_application ma2 on ma1.parent_id=ma2.app_id " + 
-					" where ma1.app_id ='"+parentId+"'";
+					" where ma1.app_id ='"+parentId+"'";*/
 			
 			SQLQuery sqlQuery = session.createSQLQuery(entityQuery);
 			listApp = sqlQuery.list();
@@ -603,7 +625,7 @@ public class UserManagementDaoImpl implements UserManagementDao {
 				else
 					parentid = parentid + ",'" + masAp.getApplicationId()+"'";				
 			}
-			String checkIntotempApplicationQry = "SELECT masApplication.parent_id,tempApplication.app_id,tempApplication.template_id " + 
+			String checkIntotempApplicationQry = "SELECT masApplication.parent_id,tempApplication.app_id,tempApplication.template_id,tempApplication.STATUS " + 
 					" FROM TEMPLATE_APPLICATION tempApplication, mas_application masApplication " + 
 					" where tempApplication.app_id = masApplication.app_id " + 
 					" and tempApplication.template_id = '"+templateId+"' and masApplication.parent_id in ("+parentid+")";
@@ -642,4 +664,198 @@ public class UserManagementDaoImpl implements UserManagementDao {
 		return result;
 	}
 
+	@Override
+	public List<MasRole> getRoleRightsList() {
+		List<MasRole> roleList = new ArrayList<MasRole>();
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			Criteria criteria = session.createCriteria(MasRole.class);
+
+			ProjectionList projectionList = Projections.projectionList();
+			projectionList.add(Projections.property("roleId").as("roleId"));
+			projectionList.add(Projections.property("roleName").as("roleName"));
+			criteria.setProjection(projectionList);
+			criteria.addOrder(Order.asc("roleName"));
+			roleList = criteria.setResultTransformer(new AliasToBeanResultTransformer(MasRole.class)).list();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return roleList;
+	}
+
+	@Override
+	public List<MasTemplate> getTemplateNameList() {
+		List<MasTemplate> tempNameList = new ArrayList<MasTemplate>();
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			Criteria criteria = session.createCriteria(MasTemplate.class);
+
+			ProjectionList projectionList = Projections.projectionList();
+			projectionList.add(Projections.property("templateId").as("templateId"));
+			projectionList.add(Projections.property("templateName").as("templateName"));
+			criteria.setProjection(projectionList);
+			criteria.addOrder(Order.asc("templateName"));
+			tempNameList = criteria.setResultTransformer(new AliasToBeanResultTransformer(MasTemplate.class)).list();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(tempNameList);
+		return tempNameList;
+	}
+	
+	@Override
+	public List<RoleTemplate> getAssingedTemplateNameList(JSONObject json) {
+		
+		List<RoleTemplate> rolelist = new ArrayList<RoleTemplate>();
+		MasRole mas=new MasRole();
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			mas.setRoleId(json.getLong("roleId"));			
+			 rolelist = session.createCriteria(RoleTemplate.class).add(Restrictions.eq("msRole", mas)).list();		
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		System.out.println(rolelist);
+		return rolelist;
+	
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public String saveRolesRight(JSONObject json) {
+		
+		String result = "";
+		boolean success = false;
+		MasTemplate maTemplate = null;
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		Transaction tx = session.beginTransaction();		
+		String roleid = (String) json.get("roleId");
+		JSONArray jsonArray = json.getJSONArray("templateid");
+		String[] masTemp = null;
+		if (jsonArray != null) {
+			int length = jsonArray.length();
+			masTemp = new String[length];
+			for (int i = 0; i < length; i++) {
+				masTemp[i] = jsonArray.optString(i);
+			}
+		}
+
+		try {
+			if (masTemp != null && masTemp.length > 0) {
+
+				for (String masTemplatee : masTemp) {
+					 JSONObject jsonobj=new JSONObject(masTemplatee);					 
+					RoleTemplate roleTemplate = null;
+					maTemplate = new MasTemplate();
+					maTemplate.setTemplateId(jsonobj.getLong("tid"));
+					MasRole masRole = new MasRole();
+					masRole.setRoleId(Long.parseLong(roleid));
+
+					List<RoleTemplate> roleTemplateList = session.createCriteria(RoleTemplate.class)
+							.add(Restrictions.eq("msRole", masRole)).add(Restrictions.eq("msTemplate", maTemplate))
+							.list();
+
+					if (CollectionUtils.isNotEmpty(roleTemplateList)) {
+						roleTemplate = roleTemplateList.get(0);
+						
+					}
+
+					if (roleTemplate == null) {
+						roleTemplate = new RoleTemplate();
+					}
+
+					long d = System.currentTimeMillis();
+					Date date = new Date(d);
+					roleTemplate.setLastChgDate(date);
+					/*Users users = new Users();
+					users.setUserId(new Long(1));
+					roleTemplate.setUser(users);*/
+					
+					roleTemplate.setStatus(jsonobj.get("status").toString());
+					roleTemplate.setMsRole(masRole);
+					maTemplate.setTemplateId(jsonobj.getLong("tid"));
+					roleTemplate.setMsTemplate(maTemplate);
+					session.saveOrUpdate(roleTemplate);
+					success = true;
+				}
+			}
+			tx.commit();
+
+			if (success) {
+				result = "200";
+			} else {
+				result = "500";
+			}
+
+		} catch (Exception e) {
+			result = "500";
+			e.printStackTrace();
+		} finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<MasApplication> getApplicationNameFormsAndReport(JSONObject jsonObject) {
+		
+		List<MasApplication> applicationsList = new ArrayList<MasApplication>();
+		try {
+			String appName="";
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			Criteria criteria = session.createCriteria(MasApplication.class);
+			if (jsonObject.has("applicationName")) {
+				appName = "%" + jsonObject.get("applicationName") + "%";
+				if (jsonObject.get("applicationName").toString().length() > 0
+						&& !jsonObject.get("applicationName").toString().trim().equalsIgnoreCase("")) {
+					criteria.add(Restrictions.like("applicationName", appName));
+					
+				}
+			}
+			
+			applicationsList = criteria.list();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return applicationsList;
+	}
+
+	@Override
+	public String updateAddFormsAndReport(MasApplication masApplication) {
+		String result="";
+		try {
+			if(masApplication!=null) {
+				Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+				Object object  = session.load(MasApplication.class, masApplication.getApplicationId());
+				MasApplication applicationObject = (MasApplication) object;
+				 
+					Transaction tx = session.beginTransaction();
+					
+					//applicationObject.setApplicationId(masApplication.getApplicationId());
+					applicationObject.setApplicationName(masApplication.getApplicationName().toUpperCase());
+					applicationObject.setParentId(masApplication.getParentId());
+					applicationObject.setUrl(masApplication.getUrl());
+					applicationObject.setStatus(masApplication.getStatus());
+					//applicationObject.setOrderNo(23);
+					session.saveOrUpdate(applicationObject);					
+					tx.commit();
+					result = "200";
+				}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return result;
+	}
 }

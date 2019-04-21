@@ -525,204 +525,6 @@ public class MasterController {
 		JSONObject jsonObject = new JSONObject(idealweightPayload);
 		return masterService.addIdealWeight(jsonObject, request, response);
 	}
-	
-	/*********************************************
-	 * MAS MARITAL STATUS
-	 ********************************************************/
-	@RequestMapping(value = "/getAllMaritalStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String getAllMaritalStatus(@RequestBody Map<String, Object> maritalStatusPayload, HttpServletRequest request,
-			HttpServletResponse response) {
-		String allMaritalStatus = "";
-		JSONObject jsonObject = new JSONObject(maritalStatusPayload);
-		allMaritalStatus = masterService.getAllMaritalStatus(jsonObject, request, response);
-		return allMaritalStatus;
-	}
-
-	@RequestMapping(value = "/addMaritalStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String addMaritalStatus(@RequestBody Map<String, Object> maritalStatusPayload, HttpServletRequest request,
-			HttpServletResponse response) {
-		String addMaritalStatus = "";
-		JSONObject jsonObject = new JSONObject(maritalStatusPayload);
-		addMaritalStatus = masterService.addMaritalStatus(jsonObject, request, response);
-		return addMaritalStatus;
-	}
-
-	@RequestMapping(value = "/updateMaritalStatusDetails", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String updateMaritalStatusDetails(@RequestBody HashMap<String, Object> maritalStatusPayload,
-			HttpServletRequest request, HttpServletResponse response) {
-		String updateMaritalStatus = "";
-		JSONObject jsonObject = new JSONObject(maritalStatusPayload);
-		updateMaritalStatus = masterService.updateMaritalStatusDetails(jsonObject, request, response);
-		return updateMaritalStatus;
-	}
-
-	@RequestMapping(value = "/updateMaritalStatusStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String updateMaritalStatusStatus(@RequestBody HashMap<String, Object> maritalStatusPayload,
-			HttpServletRequest request, HttpServletResponse response) {
-		String updateMaritalStatusStatus = "";
-		JSONObject jsonObject = new JSONObject(maritalStatusPayload);
-		updateMaritalStatusStatus = masterService.updateMaritalStatusStatus(jsonObject, request, response);
-		System.out.println("updateMaritalStatusStatus :: " + updateMaritalStatusStatus);
-		return updateMaritalStatusStatus;
-	}
-
-	/*********************************************
-	 * MAS Administrative Sex
-	 ********************************************************/
-	@RequestMapping(value = "/getAllAdministrativeSex", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String getAllAdministrativeSex(@RequestBody Map<String, Object> administrativeSexPayload,
-			HttpServletRequest request, HttpServletResponse response) {
-		String allAdministrativeSex = "";
-		JSONObject jsonObject = new JSONObject(administrativeSexPayload);
-		allAdministrativeSex = masterService.getAllAdministrativeSex(jsonObject, request, response);
-		return allAdministrativeSex;
-	}
-
-	@RequestMapping(value = "/addAdministrativeSex", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String addAdministrativeSex(@RequestBody Map<String, Object> administrativeSexPayload,
-			HttpServletRequest request, HttpServletResponse response) {
-		String addAdministrativeSex = "";
-		JSONObject jsonObject = new JSONObject(administrativeSexPayload);
-		addAdministrativeSex = masterService.addAdministrativeSex(jsonObject, request, response);
-		return addAdministrativeSex;
-	}
-
-	@RequestMapping(value = "/updateAdministrativeSexDetails", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String updateAdministrativeSexDetails(@RequestBody HashMap<String, Object> administrativeSexPayload,
-			HttpServletRequest request, HttpServletResponse response) {
-		String updateAdministrativeSex = "";
-		JSONObject jsonObject = new JSONObject(administrativeSexPayload);
-		updateAdministrativeSex = masterService.updateAdministrativeSexDetails(jsonObject, request, response);
-		return updateAdministrativeSex;
-	}
-
-	@RequestMapping(value = "/updateAdministrativeSexStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String updateAdministrativeSexStatus(@RequestBody HashMap<String, Object> administrativeSexPayload,
-			HttpServletRequest request, HttpServletResponse response) {
-		String updateAdministrativeSexStatus = "";
-		JSONObject jsonObject = new JSONObject(administrativeSexPayload);
-		updateAdministrativeSexStatus = masterService.updateAdministrativeSexStatus(jsonObject, request, response);
-		return updateAdministrativeSexStatus;
-	}
-
-	/*********************************************
-	 * MAS MedicalCategory
-	 ********************************************************/
-	@RequestMapping(value = "/getAllMedicalCategory", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String getAllMedicalCategory(@RequestBody Map<String, Object> medicalCategoryPayload,
-			HttpServletRequest request, HttpServletResponse response) {
-		String allMedicalCategory = "";
-		JSONObject jsonObject = new JSONObject(medicalCategoryPayload);
-		allMedicalCategory = masterService.getAllMedicalCategory(jsonObject, request, response);
-		System.out.println("medicalCategoryPayload+medicalCategoryPayload :: " + medicalCategoryPayload);
-		return allMedicalCategory;
-	}
-
-	@RequestMapping(value = "/addMedicalCategory", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String addMedicalCategory(@RequestBody Map<String, Object> medicalCategoryPayload,
-			HttpServletRequest request, HttpServletResponse response) {
-		String addMedicalCategory = "";
-		JSONObject jsonObject = new JSONObject(medicalCategoryPayload);
-		addMedicalCategory = masterService.addMedicalCategory(jsonObject, request, response);
-		return addMedicalCategory;
-	}
-
-	@RequestMapping(value = "/updateMedicalCategoryDetails", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String updateMedicalCategoryDetails(@RequestBody HashMap<String, Object> medicalCategoryPayload,
-			HttpServletRequest request, HttpServletResponse response) {
-		String updateMedicalCategory = "";
-		JSONObject jsonObject = new JSONObject(medicalCategoryPayload);
-		updateMedicalCategory = masterService.updateMedicalCategoryDetails(jsonObject, request, response);
-		return updateMedicalCategory;
-	}
-
-	@RequestMapping(value = "/updateMedicalCategoryStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String updateMedicalCategoryStatus(@RequestBody HashMap<String, Object> medicalCategoryPayload,
-			HttpServletRequest request, HttpServletResponse response) {
-		String updateMedicalCategoryStatus = "";
-		JSONObject jsonObject = new JSONObject(medicalCategoryPayload);
-		updateMedicalCategoryStatus = masterService.updateMedicalCategoryStatus(jsonObject, request, response);
-		return updateMedicalCategoryStatus;
-	}
-
-	/*********************************************
-	 * MAS BLOODGROUP
-	 ********************************************************/
-	@RequestMapping(value = "/getAllBloodGroup", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String getAllBloodGroup(@RequestBody Map<String, Object> bloodGroupPayload, HttpServletRequest request,
-			HttpServletResponse response) {
-		String allBloodGroup = "";
-		JSONObject jsonObject = new JSONObject(bloodGroupPayload);
-		allBloodGroup = masterService.getAllBloodGroup(jsonObject, request, response);
-		return allBloodGroup;
-	}
-
-	@RequestMapping(value = "/addBloodGroup", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String addBloodGroup(@RequestBody Map<String, Object> bloodGroupPayload, HttpServletRequest request,
-			HttpServletResponse response) {
-		String addBloodGroup = "";
-		JSONObject jsonObject = new JSONObject(bloodGroupPayload);
-		addBloodGroup = masterService.addBloodGroup(jsonObject, request, response);
-		return addBloodGroup;
-	}
-
-	@RequestMapping(value = "/updateBloodGroupDetails", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String updateBloodGroupDetails(@RequestBody HashMap<String, Object> bloodGroupPayload,
-			HttpServletRequest request, HttpServletResponse response) {
-		String updateBloodGroup = "";
-		JSONObject jsonObject = new JSONObject(bloodGroupPayload);
-		updateBloodGroup = masterService.updateBloodGroupDetails(jsonObject, request, response);
-		return updateBloodGroup;
-	}
-
-	@RequestMapping(value = "/updateBloodGroupStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String updateBloodGroupStatus(@RequestBody HashMap<String, Object> bloodGroupPayload,
-			HttpServletRequest request, HttpServletResponse response) {
-		String updateBloodGroupStatus = "";
-		JSONObject jsonObject = new JSONObject(bloodGroupPayload);
-		updateBloodGroupStatus = masterService.updateBloodGroupStatus(jsonObject, request, response);
-		return updateBloodGroupStatus;
-	}
-
-	/*********************************************
-	 * MAS Sample
-	 ********************************************************/
-	@RequestMapping(value = "/getAllSample", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String getAllSample(@RequestBody Map<String, Object> samplePayload, HttpServletRequest request,
-			HttpServletResponse response) {
-		String allSample = "";
-		JSONObject jsonObject = new JSONObject(samplePayload);
-		allSample = masterService.getAllSample(jsonObject, request, response);
-		System.out.println("responseObj_SAMPLELIST_Service" + allSample);
-		return allSample;
-	}
-
-	@RequestMapping(value = "/addSample", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String addSample(@RequestBody Map<String, Object> samplePayload, HttpServletRequest request,
-			HttpServletResponse response) {
-		String addSample = "";
-		JSONObject jsonObject = new JSONObject(samplePayload);
-		addSample = masterService.addSample(jsonObject, request, response);
-		return addSample;
-	}
-
-	@RequestMapping(value = "/updateSampleDetails", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String updateSampleDetails(@RequestBody HashMap<String, Object> samplePayload, HttpServletRequest request,
-			HttpServletResponse response) {
-		String updateSample = "";
-		JSONObject jsonObject = new JSONObject(samplePayload);
-		updateSample = masterService.updateSampleDetails(jsonObject, request, response);
-		return updateSample;
-	}
-
-	@RequestMapping(value = "/updateSampleStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String updateSampleStatus(@RequestBody HashMap<String, Object> samplePayload, HttpServletRequest request,
-			HttpServletResponse response) {
-		String updateSampleStatus = "";
-		JSONObject jsonObject = new JSONObject(samplePayload);
-		updateSampleStatus = masterService.updateSampleStatus(jsonObject, request, response);
-		return updateSampleStatus;
-	}
 
 	/*************************************
 	 * Mas Service Type
@@ -769,6 +571,441 @@ public class MasterController {
 		return status;
 	}
 
+	/***********************************
+	 * Rank Master
+	 *************************************/
+	/**
+	 * @param Masrank
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+
+	@RequestMapping(value = "/addRank", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String addRank(@RequestBody HashMap<String, Object> rank, HttpServletRequest request,
+			HttpServletResponse response) {
+		String addRank = "";
+		System.out.println("API");
+		JSONObject json = new JSONObject(rank);
+		System.out.println("API json: " + json);
+		addRank = masterService.addRank(json, request, response);
+		return addRank;
+	}
+
+	@RequestMapping(value = "/getAllRank", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getAllRank(@RequestBody Map<String, Object> payload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String rank = "";
+		JSONObject jsonObj = new JSONObject(payload);
+		rank = masterService.getAllRank(jsonObj, request, response);
+		System.out.println("rank+rank :: "+ rank);
+		return rank;
+	}
+
+	@RequestMapping(value = "/getRank", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getRank(@RequestBody HashMap<String, Object> rank, HttpServletRequest request) {
+		String rank1 = "";
+		rank1 = masterService.getRank(rank, request);
+		return rank1;
+	}
+
+	@RequestMapping(value = "/updateRank", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateRank(@RequestBody HashMap<String, Object> rank, HttpServletRequest request,
+			HttpServletResponse response) {
+		String updateRank = "";
+		System.out.println("API updateRank Rank :: " + rank);
+		updateRank = masterService.updateRank(rank, request, response);
+		return updateRank;
+	}
+
+	@RequestMapping(value = "/statusRank", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String statusRank(@RequestBody HashMap<String, Object> rank, HttpServletRequest request,
+			HttpServletResponse response) {
+		String status = "";
+		status = masterService.statusRank(rank, request, response);
+		return status;
+	}
+
+	@RequestMapping(value = "/getEmployeeCategoryList", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getEmployeeCategoryList(HttpServletRequest request, HttpServletResponse response) {
+		String addEmployeeCategory = "";
+
+		addEmployeeCategory = masterService.getEmployeeCategoryList(request, response);
+		return addEmployeeCategory;
+	}
+
+	/*************************************************
+	 * TRADE MASTER
+	 *******************************************************************/
+
+	@RequestMapping(value = "/addTrade", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String addTrade(@RequestBody HashMap<String, Object> trade, HttpServletRequest request,
+			HttpServletResponse response) {
+		String addTrade = "";
+		JSONObject json = new JSONObject(trade);
+		System.out.println("API json: " + json);
+		addTrade = masterService.addTrade(json, request, response);
+		return addTrade;
+	}
+
+	@RequestMapping(value = "/getAllTrade", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getAllTrade(@RequestBody Map<String, Object> payload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String trade = "";
+		JSONObject jsonObj = new JSONObject(payload);
+		trade = masterService.getAllTrade(jsonObj, request, response);
+		return trade;
+	}
+	
+	@RequestMapping(value = "/getTrade", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getTrade(@RequestBody HashMap<String, Object> trade, HttpServletRequest request) {
+		String trade1 = "";
+		trade1 = masterService.getTrade(trade, request);
+		System.out.println("API getTrade details :: " + trade1);
+		return trade1;
+	}
+
+	@RequestMapping(value = "/updateTrade", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateTrade(@RequestBody HashMap<String, Object> trade, HttpServletRequest request,
+			HttpServletResponse response) {
+		String updateTrade = "";
+		System.out.println("API updateTrade Trade :: " + trade);
+		updateTrade = masterService.updateTrade(trade, request, response);
+		return updateTrade;
+	}
+
+	@RequestMapping(value = "/statusTrade", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String statusTrade(@RequestBody HashMap<String, Object> trade, HttpServletRequest request,
+			HttpServletResponse response) {
+		String status = "";
+		status = masterService.statusTrade(trade, request, response);
+		return status;
+	}
+
+	@RequestMapping(value = "/getServiceTypeList", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getServiceTypeList(HttpServletRequest request, HttpServletResponse response) {
+		String addServiceType = "";
+
+		addServiceType = masterService.getServiceTypeList(request, response);
+		return addServiceType;
+	}
+	
+	/*********************************************
+	 * MAS RELIGION
+	 ********************************************************/
+	@RequestMapping(value = "/getAllReligion", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getAllReligion(@RequestBody Map<String, Object> religionPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String allDept = "";
+		JSONObject jsonObject = new JSONObject(religionPayload);
+		allDept = masterService.getAllReligion(jsonObject, request, response);
+		return allDept;
+	}
+	
+	@RequestMapping(value = "/addReligion", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String addReligion(@RequestBody Map<String, Object> religionPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String addDepart = "";
+		JSONObject jsonObject = new JSONObject(religionPayload);
+		addDepart = masterService.addReligion(jsonObject, request, response);
+		return addDepart;
+	}
+
+	@RequestMapping(value = "/updateReligionDetails", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateReligionDetails(@RequestBody HashMap<String, Object> religionPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateDepart = "";
+		JSONObject jsonObject = new JSONObject(religionPayload);
+		updateDepart = masterService.updateReligionDetails(jsonObject, request, response);
+		return updateDepart;
+	}
+
+	@RequestMapping(value = "/updateReligionStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateReligionStatus(@RequestBody HashMap<String, Object> religionPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateDeptStatus = "";
+		JSONObject jsonObject = new JSONObject(religionPayload);
+		updateDeptStatus = masterService.updateReligionStatus(jsonObject, request, response);
+		return updateDeptStatus;
+	}
+	
+	/*********************************************
+	 * MAS MARITAL STATUS
+	 ********************************************************/
+	@RequestMapping(value = "/getAllMaritalStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getAllMaritalStatus(@RequestBody Map<String, Object> maritalStatusPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String allMaritalStatus = "";
+		JSONObject jsonObject = new JSONObject(maritalStatusPayload);
+		allMaritalStatus = masterService.getAllMaritalStatus(jsonObject, request, response);
+		return allMaritalStatus;
+	}
+	
+	@RequestMapping(value = "/addMaritalStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String addMaritalStatus(@RequestBody Map<String, Object> maritalStatusPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String addMaritalStatus = "";
+		JSONObject jsonObject = new JSONObject(maritalStatusPayload);
+		addMaritalStatus = masterService.addMaritalStatus(jsonObject, request, response);
+		return addMaritalStatus;
+	}
+	
+	@RequestMapping(value = "/updateMaritalStatusDetails", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateMaritalStatusDetails(@RequestBody HashMap<String, Object> maritalStatusPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateMaritalStatus = "";
+		JSONObject jsonObject = new JSONObject(maritalStatusPayload);
+		updateMaritalStatus = masterService.updateMaritalStatusDetails(jsonObject, request, response);
+		return updateMaritalStatus;
+	}
+
+	@RequestMapping(value = "/updateMaritalStatusStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateMaritalStatusStatus(@RequestBody HashMap<String, Object> maritalStatusPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateMaritalStatusStatus = "";
+		JSONObject jsonObject = new JSONObject(maritalStatusPayload);
+		updateMaritalStatusStatus = masterService.updateMaritalStatusStatus(jsonObject, request, response);
+		System.out.println("updateMaritalStatusStatus :: "+ updateMaritalStatusStatus);
+		return updateMaritalStatusStatus;
+	}
+
+	/*********************************************
+	 * MAS Employee Category
+	 ********************************************************/
+	@RequestMapping(value = "/getAllEmployeeCategory", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getAllEmployeeCategory(@RequestBody Map<String, Object> employeeCategoryPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String allEmployeeCategory = "";
+		JSONObject jsonObject = new JSONObject(employeeCategoryPayload);
+		allEmployeeCategory = masterService.getAllEmployeeCategory(jsonObject, request, response);
+		return allEmployeeCategory;
+	}
+	
+	@RequestMapping(value = "/addEmployeeCategory", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String addEmployeeCategory(@RequestBody Map<String, Object> employeeCategoryPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String addEmployeeCategory = "";
+		JSONObject jsonObject = new JSONObject(employeeCategoryPayload);
+		addEmployeeCategory = masterService.addEmployeeCategory(jsonObject, request, response);
+		return addEmployeeCategory;
+	}
+
+	@RequestMapping(value = "/updateEmployeeCategoryDetails", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateEmployeeCategoryDetails(@RequestBody HashMap<String, Object> employeeCategoryPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateEmployeeCategory = "";
+		JSONObject jsonObject = new JSONObject(employeeCategoryPayload);
+		updateEmployeeCategory = masterService.updateEmployeeCategoryDetails(jsonObject, request, response);
+		return updateEmployeeCategory;
+	}
+
+	@RequestMapping(value = "/updateEmployeeCategoryStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateEmployeeCategoryStatus(@RequestBody HashMap<String, Object> employeeCategoryPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateEmployeeCategoryStatus = "";
+		JSONObject jsonObject = new JSONObject(employeeCategoryPayload);
+		updateEmployeeCategoryStatus = masterService.updateEmployeeCategoryStatus(jsonObject, request, response);
+		return updateEmployeeCategoryStatus;
+	}
+	
+	/*********************************************
+	 * MAS Administrative Sex
+	 ********************************************************/
+	@RequestMapping(value = "/getAllAdministrativeSex", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getAllAdministrativeSex(@RequestBody Map<String, Object> administrativeSexPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String allAdministrativeSex = "";
+		JSONObject jsonObject = new JSONObject(administrativeSexPayload);
+		allAdministrativeSex = masterService.getAllAdministrativeSex(jsonObject, request, response);
+		return allAdministrativeSex;
+	}
+	
+	@RequestMapping(value = "/addAdministrativeSex", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String addAdministrativeSex(@RequestBody Map<String, Object> administrativeSexPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String addAdministrativeSex = "";
+		JSONObject jsonObject = new JSONObject(administrativeSexPayload);
+		addAdministrativeSex = masterService.addAdministrativeSex(jsonObject, request, response);
+		return addAdministrativeSex;
+	}
+
+	@RequestMapping(value = "/updateAdministrativeSexDetails", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateAdministrativeSexDetails(@RequestBody HashMap<String, Object> administrativeSexPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateAdministrativeSex = "";
+		JSONObject jsonObject = new JSONObject(administrativeSexPayload);
+		updateAdministrativeSex = masterService.updateAdministrativeSexDetails(jsonObject, request, response);
+		return updateAdministrativeSex;
+	}
+
+	@RequestMapping(value = "/updateAdministrativeSexStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateAdministrativeSexStatus(@RequestBody HashMap<String, Object> administrativeSexPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateAdministrativeSexStatus = "";
+		JSONObject jsonObject = new JSONObject(administrativeSexPayload);
+		updateAdministrativeSexStatus = masterService.updateAdministrativeSexStatus(jsonObject, request, response);
+		return updateAdministrativeSexStatus;
+	}
+	
+	/*********************************************
+	 * MAS MedicalCategory
+	 ********************************************************/
+	@RequestMapping(value = "/getAllMedicalCategory", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getAllMedicalCategory(@RequestBody Map<String, Object> medicalCategoryPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String allMedicalCategory = "";
+		JSONObject jsonObject = new JSONObject(medicalCategoryPayload);
+		allMedicalCategory = masterService.getAllMedicalCategory(jsonObject, request, response);
+		System.out.println("medicalCategoryPayload+medicalCategoryPayload :: "+ medicalCategoryPayload);
+		return allMedicalCategory;
+	}
+	
+	@RequestMapping(value = "/addMedicalCategory", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String addMedicalCategory(@RequestBody Map<String, Object> medicalCategoryPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String addMedicalCategory = "";
+		JSONObject jsonObject = new JSONObject(medicalCategoryPayload);
+		addMedicalCategory = masterService.addMedicalCategory(jsonObject, request, response);
+		return addMedicalCategory;
+	}
+
+	@RequestMapping(value = "/updateMedicalCategoryDetails", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateMedicalCategoryDetails(@RequestBody HashMap<String, Object> medicalCategoryPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateMedicalCategory = "";
+		JSONObject jsonObject = new JSONObject(medicalCategoryPayload);
+		updateMedicalCategory = masterService.updateMedicalCategoryDetails(jsonObject, request, response);
+		return updateMedicalCategory;
+	}
+
+	@RequestMapping(value = "/updateMedicalCategoryStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateMedicalCategoryStatus(@RequestBody HashMap<String, Object> medicalCategoryPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateMedicalCategoryStatus = "";
+		JSONObject jsonObject = new JSONObject(medicalCategoryPayload);
+		updateMedicalCategoryStatus = masterService.updateMedicalCategoryStatus(jsonObject, request, response);
+		return updateMedicalCategoryStatus;
+	}
+	
+	/*********************************************
+	 * MAS BLOODGROUP
+	 ********************************************************/
+	@RequestMapping(value = "/getAllBloodGroup", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getAllBloodGroup(@RequestBody Map<String, Object> bloodGroupPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String allBloodGroup = "";
+		JSONObject jsonObject = new JSONObject(bloodGroupPayload);
+		allBloodGroup = masterService.getAllBloodGroup(jsonObject, request, response);
+		return allBloodGroup;
+	}
+	
+	@RequestMapping(value = "/addBloodGroup", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String addBloodGroup(@RequestBody Map<String, Object> bloodGroupPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String addBloodGroup = "";
+		JSONObject jsonObject = new JSONObject(bloodGroupPayload);
+		addBloodGroup = masterService.addBloodGroup(jsonObject, request, response);
+		return addBloodGroup;
+	}
+
+	@RequestMapping(value = "/updateBloodGroupDetails", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateBloodGroupDetails(@RequestBody HashMap<String, Object> bloodGroupPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateBloodGroup = "";
+		JSONObject jsonObject = new JSONObject(bloodGroupPayload);
+		updateBloodGroup = masterService.updateBloodGroupDetails(jsonObject, request, response);
+		return updateBloodGroup;
+	}
+
+	@RequestMapping(value = "/updateBloodGroupStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateBloodGroupStatus(@RequestBody HashMap<String, Object> bloodGroupPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateBloodGroupStatus = "";
+		JSONObject jsonObject = new JSONObject(bloodGroupPayload);
+		updateBloodGroupStatus = masterService.updateBloodGroupStatus(jsonObject, request, response);
+		return updateBloodGroupStatus;
+	}
+	
+
+	/*********************************************
+	 * MAS Sample
+	 ********************************************************/
+	@RequestMapping(value = "/getAllSample", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getAllSample(@RequestBody Map<String, Object> samplePayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String allSample = "";
+		JSONObject jsonObject = new JSONObject(samplePayload);
+		allSample = masterService.getAllSample(jsonObject, request, response);
+		System.out.println("responseObj_SAMPLELIST_Service"+allSample);
+		return allSample;
+	}
+	
+	@RequestMapping(value = "/addSample", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String addSample(@RequestBody Map<String, Object> samplePayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String addSample = "";
+		JSONObject jsonObject = new JSONObject(samplePayload);
+		addSample = masterService.addSample(jsonObject, request, response);
+		return addSample;
+	}
+
+	@RequestMapping(value = "/updateSampleDetails", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateSampleDetails(@RequestBody HashMap<String, Object> samplePayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateSample = "";
+		JSONObject jsonObject = new JSONObject(samplePayload);
+		updateSample = masterService.updateSampleDetails(jsonObject, request, response);
+		return updateSample;
+	}
+
+	@RequestMapping(value = "/updateSampleStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateSampleStatus(@RequestBody HashMap<String, Object> samplePayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateSampleStatus = "";
+		JSONObject jsonObject = new JSONObject(samplePayload);
+		updateSampleStatus = masterService.updateSampleStatus(jsonObject, request, response);
+		return updateSampleStatus;
+	}
+	
+	/*********************************************
+	 * MAS UOM
+	 ********************************************************/
+	@RequestMapping(value = "/getAllUOM", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getAllUOM(@RequestBody Map<String, Object> UOMPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String allUOM = "";
+		JSONObject jsonObject = new JSONObject(UOMPayload);
+		allUOM = masterService.getAllUOM(jsonObject, request, response);
+		return allUOM;
+	}
+	
+	@RequestMapping(value = "/addUOM", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String addUOM(@RequestBody Map<String, Object> UOMPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String addUOM = "";
+		JSONObject jsonObject = new JSONObject(UOMPayload);
+		addUOM = masterService.addUOM(jsonObject, request, response);
+		return addUOM;
+	}
+
+	@RequestMapping(value = "/updateUOMDetails", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateUOMDetails(@RequestBody HashMap<String, Object> UOMPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateUOM = "";
+		JSONObject jsonObject = new JSONObject(UOMPayload);
+		updateUOM = masterService.updateUOMDetails(jsonObject, request, response);
+		return updateUOM;
+	}
+
+	@RequestMapping(value = "/updateUOMStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateUOMStatus(@RequestBody HashMap<String, Object> UOMPayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateUOMStatus = "";
+		JSONObject jsonObject = new JSONObject(UOMPayload);
+		updateUOMStatus = masterService.updateUOMStatus(jsonObject, request, response);
+		return updateUOMStatus;
+	}
+	
 	/*********************************************
 	 * Item Unit (MasStoreUnit)
 	 ********************************************************/
@@ -780,7 +1017,7 @@ public class MasterController {
 		allItemUnit = masterService.getAllItemUnit(jsonObject, request, response);
 		return allItemUnit;
 	}
-
+	
 	@RequestMapping(value = "/addItemUnit", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
 	public String addItemUnit(@RequestBody Map<String, Object> itemUnitPayload, HttpServletRequest request,
 			HttpServletResponse response) {
@@ -800,11 +1037,144 @@ public class MasterController {
 	}
 
 	@RequestMapping(value = "/updateItemUnitStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public String updateItemUnitStatus(@RequestBody HashMap<String, Object> itemUnitPayload, HttpServletRequest request,
-			HttpServletResponse response) {
+	public String updateItemUnitStatus(@RequestBody HashMap<String, Object> itemUnitPayload,
+			HttpServletRequest request, HttpServletResponse response) {
 		String updateItemUnitStatus = "";
 		JSONObject jsonObject = new JSONObject(itemUnitPayload);
 		updateItemUnitStatus = masterService.updateItemUnitStatus(jsonObject, request, response);
 		return updateItemUnitStatus;
 	}
+	
+	/*********************************************
+	 * Mas MainChargecode
+	 ********************************************************/
+	@RequestMapping(value = "/getAllMainChargecode", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getAllMainChargecode(@RequestBody Map<String, Object> mainChargecodePayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String allMainChargecode = "";
+		JSONObject jsonObject = new JSONObject(mainChargecodePayload);
+		allMainChargecode = masterService.getAllMainChargecode(jsonObject, request, response);
+		return allMainChargecode;
+	}
+	
+	@RequestMapping(value = "/addMainChargecode", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String addMainChargecode(@RequestBody Map<String, Object> mainChargecodePayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String addMainChargecode = "";
+		JSONObject jsonObject = new JSONObject(mainChargecodePayload);
+		addMainChargecode = masterService.addMainChargecode(jsonObject, request, response);
+		return addMainChargecode;
+	}
+
+	@RequestMapping(value = "/updateMainChargecodeDetails", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateMainChargecodeDetails(@RequestBody HashMap<String, Object> mainChargecode,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateMainChargecode = "";
+		JSONObject jsonObject = new JSONObject(mainChargecode);
+		updateMainChargecode = masterService.updateMainChargecodeDetails(mainChargecode, request, response);
+		return updateMainChargecode;
+	}
+
+	@RequestMapping(value = "/updateMainChargecodeStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateMainChargecodeStatus(@RequestBody HashMap<String, Object> mainChargecode,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateMainChargecodeStatus = "";
+		JSONObject jsonObject = new JSONObject(mainChargecode);
+		updateMainChargecodeStatus = masterService.updateMainChargecodeStatus(mainChargecode, request, response);
+		return updateMainChargecodeStatus;
+	}
+	
+	@RequestMapping(value = "/getDepartmentList", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getDepartmentList(HttpServletRequest request, HttpServletResponse response) {
+		String getDepartment = "";
+		getDepartment = masterService.getDepartmentList(request, response);
+		return getDepartment;
+	}
+	
+	/*********************************************
+	 * Users
+	 ********************************************************/
+	@RequestMapping(value = "/getAllUsers", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getAllUsers(@RequestBody Map<String, Object> usersPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String allUsers = "";
+		JSONObject jsonObject = new JSONObject(usersPayload);
+		allUsers = masterService.getAllUsers(jsonObject, request, response);
+		return allUsers;
+	}
+	
+	@RequestMapping(value = "/addUsers", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String addUsers(@RequestBody Map<String, Object> usersPayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String addUsers = "";
+		JSONObject jsonObject = new JSONObject(usersPayload);
+		addUsers = masterService.addUsers(jsonObject, request, response);
+		return addUsers;
+	}
+
+	@RequestMapping(value = "/updateUsersDetails", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateUsersDetails(@RequestBody HashMap<String, Object> users,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateUsers = "";
+		JSONObject jsonObject = new JSONObject(users);
+		updateUsers = masterService.updateUsersDetails(users, request, response);
+		return updateUsers;
+	}
+
+	@RequestMapping(value = "/updateUsersStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateUsersStatus(@RequestBody HashMap<String, Object> users,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateUsersStatus = "";
+		JSONObject jsonObject = new JSONObject(users);
+		updateUsersStatus = masterService.updateUsersStatus(users, request, response);
+		return updateUsersStatus;
+	}
+	
+	@RequestMapping(value = "/getHospitalList", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getHospitalList(HttpServletRequest request, HttpServletResponse response) {
+		String addHospital = "";
+		addHospital = masterService.getHospitalList(request, response);
+		return addHospital;
+	}
+	
+	
+	/*********************************************
+	 * MAS Role
+	 ********************************************************/
+	@RequestMapping(value = "/getAllRole", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getAllRole(@RequestBody Map<String, Object> rolePayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String allRole = "";
+		JSONObject jsonObject = new JSONObject(rolePayload);
+		allRole = masterService.getAllRole(jsonObject, request, response);
+		return allRole;
+	}
+	
+	@RequestMapping(value = "/addRole", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String addRole(@RequestBody Map<String, Object> rolePayload, HttpServletRequest request,
+			HttpServletResponse response) {
+		String addRole = "";
+		JSONObject jsonObject = new JSONObject(rolePayload);
+		addRole = masterService.addRole(jsonObject, request, response);
+		return addRole;
+	}
+
+	@RequestMapping(value = "/updateRoleDetails", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateRoleDetails(@RequestBody HashMap<String, Object> rolePayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateRole = "";
+		JSONObject jsonObject = new JSONObject(rolePayload);
+		updateRole = masterService.updateRoleDetails(jsonObject, request, response);
+		return updateRole;
+	}
+
+	@RequestMapping(value = "/updateRoleStatus", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String updateRoleStatus(@RequestBody HashMap<String, Object> rolePayload,
+			HttpServletRequest request, HttpServletResponse response) {
+		String updateRoleStatus = "";
+		JSONObject jsonObject = new JSONObject(rolePayload);
+		updateRoleStatus = masterService.updateRoleStatus(jsonObject, request, response);
+		return updateRoleStatus;
+	}
+	
 }

@@ -46,19 +46,27 @@ function GetApplicationAutoCompleteList(){
 			cache : false,
 			success : function(result) {				
 				var maxAppId = result.max_app_id;
-				 dataList = result.data;				
-				var maxId = parseInt(maxAppId.substring(1,maxAppId.length))+1;				
-				$j('#applicationId').val("A"+maxId);								
+				 dataList = result.data;	
+				 if(maxAppId !=undefined)
+					 {
+					 	var maxId = parseInt(maxAppId.substring(1,maxAppId.length))+1;				
+						$j('#applicationId').val("A"+maxId);	
+					 }
+				 else
+					 {
+						 $j('#applicationId').val("A1");
+					 }
+											
 				  for(i=0;i<dataList.length;i++){
 					  appId = dataList[i].id;					  
 					  var status = dataList[i].status;
-					  //if(status == 'n'){
+					  if(status == 'y' || status == 'Y'){
 					//Id = parseInt(appId.substring(1,appId.length));					  
 					  appNameList = dataList[i].appName;
 					  var url = dataList[i].url;
 					  var applicationName = appNameList+"["+appId+"]";					  
 					  applicationArry.push(applicationName);
-					  //}
+					  }
 				}  
 				  autocomplete(document.getElementById("applicationName"), applicationArry);  
 					
@@ -101,10 +109,11 @@ function GetParentId(){
 		success : function(result) {			
 			var dataList = result.listObjModule;
 			for(var i=0;i<dataList.length;i++){
-				 appPId = dataList[i].applicationId;				 
+				 appPId = dataList[i].applicationId;
+				 //alert("appPId :: "+appPId);
 				 var appName1 = dataList[i].applicationName;
 				 appName =  appName1+"["+appPId+"]";
-				 alert(appName);
+				 //alert(appName);
 				 appArray.push(appName);
 			}
 			 autocomplete(document.getElementById("parentId"), appArray);
@@ -113,44 +122,63 @@ function GetParentId(){
 }
 
 function addFormAndReportsDetails(){
+	
+	if(document.getElementById('applicationName').value==""){
+		alert("Please Enter the Application Name");
+		return false;
+	}
+	if(document.getElementById('parentId').value==""){
+		alert("Please Enter the ParentId");
+		return false;
+	}
+	if(document.getElementById('applicationUrl').value==""){
+		alert("Please Enter the Url");
+		return false;
+	}
+	
 	 var url = $j('#applicationUrl').val();
-	 alert(url);
+	 var parentidd = document.getElementById('parentId').value;
+	 //alert("appPId :: "+appPId);
+	 //alert("parentidd :: "+parentidd);
 	params = {"applicationId":$j('#applicationId').val(),
 			"applicationName":$j('#applicationName').val(),
-			"parentId":appPId,
+			"parentId":parentidd,
 			"url":url
 			}
-	alert(JSON.stringify(params));
-	$j.ajax({
+	//alert(JSON.stringify(params));
+	/* var url="addFormAndReports";
+	SendJsonData(url,params);  */
+	  $j.ajax({
 		type : "POST",
 		contentType : "application/json",
 		url : "addFormAndReports",
 		data : JSON.stringify(params),
 		dataType : "json",
 		cache : false,
-		sucess : function(result){
-			if(result.status==1){	        	
+		success : function(result){
+			if(result.status==1){	
 	        	document.getElementById("messageId").innerHTML = result.msg;
-	    		$("#messageId").css("color", "green");	        	
+	    		$j("#messageId").css("color", "green");
+	    		
 	        }	        
 	    	else if(result.status==0){	        	
 	        	if(result.msg != undefined){
 		        		document.getElementById("messageId").innerHTML = result.msg;
-		        		$("#messageId").css("color", "red");			        	
+		        		$j("#messageId").css("color", "red");			        	
 	        		}
 	        	if(result.err_mssg != undefined){
 	        		document.getElementById("messageId").innerHTML = result.err_mssg;
-	        		$("#messageId").css("color", "red");		        	
+	        		$j("#messageId").css("color", "red");		        	
         		}	        	
 	        }
 	    	else{	        	
 	        	if(result.msg != undefined){
 		        		document.getElementById("messageId").innerHTML = result.msg;
-		        		$("#messageId").css("color", "red");			        	
+		        		$j("#messageId").css("color", "red");			        	
 	        		}
 	        	if(result.err_mssg != undefined){
 	        		document.getElementById("messageId").innerHTML = result.err_mssg;
-	        		$("#messageId").css("color", "red");		        	
+	        		$j("#messageId").css("color", "red");		        	
         		}	        	
 	        }
 	    },
@@ -159,7 +187,26 @@ function addFormAndReportsDetails(){
 		   }
 		
 	})
+	ResetForm();
+	
+	//window.location.reload();
 }
+ function editFormAndReports(){
+	document.formsAndReportForm.name='formsAndReportForm';
+	document.formsAndReportForm.method='POST';
+	document.formsAndReportForm.action="${pageContext.request.contextPath}/user/editFormsAndReport";
+	document.formsAndReportForm.submit(); 
+} 
+
+function ResetForm()
+{	
+	$j('#parentId').val('');
+	$j('#applicationName').val('');
+	$j('#applicationUrl').val('');
+	
+}
+
+
 </script>
 
 
@@ -207,7 +254,7 @@ function addFormAndReportsDetails(){
                                   <br>
                                     <div class="row">                                                                     
                                         <div class="col-md-8">
-                                            <form class="form-horizontal" id="" name="" method="" role="form">
+                                            <form class="form-horizontal" id="formsAndReportForm" name="formsAndReportForm">
                                                 <div class="form-group row">
                                                     <label class="col-3 col-form-label inner_md_htext">Application Id</label>
                                                     <div class="col-3">
@@ -255,12 +302,12 @@ function addFormAndReportsDetails(){
                                         <div class="col-md-7">
                                         </div>
                                         <div class="col-md-5">
-                                            <form>
+                                            
                                                 <div class="button-list">
                                                     <button type="button" id="btnAdd" class="btn btn-primary " onclick="addFormAndReportsDetails();">Add</button>
-
+                                                    <button type="submit" id="btnEdit" class="btn btn-primary" onclick="editFormAndReports();">Edit</button>
                                                 </div>
-                                            </form>
+                                           
                                         </div>
 
                                     </div>

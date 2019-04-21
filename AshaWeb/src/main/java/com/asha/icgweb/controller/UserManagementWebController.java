@@ -22,7 +22,7 @@ import com.asha.icgweb.utils.RestUtils;
  * @author rajdeo.kumar
  *
  */
-@RequestMapping("/")
+@RequestMapping("/user")
 @RestController
 @CrossOrigin
 public class UserManagementWebController {
@@ -196,4 +196,76 @@ public class UserManagementWebController {
 		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());	
 	}
 	
+	@RequestMapping(value="/roleRights", method=RequestMethod.GET)	
+	public ModelAndView croleRights(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mav = new ModelAndView("roleRights");			
+		return mav;
+			
+	}
+	
+	@RequestMapping(value="/getRoleRightsList", method=RequestMethod.POST)
+	public String getRoleRightsList(@RequestBody String payload, 
+			HttpServletRequest request, HttpServletResponse response) {		
+		JSONObject jsonObject = new JSONObject(payload);
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "getRoleRightsList");
+		String OSBURL = IpAndPortNo + Url;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		
+	}
+	
+	@RequestMapping(value="/getTemplateNameList", method=RequestMethod.POST)
+	public String getTemplateNameList(@RequestBody String payload, 
+			HttpServletRequest request, HttpServletResponse response) {		
+		JSONObject jsonObject = new JSONObject(payload);
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "getTemplateNameList");
+		String OSBURL = IpAndPortNo + Url;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		
+	}	
+	
+	@RequestMapping(value="/getAssingedTemplateNameList", method=RequestMethod.POST)
+	public String getAssingedTemplateNameList(@RequestBody String payload, 
+			HttpServletRequest request, HttpServletResponse response) {		
+		JSONObject jsonObject = new JSONObject(payload);
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "getAssingedTemplateNameList");
+		String OSBURL = IpAndPortNo + Url;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		
+	}
+	
+	@RequestMapping(value="/saveRolesRight", method=RequestMethod.POST)
+	public String saveRolesRight(@RequestBody Map<String, Object> requestPayload, HttpServletRequest request,
+			HttpServletResponse response) {			
+		JSONObject jsonObject = new JSONObject(requestPayload);						
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "saveRolesRight");
+		String OSBURL = IpAndPortNo + Url;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+	}
+	
+	@RequestMapping(value="/editFormsAndReport",method=RequestMethod.POST)
+	public ModelAndView editFormsAndReport(HttpServletRequest request, HttpServletResponse response) {	
+		ModelAndView mav = new ModelAndView("editFormsAndReport");			
+		return mav;
+	}
+	@RequestMapping(value="/getApplicationNameFormsAndReport", method=RequestMethod.POST)
+	public String getApplicationNameFormsAndReport(@RequestBody Map<String, Object> requestObject) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "GET_APPLICATIONNAME_FORMS_AND_REPORT");
+		String OSBURL = IpAndPortNo+Url;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());	
+	}
+	
+	@RequestMapping(value="/updateAddFormsAndReport", method=RequestMethod.POST)
+	public String updateAddFormsAndReport(@RequestBody Map<String, Object> requestObject) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "UPDATE_ADDFORM_AND_REPORT");
+		String OSBURL = IpAndPortNo+Url;
+		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());	
+	}
 }

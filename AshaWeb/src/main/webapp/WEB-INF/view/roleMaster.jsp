@@ -29,21 +29,21 @@ $j(document).ready(function()
 	$j("#btnActive").hide();
 	$j("#btnInActive").hide();		
 	$j('#updateBtn').attr("disabled", true);	  
-	$j('#employeeCategoryCode').attr('readonly', false);		
-		GetAllEmployeeCategory('ALL');			
+	$j('#roleCode').attr('readonly', false);		
+		GetAllRole('ALL');			
 		});
 		
-function GetAllEmployeeCategory(MODE){
-	document.getElementById('searchEmployeeCategory').value = "";
-	 var employeeCategoryId=0;
+function GetAllRole(MODE){
+	document.getElementById('searchRole').value = "";
+	 var roleId=0;
 	 if(MODE == 'ALL'){
 			var data = {"PN":nPageNo};			
 		}else{
 		var data = {"PN":nPageNo};
 		} 
-	var url = "getAllEmployeeCategory";		
+	var url = "getAllRole";		
 	var bClickable = true;
-	GetJsonData('tblListOfEmployeeCategory',data,url,bClickable);	 
+	GetJsonData('tblListOfRole',data,url,bClickable);	 
 }
 
 function makeTable(jsonData)
@@ -64,12 +64,12 @@ function makeTable(jsonData)
 				}
 			else
 				{
-					var Status='InActive'
+					var Status='Inactive'
 				} 		
 				
-			htmlTable = htmlTable+"<tr id='"+dataList[i].employeeCategoryId+"' >";			
-			htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].employeeCategoryCode+"</td>";
-			htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].employeeCategoryName+"</td>";
+			htmlTable = htmlTable+"<tr id='"+dataList[i].roleId+"' >";			
+			htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].roleCode+"</td>";
+			htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].roleName+"</td>";
 			htmlTable = htmlTable +"<td style='width: 100px;'>"+Status+"</td>"; 			
 			htmlTable = htmlTable+"</tr>";
 			
@@ -81,43 +81,43 @@ function makeTable(jsonData)
 		}			
 	
 	
-	$j("#tblListOfEmployeeCategory").html(htmlTable); 	
+	$j("#tblListOfRole").html(htmlTable); 	
 	
 }
 
-var eCatId;
-var eCatCode;
-var eCatName;
-var eCatStatus;
+var rId;
+var rCode;
+var rName;
+var rStatus;
 
-function executeClickEvent(employeeCategoryId,data)
+function executeClickEvent(roleId,data)
 {
 	
 	for(j=0;j<data.data.length;j++){
-		if(employeeCategoryId == data.data[j].employeeCategoryId){
-			eCatId = data.data[j].employeeCategoryId;			
-			eCatCode = data.data[j].employeeCategoryCode;			
-			eCatName = data.data[j].employeeCategoryName;
-			eCatStatus = data.data[j].status;
+		if(roleId == data.data[j].roleId){
+			rId = data.data[j].roleId;			
+			rCode = data.data[j].roleCode;			
+			rName = data.data[j].roleName;
+			rStatus = data.data[j].status;
 			
 			
 		}
 	}
-	rowClick(eCatId,eCatCode,eCatName,eCatStatus);
+	rowClick(rId,rCode,rName,rStatus);
 }
 
-function rowClick(eCatId,eCatCode,eCatName,eCatStatus){	
+function rowClick(rId,rCode,rName,rStatus){	
 		
-	document.getElementById("employeeCategoryCode").value = eCatCode;
-	document.getElementById("employeeCategoryName").value = eCatName;
+	document.getElementById("roleCode").value = rCode;
+	document.getElementById("roleName").value = rName;
 	
 			 
-	if(eCatStatus == 'Y' || eCatStatus == 'y'){		
+	if(rStatus == 'Y' || rStatus == 'y'){		
 		$j("#btnInActive").show();
 		$j("#btnActive").hide();
 		$j('#updateBtn').show();
 	}
-	if(eCatStatus == 'N' || eCatStatus == 'n'){
+	if(rStatus == 'N' || rStatus == 'n'){
 		$j("#btnActive").show();
 		$j("#btnInActive").hide();
 		$j('#updateBtn').hide();
@@ -126,108 +126,108 @@ function rowClick(eCatId,eCatCode,eCatName,eCatStatus){
 	$j("#btnActive").attr("disabled", false);
 	$j("#btnInActive").attr("disabled", false);
 	$j('#updateBtn').attr("disabled", false);
-	$j('#btnAddEmployeeCategory').attr("disabled", true);
-	$j('#employeeCategoryCode').attr('readonly', true);
+	$j('#btnAddRole').attr("disabled", true);
+	//$j('#roleCode').attr('readonly', true);
 	
 }
 
-function searchEmployeeCategoryList(){	
-	if(document.getElementById('searchEmployeeCategory').value == "" || document.getElementById('searchEmployeeCategory') == null){
-		 alert("Plese Enter the EmployeeCategory Name");
+function searchRoleList(){	
+	if(document.getElementById('searchRole').value == "" || document.getElementById('searchRole') == null){
+		 alert("Plese Enter the Role Name");
 		 return false;
 	 }
 		 	 
-	 var employeeCategoryName= jQuery("#searchEmployeeCategory").attr("checked", true).val().toUpperCase();
+	 var roleName= jQuery("#searchRole").attr("checked", true).val().toUpperCase();
 		
 		var nPageNo=1;
-		var url = "getAllEmployeeCategory";
-		var data =  {"PN":nPageNo, "employeeCategoryName":employeeCategoryName};
+		var url = "getAllRole";
+		var data =  {"PN":nPageNo, "roleName":roleName};
 		var bClickable = true;
-		GetJsonData('tblListOfEmployeeCategory',data,url,bClickable);		
+		GetJsonData('tblListOfRole',data,url,bClickable);		
 }
 
 var success;
 var error;
 
-function addEmployeeCategoryDetails(){
-	if(document.getElementById('employeeCategoryCode').value == null || document.getElementById('employeeCategoryCode').value == ""){
-		alert("Please Enter EmployeeCategory Code");
+function addRoleDetails(){
+	if(document.getElementById('roleCode').value == null || document.getElementById('roleCode').value == ""){
+		alert("Please Enter Role Code");
 		return false;
 	}
-	if(document.getElementById('employeeCategoryName').value == null || document.getElementById('employeeCategoryName').value ==""){
-		alert("Please Enter EmployeeCategory Name");
+	if(document.getElementById('roleName').value == null || document.getElementById('roleName').value ==""){
+		alert("Please Enter Role Name");
 		return false;
 	}
 	
 	
 	var params = {			 
-			 'employeeCategoryCode':jQuery('#employeeCategoryCode').val(),
-			 'employeeCategoryName':jQuery('#employeeCategoryName').val()			 			 
+			 'roleCode':jQuery('#roleCode').val(),
+			 'roleName':jQuery('#roleName').val()			 			 
 	 } 
-	   var url = "addEmployeeCategory";
+	   var url = "addRole";
 	   SendJsonData(url,params);
 	    
 }
 
-function updateEmployeeCategory(){	
-	if(document.getElementById('employeeCategoryCode').value == null || document.getElementById('employeeCategoryCode').value == ""){
-		alert("Please Enter EmployeeCategory Code");
+function updateRole(){	
+	if(document.getElementById('roleCode').value == null || document.getElementById('roleCode').value == ""){
+		alert("Please Enter Role Code");
 		return false;
 	}
-	if(document.getElementById('employeeCategoryName').value == null || document.getElementById('employeeCategoryName').value ==""){
-		alert("Please Enter EmployeeCategory Name");
+	if(document.getElementById('roleName').value == null || document.getElementById('roleName').value ==""){
+		alert("Please Enter Role Name");
 		return false;
 	}
 		
 	
 	var params = {
-			 'employeeCategoryId':eCatId,
-			 'employeeCategoryCode':jQuery('#employeeCategoryCode').val(),
-			 'employeeCategoryName':jQuery('#employeeCategoryName').val()			 
+			 'roleId':rId,
+			 'roleCode':jQuery('#roleCode').val(),
+			 'roleName':jQuery('#roleName').val()			 
 			
 	 } 
-		    var url = "updateEmployeeCategoryDetails";
+		    var url = "updateRoleDetails";
 		    SendJsonData(url,params);
 		
 		    $j('#updateBtn').attr("disabled", true);
-			$j('#btnAddEmployeeCategory').attr("disabled", false);
-			$j('#employeeCategoryCode').attr('readonly', true);
+			$j('#btnAddRole').attr("disabled", false);
+			//$j('#roleCode').attr('readonly', true);
 			ResetFrom();
 }
 
-function updateEmployeeCategoryStatus(){
-	if(document.getElementById('employeeCategoryCode').value == null || document.getElementById('employeeCategoryCode').value == ""){
-		alert("Please Enter EmployeeCategory Code");
+function updateRoleStatus(){
+	if(document.getElementById('roleCode').value == null || document.getElementById('roleCode').value == ""){
+		alert("Please Enter Role Code");
 		return false;
 	}
-	if(document.getElementById('employeeCategoryName').value == null || document.getElementById('employeeCategoryName').value ==""){
-		alert("Please Enter EmployeeCategory Name");
+	if(document.getElementById('roleName').value == null || document.getElementById('roleName').value ==""){
+		alert("Please Enter Role Name");
 		return false;
 	}
 	
 	var params = {
-			'employeeCategoryId':eCatId,
-			 'employeeCategoryCode':eCatCode,
-			 'status':eCatStatus
+			'roleId':rId,
+			 'roleCode':rCode,
+			 'status':rStatus
 			 
 		} 
-		    var url = "updateEmployeeCategoryStatus";
+		    var url = "updateRoleStatus";
 	        SendJsonData(url,params);
 	 
 	     $j("#btnActive").attr("disabled", true);
 	   	 $j("#btnInActive").attr("disabled", true);
-	   	 $j('#btnAddEmployeeCategory').attr("disabled", false);
+	   	 $j('#btnAddRole').attr("disabled", false);
 }
 
 function Reset(){
-	document.getElementById("addEmployeeCategoryForm").reset();
-	document.getElementById("searchEmployeeCategoryForm").reset();
-	document.getElementById('searchEmployeeCategory').value = "";
+	document.getElementById("addRoleForm").reset();
+	document.getElementById("searchRoleForm").reset();
+	document.getElementById('searchRole').value = "";
 	
 	$j("#btnActive").hide();
 	$j("#btnInActive").hide();
 	$j('#updateBtn').attr("disabled", true);
-	$j('#btnAddEmployeeCategory').attr("disabled", false);
+	$j('#btnAddRole').attr("disabled", false);
 	document.getElementById("messageId").innerHTML = "";
 	$("#messageId").css("color", "black");
 	
@@ -237,9 +237,9 @@ function Reset(){
 
 function ResetForm()
 {	
-	$j('#employeeCategoryCode').val('');
-	$j('#employeeCategoryName').val('');
-	$j('#searchEmployeeCategory').val('');
+	$j('#roleCode').val('');
+	$j('#roleName').val('');
+	$j('#searchRole').val('');
 	
 }
 
@@ -247,14 +247,14 @@ function showAll()
 {
 	ResetForm();
 	nPageNo = 1;	
-	GetAllEmployeeCategory('ALL');
+	GetAllRole('ALL');
 	
 }
 
  function showResultPage(pageNo)
 {
 	nPageNo = pageNo;	
-	GetAllEmployeeCategory('FILTER');
+	GetAllRole('FILTER');
 	
 } 
 
@@ -293,7 +293,7 @@ function showAll()
                         <div class="dropdown-menu dropdown-menu-animated dropdown-menu-right profile-dropdown ">
                             <!-- item-->
                             <div class="dropdown-item noti-title">
-                                <h5 class="text-overflow"><small>Welcome ! EmployeeCategory Master</small> </h5>
+                                <h5 class="text-overflow"><small>Welcome ! Role Master</small> </h5>
                             </div>
 
                             <!-- item-->
@@ -354,7 +354,7 @@ function showAll()
                     <div class="row">
                         <div class="col-12">
                             <div class="page-title-box">
-                                <h4 class="page-title float-left">Employee Category Master</h4>
+                                <h4 class="page-title float-left">Role Master</h4>
 
                                 <ol class="breadcrumb float-right">
                                     <li class="breadcrumb-item active"><a href="#">Home</a></li>
@@ -377,22 +377,22 @@ function showAll()
                                     <div class="row">
                                                                      
                                         <div class="col-md-8">
-                                            <form class="form-horizontal" id="searchEmployeeCategoryForm" name="searchEmployeeCategoryForm" method="" role="form">
+                                            <form class="form-horizontal" id="searchRoleForm" name="searchRoleForm" method="" role="form">
                                                 <div class="form-group row">
-                                                    <label class="col-3 col-form-label inner_md_htext">Employee Category Name <span style="color:red">*</span> </label>
+                                                    <label class="col-3 col-form-label inner_md_htext">Role Name <span style="color:red">*</span> </label>
                                                     <div class="col-5">
                                                         <div class="col-auto">
-                                                            <label class="sr-only" for="inlineFormInputGroup">Employee Category Name</label>
+                                                            <label class="sr-only" for="inlineFormInputGroup">Role Name</label>
                                                             <div class="input-group mb-2">
                                                                 <!-- <div class="input-group-prepend">
                                                                     <div class="input-group-text">&#128269;</div>
                                                                 </div> -->
-                                                                <input type="text" name="searchEmployeeCategory" id="searchEmployeeCategory" class="form-control" id="inlineFormInputGroup" placeholder="Employee Category Name">
+                                                                <input type="text" name="searchRole" id="searchRole" class="form-control" id="inlineFormInputGroup" placeholder="Role Name">
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-2">
-                                                        <button type="button" class="btn  btn-primary" onclick="searchEmployeeCategoryList();">Search</button>
+                                                        <button type="button" class="btn  btn-primary" onclick="searchRoleList();">Search</button>
                                                     </div>
                                                 </div>
                                             </form>
@@ -412,26 +412,6 @@ function showAll()
                                             </form>
                                         </div>
 
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <nav aria-label="Page navigation example">
-                                                <ul class="pagination float-right">
-                                                    <li class="page-item">
-                                                        <a href="#" aria-label="Previous" class="page-link">
-                                                            <i class="fa fa-angle-left"></i>
-                                                        </a>
-                                                    </li>
-                                                    
-                                                    <li class="page-item">
-                                                        <a href="#" aria-label="Next" class="page-link">
-                                                            <i class="fa fa-angle-right"></i>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </nav>
-                                        </div>
                                     </div>
 
 					<!-- <table class="table table-striped table-hover jambo_table"> -->
@@ -463,38 +443,38 @@ function showAll()
                                     <table class="table table-hover table-bordered">
                                         <thead class="bg-success" style="color:#fff;">
                                             <tr>
-                                                <th id="th2" class ="inner_md_htext">Employee Category Code</th>
-                                                <th id="th3" class ="inner_md_htext">Employee Category Name</th>
+                                                <th id="th2" class ="inner_md_htext">Role Code</th>
+                                                <th id="th3" class ="inner_md_htext">Role Name</th>
                                                 <th id="th5" class ="inner_md_htext">Status</th>
                                             </tr>
                                         </thead>
                                         <!--  <tbody id="tblListOfEmployeeAndDepenent">   </tbody>  --->
-                                     <tbody id="tblListOfEmployeeCategory">
+                                     <tbody id="tblListOfRole">
 										 
                      				 </tbody>
                                     </table>
 
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <form id="addEmployeeCategoryForm" name="addEmployeeCategoryForm" method="">
+                                            <form id="addRoleForm" name="addRoleForm" method="">
                                                 <div class="row">
                                                     <div class="col-md-4">
                                                         <div class="form-group row">
                                                         <div class="col-sm-5">
-                                                            <label for="Employee Category Code" class=" col-form-label inner_md_htext" >Employee Category Code <span style="color:red">*</span> </label>
+                                                            <label for="Role Code" class=" col-form-label inner_md_htext" >Role Code <span style="color:red">*</span> </label>
                                                             </div>
                                                             <div class="col-sm-7">
-                                                                <input type="text" class="form-control" id="employeeCategoryCode" name="employeeCategoryCode" placeholder="Employee Category Code" onkeypress=" return validateText('employeeCategoryCode',3);">
+                                                                <input type="text" class="form-control" id="roleCode" name="roleCode" placeholder="Role Code" onkeypress=" return validateText('roleCode',7);">
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="form-group row">
                                                         <div class="col-sm-5">
-                                                            <label for="service" class="col-form-label inner_md_htext">Employee Category Name <span style="color:red">*</span> </label>
+                                                            <label for="service" class="col-form-label inner_md_htext">Role Name <span style="color:red">*</span> </label>
                                                             </div>
                                                             <div class="col-sm-7">
-                                                                <input type="text" class="form-control" id="employeeCategoryName" name="employeeCategoryName" placeholder="Employee Category Name" onkeypress="return validateTextField('employeeCategoryName',30);" >
+                                                                <input type="text" class="form-control" id="roleName" name="roleName" placeholder="Role Name" onkeypress="return validateTextField('roleName',30);" >
                                                             </div>
                                                         </div>
                                                     </div>
@@ -511,10 +491,10 @@ function showAll()
                                             <form>
                                                 <div class="button-list">
 
-                                                    <button type="button" id="btnAddEmployeeCategory" class="btn btn-primary btn-rounded w-md waves-effect waves-light" onclick="addEmployeeCategoryDetails();">Add</button>
-                                                    <button type="button" id ="updateBtn" class="btn btn-primary btn-rounded w-md waves-effect waves-light" onclick="updateEmployeeCategory();">Update</button>
-                                                    <button id="btnActive" type="button" class="btn btn-primary btn-rounded w-md waves-effect waves-light" onclick="updateEmployeeCategoryStatus();">Active</button>
-                                      				<button id="btnInActive" type="button" class="btn btn-primary btn-rounded w-md waves-effect waves-light" onclick="updateEmployeeCategoryStatus();">InActive</button>
+                                                    <button type="button" id="btnAddRole" class="btn btn-primary btn-rounded w-md waves-effect waves-light" onclick="addRoleDetails();">Add</button>
+                                                    <button type="button" id ="updateBtn" class="btn btn-primary btn-rounded w-md waves-effect waves-light" onclick="updateRole();">Update</button>
+                                                    <button id="btnActive" type="button" class="btn btn-primary btn-rounded w-md waves-effect waves-light" onclick="updateRoleStatus();">Active</button>
+                                      				<button id="btnInActive" type="button" class="btn btn-primary btn-rounded w-md waves-effect waves-light" onclick="updateRoleStatus();">Deactivate</button>
                                                     <button type="button" class="btn btn-danger btn-rounded w-md waves-effect waves-light" onclick="Reset();">Reset</button>
 
                                                 </div>

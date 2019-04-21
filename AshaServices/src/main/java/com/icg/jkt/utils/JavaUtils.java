@@ -6,7 +6,7 @@ public class JavaUtils {
 		return replaceValue.replaceAll("[\\[\\]]", ",");
 		}
 	public static String getReplaceString1(String replaceValue) {
-		return replaceValue.replaceAll("[\\[\\]]", " ");
+		return replaceValue.replaceAll("[\\[\\]]", "");
 		}
 	public static final String[] getSplitString(String value) {
 			final String regex = "-";
