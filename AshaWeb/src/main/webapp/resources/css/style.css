@@ -5367,3 +5367,5 @@ select {
 div#chargeCodeNameautocomplete-list>div {
     padding: 5px;
 }
+
+.assign_app_input{width:300px;}

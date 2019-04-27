@@ -1,0 +1,974 @@
+package com.icg.jkt.service.impl;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.icg.jkt.dao.UserManagementDao;
+import com.icg.jkt.entity.MasApplication;
+import com.icg.jkt.entity.MasDepartment;
+import com.icg.jkt.entity.MasHospital;
+import com.icg.jkt.entity.MasRole;
+import com.icg.jkt.entity.MasTemplate;
+import com.icg.jkt.entity.RoleTemplate;
+import com.icg.jkt.entity.Patient;
+import com.icg.jkt.entity.TemplateApplication;
+import com.icg.jkt.entity.UserApplication;
+import com.icg.jkt.entity.Users;
+import com.icg.jkt.hibernateutils.GetHibernateUtils;
+import com.icg.jkt.service.UserManagementService;
+import com.icg.jkt.utils.JavaUtils;
+
+
+@Service("UserManagementService")
+public class UserManagementServiceImpl implements UserManagementService {
+
+	@Autowired
+	UserManagementDao userManagementDao;
+	
+	@Autowired
+	GetHibernateUtils getHibernateUtils;
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public String getAllUserApplication(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<UserApplication> userAppList = new ArrayList<UserApplication>();
+		List list = new ArrayList();
+		List totalMatches = new ArrayList();
+		if (jsonObject != null) {
+			Map<String, List<UserApplication>> map = userManagementDao.getAllUserApplication(jsonObject);
+
+			if (map.get("userAppList") != null) {
+				userAppList = map.get("userAppList");
+				totalMatches = map.get("totalMatches");
+				for (UserApplication userApplication : userAppList) {
+					HashMap<String, Object> mapObj = new HashMap<String, Object>();
+					if (userApplication != null) {
+						mapObj.put("id", userApplication.getId());
+						mapObj.put("appName", userApplication.getAppName().trim());
+						mapObj.put("url", userApplication.getUrl());
+						mapObj.put("status", userApplication.getStatus());
+						list.add(mapObj);
+					}
+				}
+
+				if (list != null && list.size() > 0) {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "Record fetch successfully");
+					json.put("status", 1);
+				} else {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "No Record Found");
+					json.put("status", 0);
+				}
+
+			} else {
+				json.put("statut", 0);
+				json.put("msg", "No Record Found");
+			}
+
+		} else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String updateUserApplication(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		String userApp = userManagementDao.updateUserApplication(jsonObject);
+		if (userApp != null && userApp.equalsIgnoreCase("200")) {
+			json.put("userApp", userApp);
+			json.put("msg", "Record Updated Successfully.");
+			json.put("status", 1);
+		} else if (userApp != null && userApp.equalsIgnoreCase("300")) {
+			json.put("msg", "Record Added Successfully");
+			json.put("status", 1);
+
+		} else {
+			json.put("msg", "Record Not Updated.");
+			json.put("status", 0);
+		}
+		return json.toString();
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public String getAllTemplate(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<MasTemplate> templateList = new ArrayList<>();
+		List list = new ArrayList();
+		if (jsonObject != null) {
+			Map<String, List<MasTemplate>> map = userManagementDao.getAllTemplate(jsonObject);
+
+			List totalMatches = new ArrayList();
+			if (map.get("templateList") != null) {
+				templateList = map.get("templateList");
+
+				totalMatches = map.get("totalMatches");
+				for (MasTemplate masTemplate : templateList) {
+					HashMap<String, Object> mapObj = new HashMap<String, Object>();
+					if (masTemplate != null) {
+						mapObj.put("templateId", masTemplate.getTemplateId());
+						mapObj.put("templateCode", masTemplate.getTemplateCode());
+						mapObj.put("templateName", masTemplate.getTemplateName());
+						mapObj.put("status", masTemplate.getStatus());
+						list.add(mapObj);
+					}
+				}
+
+				if (list != null && list.size() > 0) {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "Record fetch successfully");
+					json.put("status", 1);
+				} else {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "No Record Found");
+					json.put("status", 0);
+				}
+
+			} else {
+				json.put("statut", 0);
+				json.put("msg", "No Record Found");
+			}
+
+		} else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String getApplicationAutoComplete(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<UserApplication> applicationList = new ArrayList<UserApplication>();
+		List<UserApplication> userAppList = new ArrayList<UserApplication>();
+		List<Object> listObjModule = new ArrayList<Object>();
+		Map<String, List<UserApplication>> userApplicationMap = userManagementDao.getApplicationAutoComplete(jsonObject);
+		
+		List<MasApplication> moduleList = userManagementDao.getModuleListForTemplate();
+		if (CollectionUtils.isNotEmpty(moduleList)) {
+			for (Iterator<?> iterator = moduleList.iterator(); iterator.hasNext();) {
+				Map<String, Object> mapObjModuleList = new HashMap<String, Object>();
+				MasApplication applicationObj = (MasApplication) iterator.next();
+				if (applicationObj.getApplicationId() != null) {
+					mapObjModuleList.put("applicationId", applicationObj.getApplicationId());
+				}
+				if (applicationObj.getApplicationName() != null) {
+					mapObjModuleList.put("applicationName", applicationObj.getApplicationName());
+				}
+				listObjModule.add(mapObjModuleList);
+			}
+			if (listObjModule != null && listObjModule.size() > 0) {
+				json.put("listObjModule", listObjModule);
+				json.put("status", 1);
+				json.put("msg", "successfully");
+			} else {
+				json.put("listObjModule", listObjModule);
+				json.put("status", 0);
+				json.put("msg", "No Record Found");
+			}
+
+		} else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		
+		if (userApplicationMap.get("userApplicationsList") != null) {
+			applicationList = userApplicationMap.get("maxAppIdlist");
+			userAppList = userApplicationMap.get("userApplicationsList");
+			
+			for (int i = 0; i < applicationList.size(); i++) {
+				json.put("max_app_id", applicationList.get(i));
+			}
+			
+			if (userAppList != null && userAppList.size() > 0) {
+				json.put("data", userAppList);
+				json.put("count", userAppList.size());
+				json.put("status", 1);
+			} else {
+				json.put("data", "No Record Found");
+				json.put("count", userAppList.size());
+				json.put("status", 0);
+			}
+
+		} else {
+			json.put("statut", 0);
+			json.put("msg", "No Record Found");
+		}
+
+		return json.toString();
+	}
+
+	@Override
+	public String addUserApplication(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		UserApplication userApplication = new UserApplication();
+		if (jsonObject != null) {
+			userApplication.setAppName(jsonObject.get("appName").toString().toUpperCase());
+			userApplication.setUrl(jsonObject.get("url").toString());
+			userApplication.setStatus("Y");
+			/*Users users = new Users();
+			users.setUserId(1);
+			userApplication.setUser(users);*/
+
+			Timestamp lastChgDate = new Timestamp(new Date().getTime());
+			userApplication.setLastChgDate(lastChgDate);
+
+			/*List<UserApplication> validateApplication = userManagementDao
+					.validateUserApplication(userApplication.getAppName(), userApplication.getUrl());
+			if (validateApplication != null && validateApplication.size() > 0) {
+				System.out.println("appName:: " + validateApplication.get(0).getAppName());
+				if (validateApplication.get(0).getAppName().equalsIgnoreCase(jsonObject.get("appName").toString())) {
+					json.put("status", 2);
+					json.put("msg", "Application Name Already Existing");
+				}
+				if (validateApplication.get(0).getUrl().equalsIgnoreCase(jsonObject.get("url").toString())) {
+					json.put("status", 2);
+					json.put("msg", "Url Already Existing");
+				}
+
+			}
+			else
+			{*/
+				String savedRecord = userManagementDao.saveUserApplication(userApplication);
+				if (savedRecord != null && savedRecord.equalsIgnoreCase("200")) {
+					json.put("status", 1);
+					json.put("msg", "Record Added Successfully");
+				} else if (savedRecord != null && savedRecord.equalsIgnoreCase("300")) {
+					json.put("status", 2);
+					json.put("msg", "Record Not Added");
+				} else {
+					json.put("status", 0);
+					json.put("msg", "Record Not Found");
+				}
+			}
+		//} 
+		return json.toString();
+	}
+
+	@Override
+	public String updateTemplate(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		String updatetemp = userManagementDao.updateTemplate(jsonObject);
+		if (updatetemp != null && updatetemp.equalsIgnoreCase("200")) {
+			json.put("updatetemp", updatetemp);
+			json.put("msg", "Record Updated Successfully.");
+			json.put("status", 1);
+		} else if (updatetemp != null && updatetemp.equalsIgnoreCase("201")) {
+			json.put("msg", "Status Updated Successfully.");
+			json.put("status", 0);
+		} else {
+			json.put("msg", "Record Not Updated.");
+			json.put("status", 0);
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String addTemplate(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		try {
+			long hospitalId = 1;
+			long departmentId = 1;
+			long templateId = 2;
+			MasTemplate masTemplate = new MasTemplate();
+			if (jsonObject != null) {
+				masTemplate.setTemplateCode(jsonObject.get("templateCode").toString().toUpperCase());
+				masTemplate.setTemplateName(jsonObject.get("templateName").toString().toUpperCase());
+				masTemplate.setStatus("Y");
+				/*Users users = new Users();
+				users.setUserId(1);
+				masTemplate.setUser(users);*/
+
+				MasHospital masHospital = new MasHospital();
+				masHospital.setHospitalId(hospitalId);
+				masTemplate.setMasHospital(masHospital);
+
+				MasDepartment masDepartment = new MasDepartment();
+				masDepartment.setDepartmentId(departmentId);
+				masTemplate.setMasDepartment(masDepartment);
+
+				Timestamp lastChgDate = new Timestamp(new Date().getTime());
+				masTemplate.setLastChgDate(lastChgDate);
+
+				MasTemplate template = new MasTemplate();
+				template.setTemplateId(templateId);
+				masTemplate.setMasTemplate(masTemplate);
+
+				List<MasTemplate> validateTemplt = userManagementDao.validateTemplate(masTemplate.getTemplateCode(),
+						masTemplate.getTemplateName());
+				if (validateTemplt != null && validateTemplt.size() > 0) {
+
+					if (validateTemplt.get(0).getTemplateCode()
+							.equalsIgnoreCase(jsonObject.get("templateCode").toString())) {
+						json.put("status", 2);
+						json.put("msg", "Template Code Already Existing");
+					}
+					if (validateTemplt.get(0).getTemplateName()
+							.equalsIgnoreCase(jsonObject.get("templateName").toString())) {
+						json.put("status", 2);
+						json.put("msg", "Template Name Already Existing");
+					}
+
+				} else {
+					String savedRecord = userManagementDao.saveTemplate(masTemplate);
+					if (savedRecord != null && savedRecord.equalsIgnoreCase("200")) {
+						json.put("status", 1);
+						json.put("msg", "Record Added Successfully");
+					} else if (savedRecord != null && savedRecord.equalsIgnoreCase("300")) {
+						json.put("status", 2);
+						json.put("msg", "Record Not Added");
+					} else {
+						json.put("status", 0);
+						json.put("msg", "Record Not Found");
+					}
+				}
+			} else {
+				json.put("status", 2);
+				json.put("msg", "Invalid Input");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// TODO Auto-generated method stub
+		return json.toString();
+	}
+
+	@Override
+	public String getTemplateList(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		try {
+
+			List<MasTemplate> tempList = userManagementDao.getTemplateList();
+			if (tempList != null && tempList.size() > 0) {
+				json.put("data", tempList);
+				json.put("count", tempList.size());
+				json.put("status", 1);
+			} else {
+				json.put("data", tempList);
+				json.put("count", tempList.size());
+				json.put("msg", "No Record Found");
+				json.put("status", 0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String getModuleNameTemplateWise(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		try {
+			List<Object> listObj = new ArrayList<Object>();
+			List<Object> listObjModule = new ArrayList<Object>();
+			List<TemplateApplication> listOfTempApp = new ArrayList<TemplateApplication>();
+			Map<String, List<TemplateApplication>> appTemplateMap = userManagementDao
+					.getModuleNameTemplateWise(jsonObject);
+
+			List<MasApplication> moduleList = userManagementDao.getModuleListForTemplate();
+			if (CollectionUtils.isNotEmpty(moduleList)) {
+				for (Iterator<?> iterator = moduleList.iterator(); iterator.hasNext();) {
+					Map<String, Object> mapObjModuleList = new HashMap<String, Object>();
+					MasApplication applicationObj = (MasApplication) iterator.next();
+					if (applicationObj.getApplicationId() != null) {
+						mapObjModuleList.put("applicationId", applicationObj.getApplicationId());
+					}
+					if (applicationObj.getApplicationName() != null) {
+						mapObjModuleList.put("applicationName", applicationObj.getApplicationName());
+					}
+					listObjModule.add(mapObjModuleList);
+				}
+				if (listObjModule != null && listObjModule.size() > 0) {
+					json.put("listObjModule", listObjModule);
+					json.put("status", 1);
+					json.put("msg", "successfully");
+				} else {
+					json.put("listObjModule", listObjModule);
+					json.put("status", 0);
+					json.put("msg", "No Record Found");
+				}
+
+			} else {
+				json.put("msg", "No Record Found");
+				json.put("status", 0);
+			}
+			if (appTemplateMap.get("templateAppList") != null) {
+				listOfTempApp = appTemplateMap.get("templateAppList");
+				if (CollectionUtils.isNotEmpty(listOfTempApp)) {
+					for (Iterator<?> iterator = listOfTempApp.iterator(); iterator.hasNext();) {
+						Map<String, Object> mapdata = new HashMap<String, Object>();
+						TemplateApplication itrObject = (TemplateApplication) iterator.next();
+						if (itrObject.getTempAppId() != 0) {
+							mapdata.put("tempappId", itrObject.getTempAppId());
+						}
+						if (itrObject.getMasTemplate().getTemplateId() != 0) {
+							mapdata.put("templateId", itrObject.getMasTemplate().getTemplateId());
+						}
+						if (itrObject.getMasApplication().getApplicationId() != null) {
+							mapdata.put("appId", itrObject.getMasApplication().getApplicationId());
+						}
+						if (itrObject.getMasApplication().getApplicationName() != null) {
+							mapdata.put("name", itrObject.getMasApplication().getApplicationName());
+						}
+
+						listObj.add(mapdata);
+					}
+				} else {
+					json.put("error", "No Record Found");
+					json.put("status", 0);
+				}
+			}
+			if (listObj != null && listObj.size() > 0) {
+				json.put("data", listObj);
+				json.put("count", listObj.size());
+				json.put("msg", "successfully");
+				json.put("status", 1);
+			} else {
+				json.put("msg", "No Record Found");
+				json.put("data", listObj);
+				json.put("count", listObj.size());
+				json.put("status", 0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return json.toString();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public String getApplicationListForTemplate(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<Object> listObj = new ArrayList<Object>();
+		List<MasApplication> masappList = new ArrayList<MasApplication>();
+		try {
+			Map<String, Object> mapObj = userManagementDao.populateApplications(jsonObject);
+			if (mapObj.get("masAppList") != null) {
+				masappList = (List<MasApplication>) mapObj.get("masAppList");
+				if (CollectionUtils.isNotEmpty(masappList)) {
+					for (Iterator<?> iterator = masappList.iterator(); iterator.hasNext();) {
+						MasApplication applicationList = (MasApplication) iterator.next();
+						Map<String, Object> map = new HashMap<String, Object>();
+						if (applicationList.getApplicationName() != null) {
+							map.put("appName", applicationList.getApplicationName());
+						}
+						if (applicationList.getApplicationName() != null) {
+							map.put("parentId", applicationList.getParentId());
+						}
+						if (applicationList.getApplicationName() != null) {
+							map.put("appId", applicationList.getApplicationId());
+						}
+						if (applicationList.getApplicationName() != null) {
+							map.put("url", applicationList.getUrl());
+						}
+						listObj.add(map);
+					}
+				}
+			}
+			if (listObj != null && listObj.size() > 0) {
+				json.put("listObj", listObj);
+				json.put("count", listObj.size());
+				json.put("status", 1);
+			} else {
+				json.put("listObj", listObj);
+				json.put("count", listObj.size());
+				json.put("status", 0);
+				json.put("msg", "No Record Found");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String addFormAndReports(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		MasApplication masApplication = new MasApplication();
+		try {
+			if(jsonObject!=null) {
+				masApplication.setApplicationId(jsonObject.get("applicationId").toString());
+				String applicationName = jsonObject.get("applicationName").toString();
+				System.out.println("applicationName :: "+applicationName);
+				int index1 = applicationName.lastIndexOf("[");
+			    int index2 = applicationName.lastIndexOf("]");
+			    index1++;
+			    long appID = Long.parseLong(applicationName.substring(index1,index2));
+			    String appName1 = JavaUtils.getReplaceString(applicationName);
+			    String [] appName = appName1.split(",");			    			    
+				masApplication.setApplicationName(appName[0].trim());
+				System.out.println("parentid :: "+jsonObject.get("parentId").toString());
+				String parentIdd = jsonObject.get("parentId").toString();
+					if(!parentIdd.equalsIgnoreCase("0")) {
+					int pidIndex1 = parentIdd.lastIndexOf("[");
+					int pidIndex2 = parentIdd.lastIndexOf("]");
+					pidIndex1++;
+					
+					String parId = JavaUtils.getReplaceString(parentIdd);
+				    String [] pid = parId.split(",");
+					masApplication.setParentId(pid[1]);
+				 }
+				else {
+					masApplication.setParentId(jsonObject.get("parentId").toString());
+				}
+				masApplication.setUrl(jsonObject.get("url").toString());
+				masApplication.setStatus("y");
+								
+					
+						String saveFormAndReports = userManagementDao.addFormAndReports(masApplication);
+						String updateUserAppStatus =  userManagementDao.updateUserApplicationStatus(appID);
+						if(saveFormAndReports!=null && saveFormAndReports.equalsIgnoreCase("200")) {
+							json.put("msg", "Record Added Successfully");
+							json.put("status", 1);
+						}else if(saveFormAndReports!=null && saveFormAndReports.equalsIgnoreCase("201")) {
+							json.put("msg", "Record Not Added");
+							json.put("status", 0);
+						}
+			
+			}	
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String getAllApplicationAndTemplates(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<Object> list = new ArrayList<Object>();
+		List<Object> tempList = new ArrayList<Object>();
+		Map<String, Object> applicationMap =userManagementDao.getAllApplicationAndTemplates(jsonObject, request, response);
+		
+		List<String[]> applicationList;
+		List<String[]> existingtemplateList;
+		
+		if(applicationMap.get("listApp")!=null) {
+			applicationList = (List<String[]>) applicationMap.get("listApp");		
+			if(CollectionUtils.isNotEmpty(applicationList)) {
+				for(Iterator<?> iterator=applicationList.iterator(); iterator.hasNext();) {
+					Map<String, Object> mapObject = new HashMap<String, Object>();
+					Object[] application = (Object[])iterator.next();
+					mapObject.put("applicationName", application[0]);
+					mapObject.put("parentId", application[1]);
+					mapObject.put("applicationId", application[2]);
+					mapObject.put("url", application[3]);
+					mapObject.put("applicationName2", application[4]);
+					mapObject.put("status", application[5]);
+					if(application[6]!= null) {
+						mapObject.put("templateId", application[6]);
+					}else {
+						mapObject.put("templateId", 0);
+					}
+					if(application[1].equals("0")) {
+						mapObject.put("name2",application[0]);
+					}
+					list.add(mapObject);
+			}				
+			}
+			
+			if(list!=null && list.size()>0) {
+				json.put("data", list);
+				json.put("count", list.size());
+				json.put("status", 1);
+			}else {
+				json.put("data", list);
+				json.put("count", list.size());
+				json.put("status", 0);
+		}
+		}
+		if(applicationMap.get("existintemplateAppList")!=null) {
+			existingtemplateList = (List<String[]>) applicationMap.get("existintemplateAppList");
+			if(CollectionUtils.isNotEmpty(existingtemplateList)) {
+				for(Iterator<?> iterator = existingtemplateList.iterator();iterator.hasNext();) {
+					Map<String, Object> tempMap = new HashMap<String, Object>();
+					Object[] templateObject =  (Object[])iterator.next();
+					tempMap.put("parentId", templateObject[0]);
+					tempMap.put("appId", templateObject[1]);
+					tempMap.put("templateId", templateObject[2]);
+					
+					tempList.add(tempMap);
+				}
+			}
+			if(tempList!=null && tempList.size()>0) {
+				json.put("tempList", tempList);
+				json.put("count", tempList.size());
+				json.put("status", 1);
+			}else {
+				json.put("tempList", tempList);
+				json.put("count", tempList.size());
+				json.put("status", 0);
+			}
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String addTemplateApplication(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsonObject!=null) {
+			try {
+				String addTemplateApplication="";
+				//TemplateApplication templateApplication=null;
+				
+				
+				//JSONObject jsonObject= new JSONObject(jsonObject1);
+				String applicationId = jsonObject.get("applicationIdAarray").toString();
+				
+				applicationId= JavaUtils.getReplaceString1(applicationId);
+				applicationId=applicationId.replaceAll("\"", "");
+				String[] applicationValueArray = applicationId.split(",");
+				
+				String checkBoxArray = jsonObject.get("checkBoxArray").toString();
+				checkBoxArray= JavaUtils.getReplaceString1(checkBoxArray);
+				checkBoxArray=checkBoxArray.replaceAll("\"", "");
+				String[] checkBoxValueArray = checkBoxArray.split(",");
+				
+				String templateid = jsonObject.get("templateIdArray").toString();
+				templateid= JavaUtils.getReplaceString1(templateid);
+				templateid=templateid.replaceAll("\"", "");
+				String[] templateIdArray = templateid.split(","); 
+				
+				System.out.println("applicationValueArray ::"+applicationValueArray[0]);
+				System.out.println("checkBoxValueArray ::"+checkBoxValueArray[0]);
+				System.out.println("templateIdArray ::"+templateIdArray[0]);
+				
+				long tempId = Long.parseLong(jsonObject.get("templateId").toString());
+				System.out.println("templateid :: "+tempId);
+				
+				//String[] applicationValueArray1= applicationValueArray.s
+				for(int i=0;i<applicationValueArray.length;i++) {
+					TemplateApplication templateApplication = new TemplateApplication();
+					System.out.println("applicationValueArray="+applicationValueArray[i]);
+						
+							if(templateIdArray[i].equals("0")) {
+								
+									
+									
+									
+								}
+								else
+								{
+									Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+									templateApplication=(TemplateApplication)session.get(TemplateApplication.class,Long.parseLong(templateIdArray[i].toString()));
+								/*Transaction tx = session.beginTransaction();
+									MasTemplate masTemplate = new MasTemplate();
+									masTemplate.setTemplateId(tempId);
+									templateApplication.setMasTemplate(masTemplate);
+									
+									MasApplication masApplication = new MasApplication();
+									masApplication.setApplicationId(applicationValueArray[i]);
+									templateApplication.setMasApplication(masApplication);
+									
+									templateApplication.setStatus(checkBoxValueArray[i]);
+									session.update(templateApplication);
+									tx.commit();*/
+								}	
+							
+							if(tempId!=0)
+							{
+								MasTemplate masTemplate = new MasTemplate();
+								masTemplate.setTemplateId(tempId);
+								templateApplication.setMasTemplate(masTemplate);
+							}
+							if(!applicationValueArray[i].equals("")) {
+								MasApplication masApplication = new MasApplication();
+								masApplication.setApplicationId(applicationValueArray[i]);
+								templateApplication.setMasApplication(masApplication);
+							}
+							
+							if(!checkBoxValueArray[i].equals(""))
+							{
+								templateApplication.setStatus(checkBoxValueArray[i]);
+							}
+							addTemplateApplication = userManagementDao.addTemplateApplication(templateApplication);
+						}
+				
+				if(addTemplateApplication!=null && addTemplateApplication.equals("200")) {
+					json.put("msg", "Record Added Successfully");
+					json.put("status", 1);
+				}else {
+					json.put("msg", "Record Not Added");
+					json.put("status", 0);
+				
+				 }	
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String getRoleRightsList(HttpServletRequest request, HttpServletResponse response) {
+		JSONObject jsonObj = new JSONObject();
+		List<MasRole> roleList = userManagementDao.getRoleRightsList();
+		if (roleList != null && roleList.size() > 0) {
+
+			jsonObj.put("data", roleList);
+			jsonObj.put("count", roleList.size());
+			jsonObj.put("status", 1);
+		} else {
+			jsonObj.put("data", roleList);
+			jsonObj.put("count", roleList.size());
+			jsonObj.put("msg", "No Record Found");
+			jsonObj.put("status", 0);
+		}
+		System.out.println(jsonObj.toString());
+		return jsonObj.toString();
+	}
+	
+	
+	@Override
+	public String getTemplateNameList(HttpServletRequest request, HttpServletResponse response) {
+		JSONObject jsonObj = new JSONObject();		
+		List<MasTemplate> tempNameList = userManagementDao.getTemplateNameList();
+		if (tempNameList != null && tempNameList.size() > 0) {
+
+			jsonObj.put("data", tempNameList);
+			jsonObj.put("count", tempNameList.size());
+			jsonObj.put("status", 1);
+		} else {
+			jsonObj.put("data", tempNameList);
+			jsonObj.put("count", tempNameList.size());
+			jsonObj.put("msg", "No Record Found");
+			jsonObj.put("status", 0);
+		}
+		System.out.println(jsonObj.toString());
+		return jsonObj.toString();
+	}		
+	
+	
+	@Override
+	public String getAssingedTemplateNameList(JSONObject json, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject jsonObj = new JSONObject();	
+		List<Map<String, Object>> respList = new ArrayList<Map<String,Object>>();
+		List<RoleTemplate> rolelist = userManagementDao.getAssingedTemplateNameList(json);
+		if (rolelist != null && rolelist.size() > 0) {
+			
+			for (RoleTemplate list:rolelist)
+			{
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				map.put("id", list.getMsTemplate().getTemplateId());
+				map.put("status", list.getStatus());				
+				map.put("count", rolelist.size());
+				respList.add(map);
+			}
+			jsonObj.put("data", respList);
+			
+		} else {
+			jsonObj.put("data", rolelist);
+			jsonObj.put("count", rolelist.size());
+			jsonObj.put("msg", "No Record Found");
+			
+		}
+		System.out.println(jsonObj.toString());
+		return jsonObj.toString();
+		
+	}
+	
+	
+	@Override
+	public String saveRolesRight(JSONObject json, HttpServletRequest request, HttpServletResponse response) {
+
+		JSONObject jsonObj = new JSONObject();
+		if (json != null) {
+			
+				String roleObj = userManagementDao.saveRolesRight(json);
+
+				if (roleObj != null && roleObj.equalsIgnoreCase("200")) {
+					jsonObj.put("status", 1);
+					jsonObj.put("msg", "Roles right saved Successfully");
+
+				}else if (roleObj != null && roleObj.equalsIgnoreCase("500")) {
+					jsonObj.put("status", 0);
+					jsonObj.put("msg", "Roles rights not saved");
+
+				}else if (roleObj != null && roleObj.equalsIgnoreCase("403")) {
+					jsonObj.put("status", 0);
+					jsonObj.put("msg", "You are not authorized person!!!");
+
+				} else {
+					jsonObj.put("msg", roleObj);
+					jsonObj.put("status", 0);
+				}			
+
+		} else {
+			jsonObj.put("msg", "Cannot Contains Any Data!!!");
+			jsonObj.put("status", 0);
+		}
+		System.out.println(jsonObj.toString());
+		return jsonObj.toString();
+	}
+
+	@Override
+	public String getApplicationNameFormsAndReport(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		try {
+			if(jsonObject!=null) {
+			List<MasApplication> listofApplications = userManagementDao.getApplicationNameFormsAndReport(jsonObject);
+			List<Object> listObject = new ArrayList<Object>();
+				if(CollectionUtils.isNotEmpty(listofApplications)) {
+					for(Iterator<?> iterator = listofApplications.iterator();iterator.hasNext();) {
+						Map<String, Object> mapObject = new HashMap<String, Object>();
+						MasApplication applicationObject = (MasApplication)iterator.next();
+						if(applicationObject!=null) {
+							mapObject.put("applicationId", applicationObject.getApplicationId());
+							mapObject.put("applicationName", applicationObject.getApplicationName());
+							mapObject.put("parentId", applicationObject.getParentId());
+							mapObject.put("applicationUrl", applicationObject.getUrl());
+							//mapObject.put("orderNo", applicationObject.getOrderNo());
+							mapObject.put("applicationStatus", applicationObject.getStatus());
+						}
+						listObject.add(mapObject);
+					}
+				}
+				
+				if(listObject!=null) {
+					json.put("data", listObject);
+					json.put("count", listObject.size());
+					json.put("status", 1);
+				}
+			
+			}
+			else {
+				json.put("msg", "Invalid Request");
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return json.toString();
+	}
+
+	@Override
+	public String updateAddFormsAndReport(JSONObject jsonObject, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		MasApplication masApplication = new MasApplication();
+		try {
+		if(jsonObject!=null) {
+			masApplication.setApplicationId(jsonObject.get("applicationId").toString());
+			masApplication.setApplicationName(jsonObject.get("applicationName").toString());
+			masApplication.setUrl(jsonObject.get("applicationUrl").toString());
+			masApplication.setParentId(jsonObject.get("parentId").toString());			
+			masApplication.setStatus(jsonObject.get("applicationStatus").toString());
+			
+			String updateFormsAndReport = userManagementDao.updateAddFormsAndReport(masApplication);
+			if(updateFormsAndReport!=null && updateFormsAndReport.equalsIgnoreCase("200")) {
+				json.put("msg", "Record Updated Successfully");
+				json.put("status", 1);
+			}else {
+				json.put("msg", "Record Not Updated");
+				json.put("status", 0);
+			}
+		}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return json.toString();
+	}
+
+	@Override
+	public Map<String, Object> getApplicationNameBasesOnRole(Map<String, Object> requestData) {
+		List<Users> userList = new ArrayList<Users>();
+		Map<String, Object> responseMap = new HashMap<String, Object>();
+		List<Map<String, Object>> respUserList = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> respApplicationList = new ArrayList<Map<String, Object>>();
+		
+		JSONObject json = new JSONObject(requestData);
+		String serviceNo = json.getString("serviceNo");
+		JSONArray roles = json.getJSONArray("roles");
+		
+		System.out.println("serviceno="+serviceNo);
+		if(serviceNo!=null && !serviceNo.isEmpty()) {
+			userList = (List<Users>) userManagementDao.getUserAndHospitalFromServiceNo(serviceNo);
+			if (userList != null && userList.size() > 0) {
+				for (Users user : userList) {
+					Map<String, Object> responseUserMap = new HashMap<String, Object>();
+					responseUserMap.put("userId", user.getUserId());
+					responseUserMap.put("hospitalId", user.getMasHospital().getHospitalId());
+					respUserList.add(responseUserMap);
+				}
+
+				if (respUserList != null && respUserList.size() > 0) {
+					responseMap.put("respUserList", respUserList);
+					responseMap.put("msg", "Data found");
+					responseMap.put("status", 1);
+				} else {
+					responseMap.put("respUserList", respUserList);
+					responseMap.put("msg", "Data not found");
+					responseMap.put("status", 0);
+				}
+			}else {
+				responseMap.put("respUserList", respUserList);
+				responseMap.put("msg", "User Does Not Exist.");
+				responseMap.put("status", 0);
+			}
+		// Below code will use in later when we work on roles
+			/*if (roles!=null && roles.length()>0 ) {
+				for(int i=0;i<roles.length();i++ ) {
+					List<TemplateApplication> applicationList = (List<TemplateApplication>) userManagementDao
+							.getApplicationNameBasesOnRole(roles.get(i));
+					if (applicationList != null && applicationList.size() > 0) {
+						for (TemplateApplication application : applicationList) {
+							Map<String, Object> responseAppMap = new HashMap<String, Object>();
+							responseAppMap.put("appId", application.getMasApplication().getApplicationId());
+							responseAppMap.put("appName", application.getMasApplication().getApplicationName());
+							responseAppMap.put("url", application.getMasApplication().getUrl());
+							respApplicationList.add(responseAppMap);
+						}
+						if (respApplicationList != null && respApplicationList.size() > 0) {
+							responseMap.put("respApplicationList", respApplicationList);
+							responseMap.put("status", 1);
+						} else {
+							responseMap.put("respApplicationList", respApplicationList);
+							responseMap.put("status", 0);
+							responseMap.put("msg", "Role not found");
+						}
+
+					}	
+				}
+			}*/
+		}else {
+			responseMap.put("status", 0);
+			responseMap.put("msg", "Data not found");
+		}
+		
+		return responseMap;
+	}
+
+}

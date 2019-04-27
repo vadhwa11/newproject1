@@ -27,6 +27,7 @@ import com.icg.jkt.entity.MasHospital;
 import com.icg.jkt.entity.MasRole;
 import com.icg.jkt.entity.MasTemplate;
 import com.icg.jkt.entity.RoleTemplate;
+import com.icg.jkt.entity.Patient;
 import com.icg.jkt.entity.TemplateApplication;
 import com.icg.jkt.entity.UserApplication;
 import com.icg.jkt.entity.Users;
@@ -102,10 +103,6 @@ public class UserManagementServiceImpl implements UserManagementService {
 			json.put("userApp", userApp);
 			json.put("msg", "Record Updated Successfully.");
 			json.put("status", 1);
-		} else if (userApp != null && userApp.equalsIgnoreCase("300")) {
-			json.put("msg", "Record Added Successfully");
-			json.put("status", 1);
-
 		} else {
 			json.put("msg", "Record Not Updated.");
 			json.put("status", 0);
@@ -167,7 +164,7 @@ public class UserManagementServiceImpl implements UserManagementService {
 			HttpServletResponse response) {
 		JSONObject json = new JSONObject();
 		List<UserApplication> applicationList = new ArrayList<UserApplication>();
-		List<UserApplication> userAppList = new ArrayList<UserApplication>();
+		List userAppList = new ArrayList();
 		List<Object> listObjModule = new ArrayList<Object>();
 		Map<String, List<UserApplication>> userApplicationMap = userManagementDao.getApplicationAutoComplete(jsonObject);
 		
@@ -201,7 +198,20 @@ public class UserManagementServiceImpl implements UserManagementService {
 		
 		if (userApplicationMap.get("userApplicationsList") != null) {
 			applicationList = userApplicationMap.get("maxAppIdlist");
-			userAppList = userApplicationMap.get("userApplicationsList");
+			//userAppList = userApplicationMap.get("userApplicationsList");
+			List<UserApplication> userAppList1 = userApplicationMap.get("userApplicationsList");
+			if(CollectionUtils.isNotEmpty(userAppList1)) {
+				for(Iterator<?> iterator = userAppList1.iterator(); iterator.hasNext();){
+					Map<String, Object> map = new HashMap<String, Object>();
+					UserApplication userapplication = (UserApplication)iterator.next();
+					map.put("appName", userapplication.getAppName());
+					map.put("id", userapplication.getId());
+					map.put("status", userapplication.getStatus());
+					map.put("url", userapplication.getUrl());
+					userAppList.add(map);
+				}
+				
+			}
 			
 			for (int i = 0; i < applicationList.size(); i++) {
 				json.put("max_app_id", applicationList.get(i));
@@ -240,7 +250,7 @@ public class UserManagementServiceImpl implements UserManagementService {
 			Timestamp lastChgDate = new Timestamp(new Date().getTime());
 			userApplication.setLastChgDate(lastChgDate);
 
-			List<UserApplication> validateApplication = userManagementDao
+			/*List<UserApplication> validateApplication = userManagementDao
 					.validateUserApplication(userApplication.getAppName(), userApplication.getUrl());
 			if (validateApplication != null && validateApplication.size() > 0) {
 				System.out.println("appName:: " + validateApplication.get(0).getAppName());
@@ -253,7 +263,9 @@ public class UserManagementServiceImpl implements UserManagementService {
 					json.put("msg", "Url Already Existing");
 				}
 
-			} else {
+			}
+			else
+			{*/
 				String savedRecord = userManagementDao.saveUserApplication(userApplication);
 				if (savedRecord != null && savedRecord.equalsIgnoreCase("200")) {
 					json.put("status", 1);
@@ -266,10 +278,7 @@ public class UserManagementServiceImpl implements UserManagementService {
 					json.put("msg", "Record Not Found");
 				}
 			}
-		} else {
-			json.put("status", 2);
-			json.put("msg", "Invalid Input");
-		}
+		//} 
 		return json.toString();
 	}
 
@@ -900,6 +909,75 @@ public class UserManagementServiceImpl implements UserManagementService {
 			e.printStackTrace();
 		}
 		return json.toString();
+	}
+
+	@Override
+	public Map<String, Object> getApplicationNameBasesOnRole(Map<String, Object> requestData) {
+		List<Users> userList = new ArrayList<Users>();
+		Map<String, Object> responseMap = new HashMap<String, Object>();
+		List<Map<String, Object>> respUserList = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> respApplicationList = new ArrayList<Map<String, Object>>();
+		
+		JSONObject json = new JSONObject(requestData);
+		String serviceNo = json.getString("serviceNo");
+		JSONArray roles = json.getJSONArray("roles");
+		
+		System.out.println("serviceno="+serviceNo);
+		if(serviceNo!=null && !serviceNo.isEmpty()) {
+			userList = (List<Users>) userManagementDao.getUserAndHospitalFromServiceNo(serviceNo);
+			if (userList != null && userList.size() > 0) {
+				for (Users user : userList) {
+					Map<String, Object> responseUserMap = new HashMap<String, Object>();
+					responseUserMap.put("userId", user.getUserId());
+					responseUserMap.put("hospitalId", user.getMasHospital().getHospitalId());
+					respUserList.add(responseUserMap);
+				}
+
+				if (respUserList != null && respUserList.size() > 0) {
+					responseMap.put("respUserList", respUserList);
+					responseMap.put("msg", "Data found");
+					responseMap.put("status", 1);
+				} else {
+					responseMap.put("respUserList", respUserList);
+					responseMap.put("msg", "Data not found");
+					responseMap.put("status", 0);
+				}
+			}else {
+				responseMap.put("respUserList", respUserList);
+				responseMap.put("msg", "User Does Not Exist.");
+				responseMap.put("status", 0);
+			}
+		// Below code will use in later when we work on roles
+			/*if (roles!=null && roles.length()>0 ) {
+				for(int i=0;i<roles.length();i++ ) {
+					List<TemplateApplication> applicationList = (List<TemplateApplication>) userManagementDao
+							.getApplicationNameBasesOnRole(roles.get(i));
+					if (applicationList != null && applicationList.size() > 0) {
+						for (TemplateApplication application : applicationList) {
+							Map<String, Object> responseAppMap = new HashMap<String, Object>();
+							responseAppMap.put("appId", application.getMasApplication().getApplicationId());
+							responseAppMap.put("appName", application.getMasApplication().getApplicationName());
+							responseAppMap.put("url", application.getMasApplication().getUrl());
+							respApplicationList.add(responseAppMap);
+						}
+						if (respApplicationList != null && respApplicationList.size() > 0) {
+							responseMap.put("respApplicationList", respApplicationList);
+							responseMap.put("status", 1);
+						} else {
+							responseMap.put("respApplicationList", respApplicationList);
+							responseMap.put("status", 0);
+							responseMap.put("msg", "Role not found");
+						}
+
+					}	
+				}
+			}*/
+		}else {
+			responseMap.put("status", 0);
+			responseMap.put("msg", "Data not found");
+		}
+		
+		return responseMap;
 	}
 
 }

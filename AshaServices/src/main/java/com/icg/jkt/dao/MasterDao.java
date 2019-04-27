@@ -25,6 +25,7 @@ import com.icg.jkt.entity.MasMainChargecode;
 import com.icg.jkt.entity.MasMaritalStatus;
 import com.icg.jkt.entity.MasMedicalCategory;
 import com.icg.jkt.entity.MasNursingCare;
+import com.icg.jkt.entity.MasRange;
 import com.icg.jkt.entity.MasRank;
 import com.icg.jkt.entity.MasRelation;
 import com.icg.jkt.entity.MasReligion;
@@ -217,10 +218,15 @@ public interface MasterDao {
 	Map<String, List<MasNursingCare>> getAllmNursingData(JSONObject jsonObject);
 
 	List<MasNursingCare> validateMasNursing(String nursingCode, String nursingName, String nursingType);
+	
+	List<MasIdealWeight> validateIdealWeight(Long genderId, String fromAge, String toAge, Long weight);
 
 	String addMasNursing(MasNursingCare nursingObj);
+	
+	String addIdealWeight (MasIdealWeight idealWeightObj);
 
 	String updateMasNursing(JSONObject jsonObject);
+	//MasIdealWeight chakeIdealWeight(Long genderId, String fromAge, String toAge, Long weight);
 
 	List<MasIdealWeight> getAge(JSONObject jsonObject);
 	
@@ -228,7 +234,7 @@ public interface MasterDao {
 	
 	/*************************MAS RANK************************************/
 	List<MasRank> validateMasRank(String rankCode, String rankName);
-	List<MasRank> validateMasRankUpdate(String rankCode, String rankName);
+	List<MasRank> validateMasRankUpdate(Long employeeCategoryId, String rankName);
 	String addMasRank(MasRank masRank);
 	MasRank chkRank(String  rankName);
 	Map<String, List<MasRank>> getAllRank(JSONObject jsonObj);
@@ -260,7 +266,7 @@ public interface MasterDao {
 	/********************************MAS MARITAL STATUS*********************************************************/
 	Map<String, List<MasMaritalStatus>> getAllMaritalStatus(JSONObject jsonObject);
 	List<MasMaritalStatus> validateMaritalStatus(String maritalStatusCode, String maritalStatusName);
-	List<MasMaritalStatus> validateMaritalStatusUpdate(String maritalStatusCode, String maritalStatusName);
+	List<MasMaritalStatus> validateMaritalStatusUpdate(String maritalStatusName);
 	String addMaritalStatus(MasMaritalStatus masMaritalStatus);
 	String updateMaritalStatusDetails(Long maritalStatusId, String maritalStatusCode, String maritalStatusName);
 	MasMaritalStatus checkMaritalStatus(String maritalStatusCode);
@@ -331,7 +337,7 @@ public interface MasterDao {
 	
 	/********************************Users*********************************************************/
 	List<Users> validateUsers(String loginName, String firstName);
-	List<Users> validateUsersUpdate(String loginName, String firstName);
+	List<Users> validateUsersUpdate(String loginName, Long hospitalId);
 	String addUsers(Users users);
 	Users checkUsers(String  loginName);
 	Map<String, List<Users>> getAllUsers(JSONObject jsonObj);
@@ -359,5 +365,17 @@ public interface MasterDao {
 	String updateRoleDetails(Long roleId, String roleCode, String roleName);
 	MasRole checkRole(String roleCode);
 	String updateRoleStatus(Long roleId, String roleCode, String status);
+	
+	/********************************Range***************************************************************/
+	List<MasRange> validateRange(Long fromRange, Long toRange, String rangeFlag);
+	String addRange(MasRange range);
+	Map<String, List<MasRange>> getAllRange(JSONObject jsonObj);
+	MasRange checkRange(Long fromRange);
+	String updateRange(Long rangeId,Long fromRange, Long toRange);
+	String updateRangeStatus(Long rangeId,Long fromRange,String status); 
+	List<MasAdministrativeSex> getGenderList(); 
+	List<MasRange> getMasRange();
+	
+	
 	
 }

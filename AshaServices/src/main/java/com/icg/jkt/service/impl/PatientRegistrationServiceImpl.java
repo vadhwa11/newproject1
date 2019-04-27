@@ -1,11 +1,17 @@
 package com.icg.jkt.service.impl;
 
+import java.sql.Connection;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,13 +20,10 @@ import org.springframework.stereotype.Service;
 
 import com.icg.jkt.dao.PatientRegistrationDao;
 import com.icg.jkt.entity.MasAdministrativeSex;
-import com.icg.jkt.entity.MasAppointmentSession;
-import com.icg.jkt.entity.MasAppointmentType;
 import com.icg.jkt.entity.MasBloodGroup;
 import com.icg.jkt.entity.MasDepartment;
 import com.icg.jkt.entity.MasEmployee;
 import com.icg.jkt.entity.MasEmployeeDependent;
-import com.icg.jkt.entity.MasHospital;
 import com.icg.jkt.entity.MasIdentificationType;
 import com.icg.jkt.entity.MasMedicalCategory;
 import com.icg.jkt.entity.MasRegistrationType;
@@ -38,7 +41,9 @@ public class PatientRegistrationServiceImpl implements PatientRegistrationServic
 
 	@Autowired
 	PatientRegistrationDao patientRegistrationDao;
-
+	
+	/*@Autowired
+	ReportDao reportDao;*/
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -69,7 +74,7 @@ public class PatientRegistrationServiceImpl implements PatientRegistrationServic
 		long empMedicalCategoryId=0;
 		long employeeId=0;
 		
-		Date dateOfBirth = null;
+		String dateOfBirth = "";
 		Date dateME=null;
 		Date empServiceJoinDate=null;
 		int age = 0;
@@ -164,7 +169,8 @@ public class PatientRegistrationServiceImpl implements PatientRegistrationServic
 							age = HMSUtil.calculateAgeNoOfYear(patient.getDateOfBirth());
 							gender = patient.getMasAdministrativeSex().getAdministrativeSexName();
 							genderId = patient.getMasAdministrativeSex().getAdministrativeSexId();
-							dateOfBirth = patient.getDateOfBirth();
+							//dateOfBirth = patient.getDateOfBirth();
+							dateOfBirth = HMSUtil.convertDateToStringFormat(patient.getDateOfBirth(), "dd-MM-yyyy");
 							relation = patient.getMasRelation().getRelationName();
 							relationId=patient.getMasRelation().getRelationId();
 							mobileNumber=patient.getMobileNumber();
@@ -174,8 +180,8 @@ public class PatientRegistrationServiceImpl implements PatientRegistrationServic
 							stateName = patient.getMasState().getStateName();
 							patientPincode = patient.getPincode();
 							patientEmailId=patient.getEmailId();
-							patientBloodGroup = patient.getMasBloodGroup().getBloodGroupName();
-							patientBloodGroupId = patient.getMasBloodGroup().getBloodGroupId();
+							patientBloodGroup = (patient.getMasBloodGroup()!=null?patient.getMasBloodGroup().getBloodGroupName():"");
+							patientBloodGroupId = (patient.getMasBloodGroup()!=null?patient.getMasBloodGroup().getBloodGroupId():0);
 							
 							// Medical category and Date ME only for employee  patient 
 							empMedicalCategory=(patient.getMasMedicalCategory()!=null ?patient.getMasMedicalCategory().getMedicalCategoryName():"");
@@ -308,7 +314,8 @@ public class PatientRegistrationServiceImpl implements PatientRegistrationServic
 								age = HMSUtil.calculateAgeNoOfYear(depList.getDateOfBirth());
 								gender = depList.getMasAdministrativeSex().getAdministrativeSexName();
 								genderId = depList.getMasAdministrativeSex().getAdministrativeSexId();
-								dateOfBirth = depList.getDateOfBirth();
+								//dateOfBirth = depList.getDateOfBirth();
+								dateOfBirth=HMSUtil.convertDateToStringFormat(depList.getDateOfBirth(), "dd-MM-yyyy");
 								relation = depList.getMasRelation().getRelationName();
 								relationId=depList.getMasRelation().getRelationId();
 								mobileNumber=depList.getContactNo();
@@ -491,7 +498,8 @@ public class PatientRegistrationServiceImpl implements PatientRegistrationServic
 								age = HMSUtil.calculateAgeNoOfYear(ms.getDateOfBirth());
 								gender = ms.getMasAdministrativeSex().getAdministrativeSexName();
 								genderId = ms.getMasAdministrativeSex().getAdministrativeSexId();
-								dateOfBirth = ms.getDateOfBirth();
+								//dateOfBirth = ms.getDateOfBirth();
+								dateOfBirth=HMSUtil.convertDateToStringFormat(ms.getDateOfBirth(), "dd-MM-yyyy");
 								mobileNumber=ms.getCellNoEmergency();
 								patientAddress = ms.getLocalAddress();
 								city = ms.getCity();
@@ -630,7 +638,8 @@ public class PatientRegistrationServiceImpl implements PatientRegistrationServic
 							age = HMSUtil.calculateAgeNoOfYear(ms.getDateOfBirth());
 							gender = ms.getMasAdministrativeSex().getAdministrativeSexName();
 							genderId = ms.getMasAdministrativeSex().getAdministrativeSexId();
-							dateOfBirth = ms.getDateOfBirth();
+							//dateOfBirth = ms.getDateOfBirth();
+							dateOfBirth =HMSUtil.convertDateToStringFormat(ms.getDateOfBirth(), "dd-MM-yyyy");
 							mobileNumber=ms.getCellNoEmergency();
 							patientAddress = ms.getLocalAddress();
 							city = ms.getCity();
@@ -724,7 +733,8 @@ public class PatientRegistrationServiceImpl implements PatientRegistrationServic
 									age = HMSUtil.calculateAgeNoOfYear(depList.getDateOfBirth());
 									gender = depList.getMasAdministrativeSex().getAdministrativeSexName();
 									genderId = depList.getMasAdministrativeSex().getAdministrativeSexId();
-									dateOfBirth = depList.getDateOfBirth();
+									//dateOfBirth = depList.getDateOfBirth();
+									dateOfBirth = HMSUtil.convertDateToStringFormat(depList.getDateOfBirth(), "dd-MM-yyyy");
 									relation = depList.getMasRelation().getRelationName();
 									relationId=depList.getMasRelation().getRelationId();
 									
@@ -970,10 +980,24 @@ public class PatientRegistrationServiceImpl implements PatientRegistrationServic
 		long priorityId = Long.parseLong(jObject.getString("priorityId"));
 		JSONObject jsonObj =jObject.getJSONObject("patientDetailsForm");
 		
-		long hospitalId =1; // HospitalId will come from session
+		long hospitalId =jsonObj.getLong("hospitalId"); // HospitalId will come from session
 		long uhidNO=jsonObj.getLong("uhidNo");
+	    Date visitDate= null;
 		
-		System.out.println("uhidNo: " + uhidNO);
+		if(!jsonObj.getString("visitDate").isEmpty() && jsonObj.getString("visitDate")!=null) {
+			String dateString = jsonObj.getString("visitDate");
+			visitDate = HMSUtil.convertStringDateToUtilDate(dateString, "dd-MM-yyyy");
+			
+		}else {
+			Date today = new Date();
+		     String dateString = HMSUtil.convertDateToStringFormat(today, "dd-MM-yyyy");
+				try {
+					visitDate = new SimpleDateFormat("dd-MM-yyyy").parse(dateString);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				} 
+			
+		}
 		
 		Patient patient = null;
 		
@@ -981,9 +1005,6 @@ public class PatientRegistrationServiceImpl implements PatientRegistrationServic
 		if(uhidNO!=0) {
 			String visitFlag="";
 			long patientId = patientRegistrationDao.getPatientFromUhidNo(uhidNO);
-		
-			Date date= new Date();
-			Timestamp dateTime = new Timestamp(date.getTime());
 			
 			for(int i=0;i<appointmentType.length();i++) {
 				
@@ -992,8 +1013,9 @@ public class PatientRegistrationServiceImpl implements PatientRegistrationServic
 				if(!tokenIds.get(i).toString().isEmpty()) {
 					visit.setTokenNo(Long.parseLong(tokenIds.get(i).toString()));
 				}
+				visit.setVisitDate(new Timestamp(visitDate.getTime()));
+				visit.setLastChgDate(new Timestamp(visitDate.getTime()));
 				
-				visit.setVisitDate(dateTime);
 				visit.setPriority(priorityId);
 				visit.setVisitStatus("w");
 				
@@ -1246,7 +1268,7 @@ public class PatientRegistrationServiceImpl implements PatientRegistrationServic
 			
 			
 			
-			if(jsonObj.getLong("nok2Relation")!=0) {
+			if(!jsonObj.getString("nok2Relation").isEmpty() && Long.parseLong(jsonObj.get("nok2Relation").toString())!=0) {
 				long nok2RelationId=jsonObj.getLong("nok2Relation");
 				patient.setNok2RelationId((nok2RelationId));
 			}
@@ -1277,15 +1299,15 @@ public class PatientRegistrationServiceImpl implements PatientRegistrationServic
 			long patientId = patientRegistrationDao.savePatient(patient);
 			
 			if(patientId!=0) {
-				Date date= new Date();
-				Timestamp dateTime = new Timestamp(date.getTime());
+				
 				
 				for(int i=0;i<appointmentType.length();i++) {
 					String visitFlag="";
 					Visit visit = new Visit();
 					
 					visit.setTokenNo(Long.parseLong(tokenIds.get(i).toString()));
-					visit.setVisitDate(dateTime);
+					visit.setVisitDate(new Timestamp(visitDate.getTime()));
+					visit.setLastChgDate(new Timestamp(visitDate.getTime()));
 					visit.setPriority(priorityId);
 					visit.setVisitStatus("w");
 					
@@ -1305,7 +1327,7 @@ public class PatientRegistrationServiceImpl implements PatientRegistrationServic
 					
 					
 					long visitId= patientRegistrationDao.saveVisitForRegisteredPatient(visit);
-					
+					System.out.println("visitId:  "+visitId);
 					if(visitId!=0) {
 						visitList.add(visitId);
 					}
@@ -1318,7 +1340,7 @@ public class PatientRegistrationServiceImpl implements PatientRegistrationServic
 	}
 
 
-	private long getHinNo(String serviceNo,long patientRelationId,long registrationTypeId) {
+	public long getHinNo(String serviceNo,long patientRelationId,long registrationTypeId) {
 
 		Map<String, Object> serviceAndRelationMap = new HashMap<String, Object>();
 		long IcgRegistrationTypeId =Long.parseLong(HMSUtil.getProperties("adt.properties", "ICG_REGISTRATION_TYPE_ID"));
@@ -1473,7 +1495,7 @@ public class PatientRegistrationServiceImpl implements PatientRegistrationServic
 		JSONObject jsonObj =jObject.getJSONObject("patientDetailsFormOthers");
 		long visitId=0;
 		Patient patient =null;
-		long hospitalId=1;// This will fetch from session
+		long hospitalId=jsonObj.getLong("hospitalId");// This will fetch from session
 		
 		if(!jsonObj.get("uhidNoPatient").toString().isEmpty()) {
 			long uhidNO =Long.parseLong(jsonObj.get("uhidNoPatient").toString());
@@ -1817,12 +1839,12 @@ public class PatientRegistrationServiceImpl implements PatientRegistrationServic
 		List<Visit> patientHistoryList = new ArrayList<Visit>();
 		List<Map<String,Object>> responseList = new ArrayList<Map<String,Object>>();
 		Map<String,Object> responseMap=new HashMap<String, Object>();
-		long patientId=0;
+		long uhidNo=0;
 		String startDate="";
 		String endDate="";
 		
-		if(!requestData.get("patientId").isEmpty() && requestData.get("patientId")!=null) {
-			patientId =Long.parseLong(requestData.get("patientId").toString());
+		if(!requestData.get("uhidNo").isEmpty() && requestData.get("uhidNo")!=null) {
+			uhidNo =Long.parseLong(requestData.get("uhidNo").toString());
 		}
 		
 		if(!requestData.get("startDate").isEmpty() && requestData.get("startDate")!=null) {
@@ -1835,17 +1857,21 @@ public class PatientRegistrationServiceImpl implements PatientRegistrationServic
 		
 		
 		
-		patientHistoryList = patientRegistrationDao.getPatientAppointmentHistory(patientId,startDate,endDate);
+		patientHistoryList = patientRegistrationDao.getPatientAppointmentHistory(uhidNo,startDate,endDate);
 		if(patientHistoryList!=null && patientHistoryList.size()>0) {
 			for(Visit visit : patientHistoryList) {
 				Map<String,Object>map=new HashMap<String, Object>();
 				map.put("departmentName", visit.getMasDepartment().getDepartmentName());
-				map.put("doctorName", "doctorName");
+				map.put("departmentId", visit.getMasDepartment().getDepartmentId());
+				map.put("doctorName", "DoctorName");
 				map.put("appointmentDate", HMSUtil.convertDateToStringFormat(visit.getVisitDate(), "dd-MM-yyyy"));
 				map.put("tokenNo", visit.getTokenNo());
 				map.put("hospitalName", visit.getMasHospital().getHospitalName());
+				map.put("hospitalId", visit.getMasHospital().getHospitalId());
 				map.put("visitStatus", visit.getVisitStatus());
 				map.put("visitId", visit.getVisitId());
+				map.put("appointmentTypeId", visit.getMasAppointmentType().getAppointmentTypeId());
+				map.put("appointmentTypeName", visit.getMasAppointmentType().getAppointmentTypeName());
 				responseList.add(map);
 			}
 			if (responseList != null && responseList.size() > 0) {
@@ -1877,7 +1903,28 @@ public class PatientRegistrationServiceImpl implements PatientRegistrationServic
 			map.put("msg", "Appointment can not be cancelled");
 		}
 		return map;
-	}	
+	}
+
+
+	@Override
+	public void printVisitTokenReport(String requestData,HttpServletRequest request,
+			HttpServletResponse response) {
+		Map<String, Object> connectionMap = new HashMap<String, Object>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
 		
+		JSONObject json = new JSONObject(requestData);
+		long visitId=0;
+		if (json.getLong("visitId") != 0) {
+			visitId = json.getLong(("visitId"));
+			parameters.put("visitId", visitId);
+		}
+		parameters.put("visitId", visitId);
+		//connectionMap = reportDao.getConnectionForReport();
+		System.out.println("Got connection object. Now Calling report method");
+		HMSUtil.generateReport("Token_Slip_report", parameters, (Connection)connectionMap.get("conn"), response, request.getSession().getServletContext());
+		
+	}
+
+
 	
 }

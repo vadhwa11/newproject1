@@ -1,0 +1,240 @@
+ <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+
+<%-- <%@include file="..//view/leftMenu.jsp"%> --%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<html>
+<head>
+<title>Save Procedure Detail</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<%@include file="..//view/commonJavaScript.jsp"%>
+</head>
+<script type="text/javascript" language="javascript">
+<%	String hospitalId = "1";
+%>
+
+var $j = jQuery.noConflict();
+var total_required_procedure = 0;
+var total_given_procedure = 0;
+var final_status = '';
+$j(document).ready(function()
+		{
+			$j('#tblListofNursing').empty();
+			//getSpecificPhysioDetail();
+			getSpecificPhysioDetail();
+		});
+		
+	function getSpecificPhysioDetail(){
+		var data = ${data};
+		total_required_procedure = data.detailInfo.no_of_days * data.detailInfo.feq;
+		$j('#procedure_name').val(data.detailInfo.procedure_name);
+		$j('#frequency').val(data.detailInfo.frequency);
+		$j('#no_of_days').val(data.detailInfo.no_of_days);
+		$j('#frequency_id').val(data.detailInfo.frequency_id);
+		$j('#procedure_id').val(data.detailInfo.procedure_id);
+		$j('#header_id').val(data.detailInfo.header_id);		
+		
+		var table_data = data.detailList;
+		var html = '';
+		var html2 = '';
+		var total_records = 0;
+		
+		for(var i=0;i<table_data.length;i++){
+			total_records ++;
+			var action = table_data[i].status;
+			var status = '';
+			if(total_records > total_required_procedure){
+				break;
+			}
+			if(total_records == total_required_procedure){
+				final_status = 'Y';
+			}
+			if(action == 'Y'){
+				status = 'Completed';
+				total_given_procedure++;
+			}else{
+				
+				status = 'Not Completed';
+				html2 += '<tr>';
+				html2 += '<td><div><input class="form-control" type="text" value="'+table_data[i].appointment_date+'" readonly></div></td>';
+				html2 += '<td><div><input  id="procedure_date" type="date" value="'+table_data[i].procedure_date+'"></div></td>';
+				html2 += '<td><div><input  id="nursing_remarks" type="text" value="'+table_data[i].nursing_remarks+'"></div></td>';
+				html2 += '<td><div><input class="form-control" type="text" value="'+status+'" readonly></div></td>';
+				if(status != 'Completed'){
+					html2 += '<td><div><button type="button" class="btn btn-primary" value="'+table_data[i].id+'" onclick="saveProcedureDetail(this.value)">Save</button></div></td>';
+				}
+				html2 += '</tr>';
+			}
+			if(action == 'Y'){
+				html += '<tr>';
+				html += '<td><div><input class="form-control" type="text" value="'+table_data[i].appointment_date+'" readonly></div></td>';
+				html += '<td><div><input class="form-control" type="text" value="'+table_data[i].procedure_date+'" readonly></div></td>';
+				html += '<td><div><input class="form-control" type="text" value="'+table_data[i].nursing_remarks+'" readonly></div></td>';
+				html += '<td><div><input class="form-control" type="text" value="'+status+'" readonly></div></td>';
+				html += '<td></td>';
+				html += '</tr>';
+			}
+		}
+		$j('#tblListofNursing').append(html);
+		$j('#tblListofNursing').append(html2);
+		
+	}
+		
+	function saveProcedureDetail(id){
+		
+	
+		var procedure_date = $j('#procedure_date').val();
+		var nursing_remarks = $j('#nursing_remarks').val();
+		var app_date = $j('#appointment_date').val();
+		var current_date = new Date();
+		if(procedure_date == '' || procedure_date == undefined){
+			alert("Procedure Date must be selecteed");
+			return;
+		}
+		if(nursing_remarks == '' || nursing_remarks == undefined){
+			alert("Nursing Remarks must be entered");
+			return;
+		}
+		
+		if(total_given_procedure < (total_required_procedure-1)){
+			if(app_date == '' || app_date == undefined){
+				alert("Please select next appointment date");
+				return;
+			}
+		}
+		var d1 = Date.parse(app_date);
+		var d2 = new Date();
+		if (d1 < d2) {
+		    alert ("Next appointment date can not be scheduled for past dates");
+		    return;
+		}	
+		
+		var params = {
+				"procedure_date" : procedure_date,
+				"nursing_remarks": nursing_remarks,
+				"id": id,
+				"appointment_date":app_date,
+				"procedure_id":$j('#procedure_id').val(),
+				"frequency_id":$j('#frequency_id').val(),
+				"header_id":$j('#header_id').val(),
+				"no_of_days":$j('#no_of_days').val(),
+				"final_status": final_status
+		}
+	
+	 	$j.ajax({
+			type : "POST",
+			contentType : "application/json",
+			url : 'saveProcedureDetail',
+			data : JSON.stringify(params),
+			dataType : "json",
+			cache : false,
+			success : function(data) {
+				var msg = data.result;
+				alert(msg);
+				//$j('#tblListofNursing').empty();
+				//getSpecificPhysioDetail();
+				location.reload(); 
+			},
+
+			error : function(data) {
+
+				alert("An error has occurred while contacting the server");
+
+			}
+		});
+		 
+	}
+</script>
+
+<body>
+	
+		<!-- Start content -->
+		<div class="">			
+
+				<div class="internal_Htext">Procedure Details</div>
+				<!-- end row -->
+
+				<div class="row">
+					<div class="col-12">
+						<div class="card">
+							<div class="card-body">
+								<form>
+								<div class="row">									
+									<div class="col-md-4">
+											<div class="form-group row">
+											<label class="col-sm-4 col-form-label">Procedure
+												Name</label>
+											<div class="col-sm-7">
+												<input type="text" class="form-control  form-control-sm" id="procedure_name" name="procedure_name" readonly>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+											<div class="form-group row">
+											<label for="staticEmail" class="col-sm-4 col-form-label">Frequency</label>
+											<div class="col-sm-7">
+												<input type="text" class="form-control  form-control-sm" id="frequency" name="frequency" readonly>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+											<div class="form-group row">
+											<label for="staticEmail" class="col-sm-4 col-form-label">No.Of
+												Days</label>
+											<div class="col-sm-7">
+												<input type="text" class="form-control  form-control-sm" id="no_of_days" name="no_of_days" readonly>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+											<div class="form-group row">
+											<label for="staticEmail" class="col-sm-4 col-form-label">OP
+												Remarks</label>
+											<div class="col-sm-7">
+												<input type="text" class="form-control  form-control-sm" id="op_remarks" name="op_remarks" readonly>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4">
+											<div class="form-group row">
+											<label for="staticEmail" class="col-sm-4 col-form-label">Appointment
+												Date</label>
+											<div class="col-sm-7">
+												<input type="date" class="form-control  form-control-sm" id="appointment_date" name="op_remarks" readonly>
+											</div>
+										</div>
+									</div>
+									</div>
+									<div class="form-row">
+										<div class="tablediv">
+											<table class="table table-bordered ">
+												<tr>
+													<th>Appointment Date</th>
+													<th>Procedure Date/Time</th>
+													<th>Nursing Remarks</th>
+													<th>Action</th>
+												</tr>
+												<tbody id="tblListofNursing">
+
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</form>
+
+
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+		
+
+	<input type="hidden" id="procedure_id" value="">
+	<input type="hidden" id="frequency_id" value="">
+	<input type="hidden" id="header_id" value="">
+</body>
+</html>

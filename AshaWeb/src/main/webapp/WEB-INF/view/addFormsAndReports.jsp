@@ -44,12 +44,15 @@ function GetApplicationAutoCompleteList(){
 			data : JSON.stringify({}),
 			dataType : "json",
 			cache : false,
-			success : function(result) {				
+			success : function(result) {	
+				alert(result.max_app_id);
 				var maxAppId = result.max_app_id;
+				alert("maxId :: "+maxAppId);
 				 dataList = result.data;	
-				 if(maxAppId !=undefined)
+				 if(maxAppId != 'undefined')
 					 {
-					 	var maxId = parseInt(maxAppId.substring(1,maxAppId.length))+1;				
+					 	var maxId = parseInt(maxAppId.substring(1,maxAppId.length))+1;
+					 	
 						$j('#applicationId').val("A"+maxId);	
 					 }
 				 else
@@ -120,7 +123,7 @@ function GetParentId(){
 		}
 	})
 }
-
+var successmsg='';
 function addFormAndReportsDetails(){
 	
 	if(document.getElementById('applicationName').value==""){
@@ -157,12 +160,14 @@ function addFormAndReportsDetails(){
 		cache : false,
 		success : function(result){
 			if(result.status==1){	
+				successmsg=result.msg;
 	        	document.getElementById("messageId").innerHTML = result.msg;
 	    		$j("#messageId").css("color", "green");
 	    		
 	        }	        
 	    	else if(result.status==0){	        	
 	        	if(result.msg != undefined){
+	        		
 		        		document.getElementById("messageId").innerHTML = result.msg;
 		        		$j("#messageId").css("color", "red");			        	
 	        		}
@@ -189,7 +194,9 @@ function addFormAndReportsDetails(){
 	})
 	ResetForm();
 	
-	//window.location.reload();
+	window.location.reload();
+		alert("Record Added Successfully");
+	 
 }
  function editFormAndReports(){
 	document.formsAndReportForm.name='formsAndReportForm';
@@ -244,64 +251,85 @@ function ResetForm()
             <div class="">
                 <div class="container-fluid">
                 <div class="internal_Htext">ADD FORMS / REPORTS</div>
-                    <div class="row">
-                    </div>                   
+                                      
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-body">
                                  <p align="center" id="messageId" style="color:green; font-weight: bold;" ></p>
-                                  <br>
+                                  
+                                   <form class="form-horizontal" id="formsAndReportForm" name="formsAndReportForm">
+                                            
                                     <div class="row">                                                                     
-                                        <div class="col-md-8">
-                                            <form class="form-horizontal" id="formsAndReportForm" name="formsAndReportForm">
-                                                <div class="form-group row">
-                                                    <label class="col-3 col-form-label inner_md_htext">Application Id</label>
-                                                    <div class="col-3">
-                                                      <input type="text" name="applicationId" id="applicationId" class="form-control" readonly="readonly">                                                            
-                                                        
-                                                    </div>
-                                                     <label class="col-3 col-form-label inner_md_htext">Application Name</label>
-                                                    <div class="autocomplete"">
-                                                      <input type="text" name="applicationName" id="applicationName" class="form-control" onblur="changeApplication(this.value);fillDataUrl(this);">
+                                        
+                                           
+                                                   <div class="col-md-4">
+	                                                   <div class="form-group row">
+	                                                    <label class="col-md-5 col-form-label inner_md_htext">Application Id</label>
+		                                                    <div class="col-md-5">
+		                                                      <input type="text" style="    background: none;    border: none;" name="applicationId" id="applicationId" class="form-control" readonly="readonly">            
+		 
+		                                                    </div>
+	                                                    </div>
                                                     </div>
                                                     
-                                                </div>
-                                                <div class="form-group row">
-                                                <label class="col-3 col-form-label inner_md_htext">Parent Id</label>
-                                                    <div class="col-3">
-                                                      <input type="text" name="parentId" id="parentId" class="form-control" placeholder="">                                                            
-                                                        
-                                                    </div>
-                                                     <label class="col-3 col-form-label inner_md_htext">Sub Parent Id</label>
-                                                    <div class="col-3">
-                                                      <select class="form-control" name="subparentId" id="subparentId">
-                                                      
-                                                      </select>
+                                               <div class="col-md-4">
+                                                   <div class="form-group row">
+		                                                     <label class="col-md-5  col-form-label inner_md_htext">Application Name</label>
+			                                                    <div class="autocomplete col-md-5 ">
+			                                                      <input type="text" name="applicationName" id="applicationName" class="form-control" onblur="changeApplication(this.value);fillDataUrl(this);">
+			                                                    </div> 
                                                     </div>
                                                 </div>
-                                                <div class="form-group row">
-                                                <label class="col-3 col-form-label inner_md_htext">Url</label>
-                                                    <div class="col-3">
-                                                      <input type="text" name="applicationUrl" id="applicationUrl" class="form-control" placeholder="">                                                            
-                                                        
+                                                
+                                                <div class="col-md-4">
+                                                   <div class="form-group row">
+		                                                    <label class="col-md-5  col-form-label inner_md_htext">Parent Id</label>
+		                                                    <div class="col-md-5 ">
+		                                                      <input type="text" name="parentId" id="parentId" class="form-control" placeholder=""> 
+		                                                    </div> 
+                                                     </div> 
+                                                   </div>
+                                                    
+                                                  <div class="col-md-4">
+		                                                  <div class="form-group row">
+		                                                     <label class="col-md-5  col-form-label inner_md_htext">Sub Parent Id</label>
+		                                                    <div class="col-md-5 ">
+		                                                      <select class="form-control" name="subparentId" id="subparentId">
+		                                                      
+		                                                      </select>
+		                                                    </div>
+		                                                   </div>
+                                                 </div>
+                                                 
+                                                   <div class="col-md-4">
+                                                      <div class="form-group row">
+		                                                   <label class="col-md-5  col-form-label inner_md_htext">Url</label>
+		                                                    <div class="col-md-5 ">
+		                                                      <input type="text" name="applicationUrl" id="applicationUrl" class="form-control" placeholder="">  
+		                                                    </div>
+		                                                  </div>
+		                                               </div>
+		                                                    
+                                                    <div class="col-md-4">
+                                                      <div class="form-group row"> 
+                                                             <label class="col-md-5 col-form-label inner_md_htext">Status</label>
+			                                                 <div class="col-md-5">
+			                                                    <label class="col-form-label inner_md_htext">Active</label>
+			                                                      <input type="radio" checked="checked">
+			                                                      <label class="col-form-label inner_md_htext">InActive</label>
+			                                                      <input type="radio">
+			                                                 </div>
+                                                         </div>
                                                     </div>
-                                                     <label class="col-3 col-form-label inner_md_htext">Status</label>
-                                                    <div class="col-3">
-                                                    <label class="col-form-label inner_md_htext">Active</label>
-                                                      <input type="radio" checked="checked">
-                                                      <label class="col-form-label inner_md_htext">InActive</label>
-                                                      <input type="radio">
-                                                    </div>
+                                                    
+                                                    
                                                 </div>
-                                            </form>
+                                                
+                                      <div class="row">
+                                       <!--  <div class="col-md-10">
                                         </div>
-                                    </div>
-									<br>	
-                                    <div class="row">
-                                        <div class="col-md-7">
-                                        </div>
-                                        <div class="col-md-5">
+                                        <div class="col-md-2">
                                             
                                                 <div class="button-list">
                                                     <button type="button" id="btnAdd" class="btn btn-primary " onclick="addFormAndReportsDetails();">Add</button>
@@ -309,8 +337,45 @@ function ResetForm()
                                                 </div>
                                            
                                         </div>
-
+ -->
+  
+ 
+                                   <div class="col-md-12">
+                                       
+                                        <div style="float:left;">
+                                            
+                                               
+                                           
+                                        </div>
+                                         <div style="float:right;">
+                                            
+                                                <div class="button-list">
+                                                    <button type="button" id="btnAdd" class="btn btn-primary " onclick="addFormAndReportsDetails();">Add</button>
+                                                    <button type="submit" id="btnEdit" class="btn btn-primary" onclick="editFormAndReports();">Edit</button>
+                                                </div>
+                                           
+                                        </div>
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                      </div> 
+ 
+ 
                                     </div>
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                            </form>
+                                        </div>
+                                    </div>
+						 
+                                  
 
                                     <!-- end row -->
 

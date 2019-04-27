@@ -1,0 +1,16 @@
+package com.icg.jkt.utils;
+
+public class JavaUtils {
+	
+	public static String getReplaceString(String replaceValue) {
+		return replaceValue.replaceAll("[\\[\\]]", ",");
+		}
+	public static String getReplaceString1(String replaceValue) {
+		return replaceValue.replaceAll("[\\[\\]]", "");
+		}
+	public static final String[] getSplitString(String value) {
+			final String regex = "-";
+		
+		return value.split(regex);
+	}
+}
