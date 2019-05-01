@@ -401,8 +401,7 @@ function updateIdealWeight()
 	function ResetForm()
 	{	
 		$j('#ideaWeight').val('');
-		$j('#fromHeight').val('');
-		$j('#toHeight').val('');
+		$j('#selectHeight').val('');
 		$j('#selectAge').val('');
 		$j('#selectGender').val('');
 		$j('#sGenderList').val('');

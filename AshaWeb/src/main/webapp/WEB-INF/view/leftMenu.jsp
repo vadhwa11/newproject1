@@ -233,7 +233,8 @@
                             <li><a href="${pageContext.request.contextPath}/user/manageTemplate">Manage Template</a></li>
                             <li><a href="${pageContext.request.contextPath}/user/roleRights">Role Rights</a></li>
                             <li><a href="${pageContext.request.contextPath}/user/assignApplicationToTemplate">Assign Application To Template</a></li>
-                                
+                             <li><a href="${pageContext.request.contextPath}/v0.1/master/roleMaster">Roles</a></li>
+                             <li><a href="${pageContext.request.contextPath}/v0.1/master/usersMaster">Users</a></li>    
                             </ul>
                         </li>
                         
@@ -266,8 +267,7 @@
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/empanelledHospitalMaster">Empanelled Hospital Master </a></li>                                
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/physiotherapyMaster">Physiotherapy Master </a></li>
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/serviceTypeMaster">Service Type</a></li>
-                                <li><a href="${pageContext.request.contextPath}/v0.1/master/roleMaster">Roles</a></li>
-                                <li><a href="${pageContext.request.contextPath}/v0.1/master/usersMaster">Users</a></li>                                
+                                                               
                             </ul>
                         </li>
                         

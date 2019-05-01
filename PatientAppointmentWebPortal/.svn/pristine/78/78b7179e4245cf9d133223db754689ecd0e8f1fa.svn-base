@@ -1,0 +1,161 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+ <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.min.js"></script>
+                    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.common.js"></script>
+                    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common.js"></script>
+                    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/ajax.js"></script>
+                    
+          
+<meta charset="ISO-8859-1">
+<title>Reschedule Appointment</title>
+</head>
+<body>
+<h1>Reschedule Appointment</h1>
+hhh--${message}
+  <form:form  id="bookAppointmentform" name="bookAppointmentform" method="POST" modelAttribute="patientDetails" action="${pageContext.request.contextPath}/appointment/submitRescheduleAppointment" >
+   Service No.: <input type="text" id="sNo" name="serviceNo" value="${patientDetails.serviceNo}" readonly><br><br><br>
+    Full Name: <input type="text" id="empName" name= "fullName" value="${patientDetails.fullName}" readonly>
+    Relation: <input type="text" id="relation" name="relation" value="${patientDetails.relation}" readonly><br><br><br>
+    Date Of Birth:<input type="text" id="dob" name="dateOfBirth" value="${patientDetails.dateOfBirth}" readonly>
+    Gender: <input type="text" id="gender" name="gender" value="${patientDetails.gender}" readonly>
+   <input type="hidden"  name="genderId" value="${patientDetail.genderId}" >
+   <input type="hidden"  name="uhidNo" value="${patientDetail.uhidNo}" >
+   <input type="hidden"  name="relationId" value="${patientDetail.relationId}" >
+     <input type="hidden"  name="empId" value="${patientDetail.empId}" >
+      <input type="hidden"  name="visitId" value="${patientDetail.visitId}" >
+       <input type="hidden"  name="hospital" value="${patientDetail.hospital}" >
+      <input type="hidden"  name="department" value="${patientDetail.department}" >
+   <input type="hidden" id="tokenNo" name="tokenNumber" value="" >
+   <div class="col-md-3">	
+    <input type="hidden" id="dtafromresponse" name="dtafromresponse" value="" >	
+                    <div class="form-group row">
+                        <label for="service" class="col-sm-4 col-form-label">Hospital:</label> 
+						<div class="col-md-8">   
+							<select id="hospitalId" name="hospitalId" onchange="geAppointmentType();" class="form-control" >
+                                <option value="${patientDetails.hospitalId}" selected="selected" readonly>${patientDetails.hospital}</option>
+							</select> 
+		                </div>
+                    </div>
+            </div> 
+            
+                <div class="col-md-3">			
+                    <div class="form-group row">
+                        <label for="service" class="col-sm-4 col-form-label">Department:</label> 
+						<div class="col-md-8">   
+							<select id="departmentId" name="departmentId" onchange="geAppointmentType();" class="form-control">
+                                <option value="${patientDetails.departmentId}" selected="selected">${patientDetails.department}</option>
+							</select> 
+		                </div>
+                    </div>
+            </div> 
+            
+           
+            <!-- <div class="form-group row">
+              Appointment Type:
+				<table id="appTypeTable"></table>
+			</div> -->
+			  <div class="col-md-3">			
+                    <div class="form-group row">
+                        <label for="service" class="col-sm-4 col-form-label">  Appointment Type:</label> 
+						<div class="col-md-8">   
+							<select id="appTypeTable" name="appTypeId" class="form-control">
+                                <option value="${patientDetails.appointmentId}" selected="selected">${patientDetails.appointmentType}</option>
+							</select> 
+		                </div>
+                    </div>
+            </div> 
+     Appointment Date: <input type="date" name="appointmentDate" id="appointmentDate"><br>
+     
+    <div class="row" >
+    Token:
+					 <div id="displayToken" class="form-group row">
+					 
+					 </div>
+			    </div>
+			    
+			    <button class="btn btn-info" id="bookAppointment" type="submit" >Reschedule Appointment</button>
+   </form:form>
+<script>
+
+
+
+
+$j("#appointmentDate").blur(function(){
+	 var arrParam=[];
+	var deptId = $j('#departmentId').find('option:selected').val();
+	 var appointmentTypeId=[];
+	 var appointmentTypeId = $j('#appTypeTable').find('option:selected').val();
+	 appointmentTypeId=["1"];
+	var appointmentDate = $j('#appointmentDate').val();
+	var date= new Date(appointmentDate);
+	appointmentDate=(( date.getDate() + '-' + (date.getMonth()+1) )  + '-' +  date.getFullYear());
+	 var hospitalId = $j('#hospitalId').find('option:selected').val();
+alert("deptId"+deptId+"appointmentTypeId"+appointmentTypeId+"hospitalId"+hospitalId+"appointmentDate"+appointmentDate);
+	 var params = {
+			"deptId":deptId,
+			"appointmentTypeId":appointmentTypeId,
+			"hospitalId" : hospitalId,
+			"visitFlag" :"P",
+			"visitDate":appointmentDate
+		}
+		arrParam.push(params);
+
+
+ var resuestData ={
+		"arrParam":arrParam
+		}
+
+ 
+			 var msg1 =  [{"tokenId": 1, "tokenNumber": 1, "tokenTime": "09:15 to 09:18","tokenDate": "15-03-19","tokenFlag": 0},
+ 								{"tokenId": 2, "tokenNumber": 4, "tokenTime": "09:40 to 09:45","tokenDate": "15-03-19","tokenFlag": 1},
+ 								{"tokenId": 3, "tokenNumber": 6, "tokenTime": "09:55 to 09:59","tokenDate": "15-03-19","tokenFlag": 1}]
+ 		$j.ajax({
+			type : "POST",
+			contentType : "application/json",
+			url : 'getAppointmentTokens',
+			data : JSON.stringify(resuestData),
+			dataType : "json",
+			cache : false,
+			success : function(msg) {
+				var displayToken = '';
+				var dataMain = JSON.parse(JSON.stringify(msg));
+                 for (var i=0; i<dataMain.jsonList.length; i++) {
+                	    var counter = dataMain.jsonList[i];
+                	    if (typeof counter.tokenMsg[0].tokenValue !== 'undefined' || !counter.tokenMsg[0].tokenValue instanceof String){
+                      	  
+                	    for (var j=0; j<counter.tokenMsg.length; j++) {
+                	    	//displayToken += '<input readonly onclick="setVal('+counter.tokenMsg[j].tokenValue+','+counter.tokenMsg[j].tokenValue+')" type="text" name="tokenNo" id="tokenNoId'+counter.tokenMsg[j].tokenValue+'" value="token No '+counter.tokenMsg[j].tokenValue+"-"+counter.tokenMsg[j].tokenStartTime+'" style="left-margin:50px">'; 
+                	    	if(counter.tokenMsg[j].tokenStatus=="available")
+                	    	displayToken += '<div  style="width:25%; background-color:green; cursor: pointer; float:left;  margin:50px; border:1px solid black; height:50px; margin: 20 auto ;margin-left:75px;" onclick="setVal('+counter.tokenMsg[j].tokenValue+','+counter.tokenMsg[j].tokenValue+')"> token No '+counter.tokenMsg[j].tokenValue+"-"+counter.tokenMsg[j].tokenStartTime+" to "+counter.tokenMsg[j].tokenEndTime+'</div>';
+                	    	else
+                	    		displayToken += '<div  style="left-margin:50 px; background-color:red; float:left;"> token No '+counter.tokenMsg[j].tokenValue+"-"+counter.tokenMsg[j].tokenStartTime+" to "+counter.tokenMsg[j].tokenEndTime+'</div><br>';
+                	    	
+                	    }
+                	} else{
+                          	 alert(counter.tokenMsg);
+                           }
+                 }
+				
+				$j('#displayToken').html(displayToken);
+                
+			},
+			error : function(msg) {
+				alert("An error has occurred while contacting the server");
+			}
+		});
+});
+
+
+function setVal(tokenno,a) {
+	alert("a"+a);
+	$j('#tokenNo').val(tokenno);
+	
+}
+</script>
+	</body>
+</html>
