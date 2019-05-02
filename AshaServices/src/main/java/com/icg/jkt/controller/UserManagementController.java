@@ -177,7 +177,6 @@ public class UserManagementController {
 	public ResponseEntity<Map<String, Object>> getApplicationNameBasesOnRole(@RequestBody Map<String, Object> requestData) {
 		Map<String, Object> dataList = new HashMap<String,Object>();
 		dataList = userManagementService.getApplicationNameBasesOnRole(requestData);
-		System.out.println("roleabsessssssssssssss");
 		if (dataList.isEmpty()) {
 			return new ResponseEntity<Map<String, Object>>(HttpStatus.NO_CONTENT);
 		}

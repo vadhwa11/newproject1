@@ -1,0 +1,379 @@
+package com.icg.jkt.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.json.JSONObject;
+import org.springframework.stereotype.Repository;
+
+import com.icg.jkt.entity.MasAdministrativeSex;
+import com.icg.jkt.entity.MasAppointmentType;
+import com.icg.jkt.entity.MasBloodGroup;
+import com.icg.jkt.entity.MasCommand;
+import com.icg.jkt.entity.MasCommandType;
+import com.icg.jkt.entity.MasDepartment;
+import com.icg.jkt.entity.MasDepartmentType;
+import com.icg.jkt.entity.MasDisposal;
+import com.icg.jkt.entity.MasEmpanelledHospital;
+import com.icg.jkt.entity.MasEmployee;
+import com.icg.jkt.entity.MasEmployeeCategory;
+import com.icg.jkt.entity.MasFrequency;
+import com.icg.jkt.entity.MasHospital;
+import com.icg.jkt.entity.MasIcd;
+import com.icg.jkt.entity.MasIdealWeight;
+import com.icg.jkt.entity.MasMainChargecode;
+import com.icg.jkt.entity.MasMaritalStatus;
+import com.icg.jkt.entity.MasMedicalCategory;
+import com.icg.jkt.entity.MasNursingCare;
+import com.icg.jkt.entity.MasRange;
+import com.icg.jkt.entity.MasRank;
+import com.icg.jkt.entity.MasRelation;
+import com.icg.jkt.entity.MasReligion;
+import com.icg.jkt.entity.MasRole;
+import com.icg.jkt.entity.MasSample;
+import com.icg.jkt.entity.MasServiceType;
+import com.icg.jkt.entity.MasState;
+import com.icg.jkt.entity.MasStoreUnit;
+import com.icg.jkt.entity.MasTrade;
+import com.icg.jkt.entity.MasUOM;
+import com.icg.jkt.entity.MasUnit;
+import com.icg.jkt.entity.MasUnitType;
+import com.icg.jkt.entity.Users;
+
+@Repository
+public interface MasterDao {
+
+	List<MasDepartment> getDepartmentList();
+
+	MasEmployee checkEmp(Long i);
+
+	List<MasIcd> getIcd();
+
+	Map<String, List<MasState>> getAllStates(JSONObject jsonObject);
+
+	MasState checkMasState(String stateCode);
+
+	/*********************************
+	 * MAS COMMAND
+	 **************************************************/
+	List<MasCommand> validateMasCommand(String commandCode, String commandName);
+
+	String addMasCommand(MasCommand masCommand);
+
+	MasCommand chkCommand(String cmdName);
+
+	/* List<MasCommand> getAllCommand(JSONObject jsonObj); */
+	Map<String, List<MasCommand>> getAllCommand(JSONObject jsonObj);
+
+	List<MasCommand> getCommand(String cmdName);
+
+	String updateCommand(Long commandId, String commandCode, String commandName, Long commandTypeId);
+
+	String updateCommandStatus(Long commandId, String commandCode, String status);
+
+	List<MasCommandType> getCommandTypeList();
+
+	/************************* MAS UNIT ************************************/
+	Map<String, List<MasUnit>> getAllUnit(JSONObject jsondata);
+
+	List<MasCommand> getCommandList();
+
+	List<MasUnit> validateUnit(String unitName);
+
+	String addMasUnit(MasUnit masUnit);
+
+	List<MasUnitType> getUnitTypeList();
+
+	String updateUnit(Long uId, String uName, Long commandId, String unitAddress, Long uTypeId);
+
+	MasUnit checkUnit(String unitName);
+
+	String updateUnitStatus(Long uId, String uName, String status);
+
+	/*******************************
+	 * MAS HOSPITAL
+	 **********************************************/
+	List<MasUnit> getUnitNameList();
+
+	Map<String, List<MasHospital>> getAllHospital(JSONObject jsondata);
+
+	MasHospital checkMasHospital(String hospitalCode);
+
+	String updateHospitalMasterStatus(Long hospitalId, String hospitalCode, String status);
+
+	String updateHospitalDetails(Long hospitalId, String hospitalCode, String hospitalName, Long unitId);
+
+	List<MasHospital> validateMasHospital(String hospitalCode, String hospitalName);
+
+	String addMasHospital(MasHospital hospital);
+
+	/********************************
+	 * MAS RELATION
+	 **********************************************************/
+	Map<String, List<MasRelation>> getAllRelation(JSONObject jsonObject);
+
+	String updateRelationDetails(Long relationId, Long relationCode, String relationName, Long newRelationCode,
+			String newRelationName);
+
+	MasRelation checkMasRelation(Long relationCode);
+
+	String updateRelationStatus(Long realtionId, Long relationCode, String status);
+
+	List<MasRelation> validateRelation(Long relationCode, String relationName);
+
+	String addRelation(MasRelation masRelation);
+
+	/********************************
+	 * MAS DISPOSAL
+	 **************************************************************/
+	List<MasDisposal> validateDisposal(String disposalCode, String disposalName);
+
+	String addDisposal(MasDisposal masDisposal);
+
+	Map<String, List<MasDisposal>> getAllDisposal(JSONObject jsonObject);
+
+	String updateDisposalDetails(Long disposalId, String disposalCode, String disposalName, String disposalType);
+
+	MasDisposal checkMasDisposal(String disposalCode);
+
+	String updateDisposalStatus(Long disposalId, String disposalCode, String status);
+
+	/**********************************
+	 * MAS APPOINTMENT TYPE
+	 ********************************************************************/
+	List<MasAppointmentType> validateAppointmentType(String appointmentTypeCode, String appointmentTypeName);
+
+	String addAppointmentType(MasAppointmentType masAppointmentType);
+
+	Map<String, List<MasAppointmentType>> getAllAppointmentType(JSONObject jsonObject);
+
+	String updateAppointmentTypeDetails(Long appointmentTypeId, String appointmentTypeCode, String appointmentTypeName);
+
+	MasAppointmentType checkMasAppointmentType(String appointmentTypeCode);
+
+	String updateAppointmentTypeStatus(Long appointmentTypeId, String appointmentTypeCode, String status);
+
+	/**********************************
+	 * MAS DEPARTMENT
+	 ****************************************************************/
+	List<MasDepartmentType> getDepartmentTypeList();
+
+	Map<String, List<MasDepartment>> getAllDepartment(JSONObject jsonObject);
+
+	String addDepartment(MasDepartment masDepartment);
+
+	List<MasDepartment> validateDepartment(String departmentCode, String departmentName);
+
+	MasDepartment checkDepartment(String departmentCode);
+
+	String updateDepartmentStatus(Long departmentId, String departmentCode, String status);
+
+	String updateDepartmentDetails(Long departmentId, String departmentCode, String departmentName,
+			Long departmentTypeId);
+
+	/********************************
+	 * MAS FREQUENCY
+	 *********************************************************/
+	Map<String, List<MasFrequency>> getAllOpdFrequency(JSONObject jsonObject);
+
+	List<MasFrequency> validateFrequency(String frequencyCode, String frequencyName);
+
+	String addOpdFrequency(MasFrequency masFrequency);
+
+	String updateDepartmentDetails(Long frequencyId, String frequencyCode, String frequencyName);
+
+	MasFrequency checkFrequency(String frequencyCode);
+
+	String updateOpdFrequencyStatus(Long frequencyId, String frequencyCode, String status);
+
+	/*******************************
+	 * MAS EMPANELLED HOSPITAL
+	 *************************************/
+	Map<String, List<MasEmpanelledHospital>> getAllEmpanelledHospital(JSONObject jsonObject);
+
+	List<MasEmpanelledHospital> validateEmpanelledHospital(String empanelledHospitalName);
+
+	String addImpanneledHospital1(MasEmpanelledHospital masEmpanelledHospital);
+
+	String addEmpanelledHospital(MasEmpanelledHospital masEmpanelledHospital);
+
+	String updateEmpanelledHospital(JSONObject jsonObject);
+
+	/*******************************
+	 * MAS SERVICE TYPE
+	 **************************************************/
+	Map<String, List<MasServiceType>> getAllServiceType(JSONObject jsonObj);
+
+	String updateServiceType(Long serviceTypeId, String serviceTypeName);
+
+	String addServiceType(MasServiceType masServiceType);
+
+	String updateServiceTypeStatus(Long serviceTypeId, String commandCode, String status);
+
+	/*******************************
+	 * MAS IDEAL WEIGHT
+	 **************************************************/
+	Map<String, List<MasIdealWeight>> getAllIdealWeight(JSONObject jsonObject);
+
+	Map<String, List<MasNursingCare>> getAllmNursingData(JSONObject jsonObject);
+
+	List<MasNursingCare> validateMasNursing(String nursingCode, String nursingName, String nursingType);
+	
+	List<MasIdealWeight> validateIdealWeight(Long genderId, String fromAge, String toAge, Long weight);
+
+	String addMasNursing(MasNursingCare nursingObj);
+	
+	String addIdealWeight (MasIdealWeight idealWeightObj);
+
+	String updateMasNursing(JSONObject jsonObject);
+	//MasIdealWeight chakeIdealWeight(Long genderId, String fromAge, String toAge, Long weight);
+
+	List<MasIdealWeight> getAge(JSONObject jsonObject);
+	
+	String updateIdealWeight(JSONObject jsonObject);
+	
+	/*************************MAS RANK************************************/
+	List<MasRank> validateMasRank(String rankCode, String rankName);
+	List<MasRank> validateMasRankUpdate(Long employeeCategoryId, String rankName);
+	String addMasRank(MasRank masRank);
+	MasRank chkRank(String  rankName);
+	Map<String, List<MasRank>> getAllRank(JSONObject jsonObj);
+	List<MasRank> getRank(String rankName);	
+	String updateRank(Long rankId, String rankCode, String rankName, Long employeeCategoryId);
+	String updateRankStatus(Long rankId, String rankCode,String status);
+	List<MasEmployeeCategory> getEmployeeCategoryList();
+	
+	/************************** TRADE MASTER ****************************/
+	List<MasTrade> validateMasTrade(String tradeName);
+	List<MasTrade> validateMasTradeUpdate(String tradeName);
+	String addMasTrade(MasTrade masTrade);
+	MasTrade checkTrade(String  tradeName);
+	Map<String, List<MasTrade>> getAllTrade(JSONObject jsonObj);
+	List<MasTrade> getTrade(String tradeName);	
+	String updateTrade(Long tradeId,String tradeName, Long serviceTypeId);
+	String updateTradeStatus(Long tradeId,String status);
+	List<MasServiceType> getServiceTypeList();
+	
+	/********************************MAS RELIGION*********************************************************/
+	Map<String, List<MasReligion>> getAllReligion(JSONObject jsonObject);
+	List<MasReligion> validateReligion(String religionCode, String religionName);
+	List<MasReligion> validateReligionUpdate(String religionCode, String religionName);
+	String addReligion(MasReligion masReligion);
+	String updateReligionDetails(Long religionId, String religionCode, String religionName);
+	MasReligion checkReligion(String religionCode);
+	String updateReligionStatus(Long religionId, String religionCode, String status);
+	
+	/********************************MAS MARITAL STATUS*********************************************************/
+	Map<String, List<MasMaritalStatus>> getAllMaritalStatus(JSONObject jsonObject);
+	List<MasMaritalStatus> validateMaritalStatus(String maritalStatusCode, String maritalStatusName);
+	List<MasMaritalStatus> validateMaritalStatusUpdate(String maritalStatusName);
+	String addMaritalStatus(MasMaritalStatus masMaritalStatus);
+	String updateMaritalStatusDetails(Long maritalStatusId, String maritalStatusCode, String maritalStatusName);
+	MasMaritalStatus checkMaritalStatus(String maritalStatusCode);
+	String updateMaritalStatusStatus(Long maritalStatusId, String maritalStatusCode, String status);
+	
+	/********************************MAS EMPLOYEE CATEGORY*********************************************************/
+	Map<String, List<MasEmployeeCategory>> getAllEmployeeCategory(JSONObject jsonObject);
+	List<MasEmployeeCategory> validateEmployeeCategory(String employeeCategoryCode, String employeeCategoryName);
+	List<MasEmployeeCategory> validateEmployeeCategoryUpdate(String employeeCategoryCode, String employeeCategoryName);
+	String addEmployeeCategory(MasEmployeeCategory masEmployeeCategory);
+	String updateEmployeeCategoryDetails(Long employeeCategoryId, String employeeCategoryCode, String employeeCategoryName);
+	MasEmployeeCategory checkEmployeeCategory(String employeeCategoryCode);
+	String updateEmployeeCategoryStatus(Long employeeCategoryId, String employeeCategoryCode, String status);
+	
+	/********************************MAS Administrative Sex*********************************************************/
+	Map<String, List<MasAdministrativeSex>> getAllAdministrativeSex(JSONObject jsonObject);
+	List<MasAdministrativeSex> validateAdministrativeSex(String AdministrativeSexCode, String AdministrativeSexName);
+	List<MasAdministrativeSex> validateAdministrativeSexUpdate(String AdministrativeSexCode, String AdministrativeSexName);
+	String addAdministrativeSex(MasAdministrativeSex masAdministrativeSex);
+	String updateAdministrativeSexDetails(Long administrativeSexId, String administrativeSexCode, String administrativeSexName);
+	MasAdministrativeSex checkAdministrativeSex(String administrativeSexCode);
+	String updateAdministrativeSexStatus(Long administrativeSexId, String administrativeSexCode, String status);
+	
+	/********************************MAS Medical Category*********************************************************/
+	Map<String, List<MasMedicalCategory>> getAllMedicalCategory(JSONObject jsonObject);
+	List<MasMedicalCategory> validateMedicalCategory(Long MedicalCategoryCode, String MedicalCategoryName);
+	List<MasMedicalCategory> validateMedicalCategoryUpdate(Long MedicalCategoryCode, String MedicalCategoryName);
+	String addMedicalCategory(MasMedicalCategory masMedicalCategory);
+	String updateMedicalCategoryDetails(Long medicalCategoryId, Long medicalCategoryCode, String medicalCategoryName);
+	MasMedicalCategory checkMedicalCategory(Long medicalCategoryCode);
+	String updateMedicalCategoryStatus(Long medicalCategoryId, Long medicalCategoryCode, String status);
+	
+	/********************************MAS Blood Group*********************************************************/
+	Map<String, List<MasBloodGroup>> getAllBloodGroup(JSONObject jsonObject);
+	List<MasBloodGroup> validateBloodGroup(String BloodGroupCode, String BloodGroupName);
+	List<MasBloodGroup> validateBloodGroupUpdate(String BloodGroupCode, String BloodGroupName);
+	String addBloodGroup(MasBloodGroup masBloodGroup);
+	String updateBloodGroupDetails(Long bloodGroupId, String bloodGroupCode, String bloodGroupName);
+	MasBloodGroup checkBloodGroup(String bloodGroupCode);
+	String updateBloodGroupStatus(Long bloodGroupId, String bloodGroupCode, String status);
+
+	/********************************MAS Sample*********************************************************/
+	Map<String, List<MasSample>> getAllSample(JSONObject jsonObject);
+	List<MasSample> validateSample(String sampleCode, String sampleDescription);
+	List<MasSample> validateSampleUpdate(String sampleCode, String sampleDescription);
+	String addSample(MasSample masSample);
+	String updateSampleDetails(Long sampleId, String sampleCode, String sampleDescription);
+	MasSample checkSample(String sampleyCode);
+	String updateSampleStatus(Long sampleId, String sampleCode, String status);
+	
+	/********************************MAS UOM*********************************************************/
+	Map<String, List<MasUOM>> getAllUOM(JSONObject jsonObject);
+	List<MasUOM> validateUOM(String UOMCode, String UOMName);
+	List<MasUOM> validateUOMUpdate(String UOMCode, String UOMName);
+	String addUOM(MasUOM masUOM);
+	String updateUOMDetails(Long UOMId, String UOMCode, String UOMName);
+	MasUOM checkUOM(String UOMCode);
+	String updateUOMStatus(Long UOMId, String UOMCode, String status);
+	
+	/********************************MAS Item Unit*********************************************************/
+	Map<String, List<MasStoreUnit>> getAllItemUnit(JSONObject jsonObject);
+	List<MasStoreUnit> validateItemUnit(String storeUnitName);
+	List<MasStoreUnit> validateItemUnitUpdate(String storeUnitName);
+	String addItemUnit(MasStoreUnit masStoreUnit);
+	String updateItemUnitDetails(Long storeUnitId, String storeUnitName);
+	MasStoreUnit checkItemUnit(String storeUnitName);
+	String updateItemUnitStatus(Long storeUnitId, String storeUnitName ,String status);
+	
+	/********************************Users*********************************************************/
+	List<Users> validateUsers(String loginName, String firstName);
+	List<Users> validateUsersUpdate(String loginName, Long hospitalId);
+	String addUsers(Users users);
+	Users checkUsers(String  loginName);
+	Map<String, List<Users>> getAllUsers(JSONObject jsonObj);
+	List<Users> getUsers(String loginName);	
+	String updateUsers(Long userId,String loginName,String firstName, Long hospitalId);
+	String updateUsersStatus(Long userId,String loginName,String status);
+	List<MasHospital> getHospitalList();
+	
+	/********************************MainChargecode*********************************************************/
+	List<MasMainChargecode> validateMainChargecode(String mainChargecodeCode, String mainChargecodeName);
+	List<MasMainChargecode> validateMainChargecodeUpdate(String mainChargecodeCode, String mainChargecodeName);
+	String addMainChargecode(MasMainChargecode mainChargecode);
+	MasMainChargecode checkMainChargecode(String  mainChargecodeCode);
+	Map<String, List<MasMainChargecode>> getAllMainChargecode(JSONObject jsonObj);
+	List<MasMainChargecode> getMainChargecode(String mainChargecodeCode);	
+	String updateMainChargecode(Long mainChargecodeId,String mainChargecodeCode,String mainChargecodeName, Long departmentId);
+	String updateMainChargecodeStatus(Long mainChargecodeId,String mainChargecodeCode,String status);
+	List<MasDepartment> getDepartmentsList();
+	
+	/********************************MAS ROLE*********************************************************/
+	Map<String, List<MasRole>> getAllRole(JSONObject jsonObject);
+	List<MasRole> validateRole(String roleCode, String roleName);
+	List<MasRole> validateRoleUpdate(String roleCode, String roleName);
+	String addRole(MasRole masRole);
+	String updateRoleDetails(Long roleId, String roleCode, String roleName);
+	MasRole checkRole(String roleCode);
+	String updateRoleStatus(Long roleId, String roleCode, String status);
+	
+	/********************************Range***************************************************************/
+	List<MasRange> validateRange(Long fromRange, Long toRange, String rangeFlag);
+	String addRange(MasRange range);
+	Map<String, List<MasRange>> getAllRange(JSONObject jsonObj);
+	MasRange checkRange(Long fromRange);
+	String updateRange(Long rangeId,Long fromRange, Long toRange);
+	String updateRangeStatus(Long rangeId,Long fromRange,String status); 
+	List<MasAdministrativeSex> getGenderList(); 
+	List<MasRange> getMasRange();
+	
+}

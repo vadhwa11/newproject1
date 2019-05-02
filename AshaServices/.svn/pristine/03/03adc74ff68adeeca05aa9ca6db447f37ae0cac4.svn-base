@@ -1,0 +1,59 @@
+package com.icg.jkt.entity;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+
+/**
+ * The persistent class for the TEMP_HIERARCHY database table.
+ * 
+ */
+@Entity
+@Table(name="TEMP_HIERARCHY")
+public class TempHierarchy implements Serializable {
+	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3253609914766418117L;
+	@Id
+	@Column(name="ID")
+	private long id;
+	
+	@Column(name="CODE")
+	private String code;
+	
+	
+	
+	@Column(name="NAME")
+	private String name;
+
+	public TempHierarchy() {
+	}
+
+	public String getCode() {
+		return this.code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public long getId() {
+		return this.id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+}

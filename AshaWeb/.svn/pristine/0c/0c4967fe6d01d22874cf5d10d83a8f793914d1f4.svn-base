@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Generate_MI_Appointment_Report1_report_1"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="DEPARTMENT_ID" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FROM_DATE" isForPrompting="true" class="java.util.Date">
+		<defaultValueExpression ><![CDATA[new Date(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="TO_DATE" isForPrompting="true" class="java.util.Date">
+		<defaultValueExpression ><![CDATA[new Date(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="DISPOSAL1_ID" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ICD_ID" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT * FROM
+(        
+SELECT   $P{FROM_DATE}  FROMDATE,  $P{TO_DATE}  TODATE ,MAT.APPOINTMENT_TYPE_NAME ,
+        (CASE WHEN 0=$P{DISPOSAL1_ID}  THEN ''  ELSE 'DISPOSAL TYPE: ' || MDL.DISPOSAL_NAME || '   ' END ) ||
+        (CASE WHEN 0=$P{DEPARTMENT_ID}  THEN ''  ELSE 'DEPARTMENT NAME: ' || MD.DEPARTMENT_NAME || '   '  END ) ||
+        (CASE WHEN 0=$P{ICD_ID}  THEN ''  ELSE 'DIAGONOSYS NAME: ' ||ICD.ICD_NAME || '   '  END ) LevelHeading  
+FROM    VISIT VT
+        LEFT OUTER JOIN MAS_APPOINTMENT_TYPE MAT on MAT.APPOINTMENT_TYPE_ID=VT.APPOINTMENT_TYPE_ID
+        LEFT OUTER JOIN OPD_PATIENT_DETAILS OPD on OPD.VISIT_ID=VT.VISIT_ID
+        LEFT OUTER JOIN MAS_DEPARTMENT MD on MD.DEPARTMENT_ID=VT.DEPARTMENT_ID 
+        LEFT OUTER JOIN MAS_DISPOSAL MDL on MDL.DISPOSAL_ID=opd.DISPOSAL1_ID
+        LEFT OUTER JOIN DISCHARGE_ICD_CODE DIC on DIC.VISIT_ID=VT.VISIT_ID 
+        LEFT OUTER JOIN MAS_ICD ICD on ICD.ICD_ID=DIC.ICD_ID 
+WHERE   VT.VISIT_DATE BETWEEN $P{FROM_DATE} AND $P{TO_DATE} AND  
+        (OPD.DISPOSAL1_ID=$P{DISPOSAL1_ID} OR 0 =$P{DISPOSAL1_ID}) AND
+        (VT.DEPARTMENT_ID=$P{DEPARTMENT_ID} OR 0 = $P{DEPARTMENT_ID}) AND
+        (DIC.ICD_ID=$P{ICD_ID} OR 0=$P{ICD_ID})    
+)
+PIVOT
+(
+   count(APPOINTMENT_TYPE_NAME) for  APPOINTMENT_TYPE_NAME IN('OPD','ME','MB')  
+)]]></queryString>
+
+	<field name="FROMDATE" class="java.util.Date"/>
+	<field name="TODATE" class="java.util.Date"/>
+	<field name="LEVELHEADING" class="java.lang.String"/>
+	<field name="'OPD'" class="java.math.BigDecimal"/>
+	<field name="'ME'" class="java.math.BigDecimal"/>
+	<field name="'MB'" class="java.math.BigDecimal"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="25"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="164"
+						y="2"
+						width="216"
+						height="21"
+						key="staticText-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<text><![CDATA[GENERATE MI APPOINTMENT REPORT]]></text>
+				</staticText>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="22"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1"
+						y="2"
+						width="534"
+						height="18"
+						key="textField"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{LEVELHEADING}]]></textFieldExpression>
+				</textField>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="25"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="11"
+						y="5"
+						width="63"
+						height="17"
+						key="staticText-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[From Date]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="123"
+						y="5"
+						width="50"
+						height="17"
+						key="staticText-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[To Date]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="2"
+						width="535"
+						height="0"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="24"
+						width="535"
+						height="0"
+						key="line-3"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="3"
+						width="1"
+						height="21"
+						key="line-4"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="534"
+						y="3"
+						width="1"
+						height="19"
+						key="line-5"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="319"
+						y="3"
+						width="1"
+						height="21"
+						key="line-6"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="435"
+						y="3"
+						width="1"
+						height="21"
+						key="line-7"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="236"
+						y="5"
+						width="64"
+						height="17"
+						key="staticText-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[No. of OPD ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="344"
+						y="5"
+						width="55"
+						height="17"
+						key="staticText-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[No. of ME]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="456"
+						y="5"
+						width="66"
+						height="17"
+						key="staticText-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[No. of MB]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="100"
+						y="3"
+						width="1"
+						height="21"
+						key="line-12"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="212"
+						y="3"
+						width="1"
+						height="21"
+						key="line-14"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="25"  isSplitAllowed="true" >
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="23"
+						width="535"
+						height="0"
+						key="line-2"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="-4"
+						width="1"
+						height="28"
+						key="line-8"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="534"
+						y="-4"
+						width="1"
+						height="28"
+						key="line-9"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="319"
+						y="-4"
+						width="1"
+						height="28"
+						key="line-10"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="435"
+						y="-4"
+						width="1"
+						height="28"
+						key="line-11"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="true" pattern="###0;(###0)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="357"
+						y="3"
+						width="50"
+						height="18"
+						key="textField"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{'ME'}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="###0;(###0)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="470"
+						y="3"
+						width="38"
+						height="18"
+						key="textField"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{'MB'}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="###0;(###0)" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="251"
+						y="3"
+						width="57"
+						height="18"
+						key="textField"
+						positionType="Float"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{'OPD'}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="13"
+						y="3"
+						width="51"
+						height="17"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{FROMDATE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="124"
+						y="3"
+						width="52"
+						height="17"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{TODATE}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="100"
+						y="-4"
+						width="1"
+						height="28"
+						key="line-13"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="212"
+						y="-4"
+						width="1"
+						height="28"
+						key="line-15"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+		<noData>
+			<band height="30"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="0"
+						y="5"
+						width="535"
+						height="20"
+						key="staticText-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<text><![CDATA[NO DATA FOUND]]></text>
+				</staticText>
+			</band>
+		</noData>
+</jasperReport>

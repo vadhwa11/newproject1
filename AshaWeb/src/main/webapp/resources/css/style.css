@@ -3036,7 +3036,7 @@ header {
 /* Form components */
 
 label {
-    font-size: 14px;
+    font-size: 12px;
     color: #313a46;
     letter-spacing: 0.01em;
     font-family: "Montserrat", sans-serif;
@@ -3392,7 +3392,7 @@ select[size] option {
 .table > tfoot > tr > th,
 .table > thead > tr > td,
 .table > thead > tr > th {
-    padding: 12px 7px;
+    padding: 5px 7px;vertical-align: middle;
 }
 
 .table-condensed > tbody > tr > td,
@@ -4857,7 +4857,7 @@ File: Responsive
 /*# sourceMappingURL=app.css.map */
 
 .inner_md_htext {
-    font-size: 16px;
+    font-size: 12px;
 }
 
 #div1 {
@@ -5035,10 +5035,6 @@ File: Responsive
     font-weight: 600;
 }
 
-.form-control {
-    height: 26px;
-    font-size: 12px;
-}
 
 .col-form-label {
     font-size: 12px;
@@ -5110,8 +5106,10 @@ File: Responsive
 
 
 select.listBig {
-    width: 312px;
-    height: 80px;
+           width: 299px;
+    height: 68px;
+    border: 1px solid #dee2e6;
+    border-radius: 2px;
 }
 
 select {
@@ -5204,8 +5202,8 @@ input[type='button'], input[type='submit'], input[type='reset'], input.button {
 }
 
 .Block label {
-    background: #ebe7e7;
-    font: bold 12px/ 30px Arial, tahoma;
+   /*  background: #ebe7e7; */
+    font: bold 12px/ 24px Arial, tahoma;
     color: #000000;
     text-align: left;
     padding: 0px 5px;
@@ -5221,8 +5219,8 @@ input[type='button'], input[type='submit'], input[type='reset'], input.button {
     margin: 0px auto;
 }
 .Block1 label {
-        background: #ebe7e7;
-    box-shadow: 2px 2px 0 #ccc;
+       /*  background: #ebe7e7; */
+   /*  box-shadow: 2px 2px 0 #ccc; */
     font: bold 12px/ 22px Arial, tahoma;
     color: #000000;
     width: 145px;
@@ -5308,11 +5306,12 @@ select {
  
  
  .service_htext{
-       color: #ffffff;
-    font-size: 14px;
+         color: #0d0d0d;
+    font-size: 13px;
     padding: 3px;
     width: 100%;
-    background: #9f9f9f;
+    background: #c5c4c4;
+    font-weight: 600;
 }
 
 
@@ -5325,11 +5324,12 @@ select {
     
     
     table td input[type="text"], .Block table td input[type="text"], .cmntable table td input[type="text"] {
-    border: 1px inset #A4A7AB;
+    
     color: #333333;
     font: normal 12px arial;
-    width: auto;
-    height: 22px;
+   
+    width: 100%;
+    height: 27px;
     margin: 0px 2px 0px 0px;
     float: left;
     background: #ffffff;}
@@ -5347,7 +5347,8 @@ select {
  */
 
 
-.autocomplete{position:relative}
+.autocomplete{position:relative;
+/* padding-left: 10px; */}
 
 
 
@@ -5355,17 +5356,147 @@ select {
     background: #DAE0E5;
     color: #000000;
     font: normal 11px verdana;
-    border: 1px solid #A4A7AB;
+    border: 2px solid #A4A7AB;
     height: auto;
     z-index: 1;
     position: absolute;
     top: 22px;
     height: 180px;
     overflow-y: scroll;
+    cursor:pointer;
 }
 
 div#chargeCodeNameautocomplete-list>div {
     padding: 5px;
 }
 
-.assign_app_input{width:300px;}
+.create_regis_htext{    color: #171616;
+    font-weight: 500;
+    font-size: 18px;
+}
+.btn-left-all{float:left;}
+.btn-right-all{float:right;}
+
+
+ 
+.accordion1 {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+ /*  padding: 18px; */padding: 4px 10px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 12px;
+  transition: 0.4s;margin-bottom: 3px;
+}
+
+.activeIn, .accordion1:hover {
+  background-color: #ccc;
+}
+
+.accordion1:after {
+  content: '\002B';
+  color: #777;
+  font-weight: bold;
+  float: right;
+  margin-left: 5px;
+}
+
+.activeIn:after {
+  content: "\2212";
+}
+
+.panel {
+  padding: 0 18px;
+  background-color: white;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+ 
+ .panel .row {margin-top:5px;margin-bottom:5px;}
+
+/* 
+.default_open_collapse{max-height:176px;} */
+
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: #ffffff;
+    background-color: #6c757d;
+    border: 1px solid #f3f3f3;
+}
+
+.nav-link {
+    display: block;
+    padding: 5px 16px;
+}
+.expendable_add_del_area{ 
+ height: auto; 
+    /* overflow-x: scroll; */
+/*         overflow-x: hidden;
+    overflow-y: scroll;
+    
+ */    }
+    
+    
+    
+    
+    .clearfix{
+   
+  clear: both;
+  
+}
+ 
+    
+    .adviceDivMain {
+        width: 100%;
+    float: left;
+    background: #c5c4c4;
+    cursor: pointer;
+    margin: 2px 0px;
+    padding: 1px 2px;
+}
+
+input.buttonPlusMinus {
+    height: 19px;
+    width: 18px;
+    float: right;
+    margin: 0px;
+    padding: 0px;
+    font-size: 16px;
+    color: #fdfdfd;
+    background: #b9b9b9;
+}
+
+.hisDivHide{display:none;float:left;border: 1px solid #e7e6e6;
+    padding: 4px;width:100%;}
+
+
+  .form-control:disabled, .form-control[readonly] {
+    /* background-color: #e9ecef; */
+    opacity: 1;
+}
+
+
+
+.border_none{
+	border: none !important;
+    margin-bottom: auto;
+}
+
+.titleBg > span{font-size: 12px;
+    font-weight: 600;}
+    
+    
+    .form-control {
+    height: 28px;
+    font-size: 12px;margin-left: 2px;
+}
+
+.table-bordered {
+    border: 2px solid #595959 !important;
+}
+
+    

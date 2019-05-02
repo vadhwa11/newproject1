@@ -1,0 +1,180 @@
+<%@page import="java.util.*"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="java.util.Map"%>
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+<%@ page import="static com.asha.icgweb.utils.RequestConstants.*"%>
+<%@ page import="com.asha.icgweb.utils.HMSUtil"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<script type="text/javascript" src="../resources/js/jquery.js"></script>
+<script type="text/javascript" src="../../resources/js/jquery.min.js"></script>
+<script type="text/javascript" src="../../resources/js/jquery.common.js"></script>
+<script type="text/javascript" src="../../resources/js/common.js"></script>
+<script type="text/javascript" src="../../resources/js/ajax.js"></script>
+<script type="text/javascript" src="../../resources/js/pops_global.js"></script>
+<script type="text/javascript" src="../../resources/js/pops_menu.js"></script>
+<script type="text/javascript" language="javascript"
+	src="../resources/js/controls.js?n=1"></script>
+<script type="text/javascript" src="../resources/js/hms.js"></script>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../../resources/assets/css/bootstrap.min.css"	rel="stylesheet" />
+<link href="../../resources/assets/css/animate.min.css" rel="stylesheet" />
+<link	href="../../resources/assets/css/paper-dashboard.css"	rel="stylesheet" />
+<link	href="../../resources/assets/css/demo.css"	rel="stylesheet" />
+<link	href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css"	rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
+<link href="../../resources/assets/css/themify-icons.css" rel="stylesheet">
+<title>Procedure Details</title>
+</head>
+<script type="text/javascript" language="javascript">
+<%	String hospitalId = "1";
+%>
+
+var $j = jQuery.noConflict();
+var total_required_procedure = 0;
+var total_given_procedure = 0;
+$j(document).ready(function()
+		{
+		var data = ${data};
+		total_required_procedure = data.detailInfo.no_of_days * data.detailInfo.feq;
+		$j('#procedure_name').val(data.detailInfo.procedure_name);
+		$j('#frequency').val(data.detailInfo.frequency);
+		$j('#no_of_days').val(data.detailInfo.no_of_days);
+		
+		var table_data = data.detailList;
+		var html = '';
+		var html2 = '';
+		for(var i=0;i<table_data.length;i++){
+			
+			var action = table_data[i].status;
+			var status = '';
+			if(action == 'Y'){
+				status = 'Completed';
+				total_given_procedure++;
+			}else{
+				status = 'Not Completed';
+				html2 += '<tr>';
+				html2 += '<td><div><input class="form-control" type="text" value="'+table_data[i].appointment_date+'" readonly></div></td>';
+				html2 += '<td><div><input  id="procedure_date" type="date" value="'+table_data[i].procedure_date+'"></div></td>';
+				html2 += '<td><div><input  id="nursing_remarks" type="text" value="'+table_data[i].nursing_remarks+'"></div></td>';
+				html2 += '<td><div><input class="form-control" type="text" value="'+status+'" readonly></div></td>';
+				if(status != 'Completed'){
+					html2 += '<td><div><button type="button" class="btn btn-success"	style="margin-top: 30px" value="'+table_data[i].id+'" onclick="saveProcedureDetail(this.value)">Save</button></div></td>';
+				}
+				html2 += '</tr>';
+			}
+			if(action == 'Y'){
+				html += '<tr>';
+				html += '<td><div><input class="form-control" type="text" value="'+table_data[i].appointment_date+'" readonly></div></td>';
+				html += '<td><div><input class="form-control" type="text" value="'+table_data[i].procedure_date+'" readonly></div></td>';
+				html += '<td><div><input class="form-control" type="text" value="'+table_data[i].nursing_remarks+'" readonly></div></td>';
+				html += '<td><div><input class="form-control" type="text" value="'+status+'" readonly></div></td>';
+				html += '<td></td>';
+				html += '</tr>';
+			}
+		}
+		$j('#tblListofNursing').append(html);
+		$j('#tblListofNursing').append(html2);
+
+		});
+		
+	function saveProcedureDetail(id){
+		
+		//alert("total_required_procedure "+total_required_procedure);
+		//alert("total_given_procedure "+total_given_procedure);
+		var procedure_date = $j('#procedure_date').val();
+		/* alert("procedure_date "+procedure_date);
+		return; */
+		var nursing_remarks = $j('#nursing_remarks').val();
+		var app_date = $j('#appointment_date').val();
+		var current_date = new Date();
+		if(procedure_date == '' || procedure_date == undefined){
+			alert("Procedure Date must be selecteed");
+			return;
+		}
+		if(nursing_remarks == '' || nursing_remarks == undefined){
+			alert("Nursing Remarks must be entered");
+			return;
+		}
+		if(total_given_procedure < (total_required_procedure-1)){
+			if(app_date == '' && app_date == undefined){
+				alert("Please select next appointment date");
+				return;
+			}
+		}
+		var d1 = Date.parse(app_date);
+		var d2 = new Date();
+		if (d1 < d2) {
+		    alert ("Next appointment date can not be scheduled for past dates");
+		    return;
+		}
+		 
+		
+	}
+</script>		
+		
+<body>
+	<div class="container">
+		<form>
+			<div class="form-row">
+				<div class="form-group col-md-4">
+					<label for="staticEmail" class="col-sm-2 col-form-label">Procedure Name</label>
+					<div class="col-sm-10">
+						<input type="text" id="procedure_name" name="procedure_name">
+					</div>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-4">
+					<label for="staticEmail" class="col-sm-2 col-form-label">Frequency</label>
+					<div class="col-sm-10">
+						<input type="text" id="frequency" name="frequency">
+					</div>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-4">
+					<label for="staticEmail" class="col-sm-2 col-form-label">No.Of Days</label>
+					<div class="col-sm-10">
+						<input type="text" id="no_of_days" name="no_of_days">
+					</div>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-4">
+					<label for="staticEmail" class="col-sm-2 col-form-label">OP Remarks</label>
+					<div class="col-sm-10">
+						<input type="text" id="op_remarks" name="op_remarks">
+					</div>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-4">
+					<label for="staticEmail" class="col-sm-2 col-form-label">Appointment Date</label>
+					<div class="col-sm-10">
+						<input type="date" id="appointment_date" name="op_remarks">
+					</div>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="tablediv">
+				<table class="table table-bordered ">
+					<tr>
+						<th>Appointment Date</th>
+						<th>Procedure Date/Time</th>
+						<th>Nursing Remarks</th>
+						<th>Action</th>
+					</tr>
+					<tbody id="tblListofNursing">
+						
+					</tbody>
+				</table>
+			</div>
+		</div>
+		</form>
+		</div>
+</body>
+</html>

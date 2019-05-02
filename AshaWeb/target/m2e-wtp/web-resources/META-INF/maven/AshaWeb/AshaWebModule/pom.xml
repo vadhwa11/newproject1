@@ -208,8 +208,16 @@
     <version>1.3.0</version>
 </dependency>
         
-        
+ <!-- Added By Kaushal Mishra -->
+<!-- https://mvnrepository.com/artifact/org.eclipse.birt.runtime/viewservlets -->
+<dependency>
+    <groupId>org.eclipse.birt.runtime</groupId>
+    <artifactId>viewservlets</artifactId>
+    <version>4.4.1</version>
+</dependency>
+
  
+ <!-- Ended --> 
   </dependencies>
   
   <repositories>

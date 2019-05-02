@@ -1,5 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page import="javax.servlet.http.HttpSessionListener"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="java.util.Calendar"%>
+
 <%@include file="..//view/leftMenu.jsp"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,6 +22,30 @@
     <script src="${pageContext.request.contextPath}/resources/js/canvasjs.min.js"></script>
 	<%@include file="..//view/commonJavaScript.jsp"%>
 </head>
+
+<%
+int hospitalId=0;
+if(session.getAttribute("hospital_id")!=null)
+{
+hospitalId =(Integer)session.getAttribute("hospital_id"); 
+}
+
+int userId=0;
+if(session.getAttribute("user_id")!=null)
+{
+	userId =(Integer)session.getAttribute("user_id"); 
+}
+
+SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); 
+
+Calendar c = Calendar.getInstance(); 
+Date currentDate1 = c.getTime();
+String currentDate=formatter.format(currentDate1); 
+
+c.set(Calendar.DATE, 01);
+Date startDate1 = c.getTime();
+String startDate=formatter.format(startDate1); 
+%>
 
 <body>
 
@@ -145,168 +173,71 @@
                     </div>
                     <!-- end row -->
 
-                    <div class="row">
-                        
+                    <div class="row dashboard_graph">
+                      
+							
 
-                        <div class="col-xl-12 col-sm-12">
-                            <div class="portlet">
-                                <div id="portlet1" class="panel-collapse collapse show">
-                                    <div class="portlet-body">
-                                        <script>
-                                            window.onload = function() {
-											
-											CanvasJS.addColorSet("greenShades",
-															[//colorSet Array
 
-															"#fd5621",
-															"#7441bc",
-															"#2095f2",
-															"#01957e",
-															"#90EE90"                
-															]);
+<!-- <div class="row">
 
-                                                var chart = new CanvasJS.Chart("chartContainer", {
-												 colorSet: "greenShades",
-                                                    animationEnabled: true,
-													dataPointWidth: 20,
-                                                    title: {
-                                                        text: "Generate Report for OPD Statistics (District Wise)"
-                                                    },
-                                                    axisY: {
-                                                        title: "No. of Patient",
-                                                        titleFontColor: "#4F81BC",
-                                                        lineColor: "#4F81BC",
-                                                        labelFontColor: "#4F81BC",
-                                                        tickColor: "#4F81BC"
-                                                    },
-                                                    
-                                                    toolTip: {
-                                                        shared: true
-                                                    },
-                                                    legend: {
-                                                        cursor: "pointer",
-                                                        itemclick: toggleDataSeries
-                                                    },
-                                                    data: [{
-                                                        type: "column",
-                                                        name: "OPD",
-                                                        legendText: "OPD",
-                                                        showInLegend: true,
-                                                        dataPoints: [{
-                                                                label: "C1",
-                                                                y: 266.21
-                                                            }, {
-                                                                label: "C2",
-                                                                y: 202.25
-                                                            }, {
-                                                                label: "C3",
-                                                                y: 187.20
-                                                            }, {
-                                                                label: "C4",
-                                                                y: 148.77
-                                                            },
+<div class="col-md-8"></div>
 
-                                                        ]
-                                                    }, {
-                                                        type: "column",
-                                                        name: "Referral",
-                                                        legendText: "Referral",
-                                                        axisYType: "secondary",
-                                                        showInLegend: true,
-                                                        dataPoints: [{
-                                                                label: "C1",
-                                                                y: 111.46
-                                                            }, {
-                                                                label: "C2",
-                                                                y: 90.27
-                                                            }, {
-                                                                label: "C3",
-                                                                y: 38.99
-                                                            }, {
-                                                                label: "C4",
-                                                                y: 89.45
-                                                            },
+<div class="col-md-4">
+<div class="form-group row">
+<label class="col-sm-4 col-form-label">Gender</label>
+<div class="col-sm-6">
 
-                                                        ]
-                                                    }, {
-                                                        type: "column",
-                                                        name: "Referral",
-                                                        legendText: "Referral",
-                                                        axisYType: "secondary",
-                                                        showInLegend: true,
-                                                        dataPoints: [{
-                                                                label: "C1",
-                                                                y: 60.46
-                                                            }, {
-                                                                label: "C2",
-                                                                y: 45.27
-                                                            }, {
-                                                                label: "C3",
-                                                                y: 30.99
-                                                            }, {
-                                                                label: "C4",
-                                                                y: 15.45
-                                                            },
+</div>
+</div>
+</div>
+</div> -->
 
-                                                        ]
-                                                    }, 							 
-													
-													
-													{
-                                                        type: "column",
-                                                        name: "Other",
-                                                        legendText: "Other",
-                                                        axisYType: "secondary",
-                                                        showInLegend: true,
-                                                        dataPoints: [{
-                                                                label: "C1",
-                                                                y: 110.46
-                                                            }, {
-                                                                label: "C2",
-                                                                y:92.27
-                                                            }, {
-                                                                label: "C3",
-                                                                y: 30.99
-                                                            }, {
-                                                                label: "C4",
-                                                                y: 64.45
-                                                            },
-															
-															
-															
-															
-															
-															
 
-                                                        ]
-                                                    }]
-                                                });
-                                                chart.render();
+<div class="col-md-12">
+			<div class="row">
+			<div class="col-md-4">
+						  <div class="form-group row">
+						          <label class="col-md-5">From Date</label>		  
+								  <div class="col-md-6">
+											<input  type="text" name="fromDate" id="fromDate" value="<%=currentDate%>" class="form-control">
+										 
+								</div>
+						 </div>
+				  </div>  
+				  <div class="col-md-4">
+						  <div class="form-group row">
+						          <label class="col-md-4">To Date</label>		  
+								  <div class="col-md-6">
+										 <input  type="text" name="toDate" id="toDate" value="<%=startDate%>" class="form-control" >
+								</div>
+						 </div>
+				  </div>
+				   
+			  
+				  <div class="col-md-4">
+						  <div class="form-group row">
+						          <label class="col-md-4">Unit / Location</label>		  
+								  <div class="col-md-6">
+											<select class="form-control" id="unitId" name="unitId" onchange="birtReportOpen()">
+											</select>
+								</div>
+						 </div>
+				  </div>  
+			</div>										
 
-                                                function toggleDataSeries(e) {
-                                                    if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-                                                        e.dataSeries.visible = false;
-                                                    } else {
-                                                        e.dataSeries.visible = true;
-                                                    }
-                                                    chart.render();
-                                                }
+</div>
+								  
 
-                                            }
-                                        </script>
-
-                                        <div id="chartContainer" style="height: 370px; max-width: 920px; margin: 0px auto;"></div>
-                                       
-
-                                    </div>
-                                </div>
-
-                            </div>
-                            <!-- /Portlet -->
-
-                        </div>
-											
-						</div>
+			                      
+			                     
+			                      <div  style="height:20px;width:100%;border:none;"> </div>
+			                      
+			                      <div class="col-md-2"></div>
+			                      <div class="col-md-8">
+			                      		<div id="graphDiv"></div> 
+			                      </div>
+			                      <div class="col-md-2"></div> 
+			</div>
 						
 						 
                     <!-- End row -->
@@ -319,6 +250,111 @@
 
             </div>
             <!-- content -->
+            <script type="text/javascript">
+										window.onload = function()
+										{
+										executeDbProcedure();
+										
+										
+										}
+										
+									/* Execute Db Procedure */
+										
+										function executeDbProcedure()
+										{
+										
+									
+											var hospitalId=<%=hospitalId%>;
+											var userId=<%=userId%>;
+											var params = {
+													"hospitalId":hospitalId,
+													"userId":userId
+								
+											}
+											$j.ajax({
+												type : "POST",
+												contentType : "application/json",
+												url : '${pageContext.request.contextPath}/v0.1/dashboard/executeDbProcedure',
+												data : JSON.stringify(params),
+												dataType : "json",
+												cache : false,
+												success : function(response) {
+													console.log(response)
+													
+													alert(response)
+													if (response.status == '1') {
+														birtReportOpen();
+													}
+													var unitValues="";
+													 var respData = response.data 
+													 for(count in respData){
+														 unitValues += '<option value='+respData[count].hospitalId+'>'
+																		+ respData[count].name
+																		+ '</option>';
+													 }
+													 $j('#unitId').append(unitValues); 
+												  	
+														
+												},
+												error : function(msg) {
+													alert("An error has occurred while contacting the server");
+												}
+											});
+										}
+										
+											 
+											
+										
+									/* Ended	 */
+										
+							function birtReportOpen()
+							{
+								 // var $j = jQuery.noConflict();
+								  var fromDate=document.getElementById('fromDate').value;
+								  var toDate=document.getElementById('toDate').value; 
+								  var hospitalId=0;
+								  var sHospitalId=<%=hospitalId%>;
+								  if(document.getElementById('unitId').value){
+								  hospitalId=document.getElementById('unitId').value;
+								  if(hospitalId==sHospitalId)
+									  var hospitalId=0;  
+								  }
+								  
+								  var pathname = window.location.pathname;
+							      var accessGroup = pathname.split("/")[1];
+							
+							      var url = window.location.protocol + "//" + window.location.host + "/" + accessGroup + "/v0.1/dashboard/openBirtReport"; 
+								  
+								 $j("#graphDiv").empty();
+								  
+							        $j.ajax(
+							        {
+							            
+							             type: "POST",
+							             contentType: "application/json",
+							           	 url:url,
+							             data: JSON.stringify({"fileName":"hospitalwise_opd_statistics","hospitalId":hospitalId,"fromDate":fromDate,"toDate":toDate}),
+							             dataType: "html",
+							            beforeSend : function()
+							            {
+							             
+							            },
+							            success : function(data)
+							            {
+							            	
+							                var dom = $j.parseHTML(data);
+							               
+							                $j("#graphDiv").append(dom);
+							                
+							              
+							            }
+							        });
+								  }
+							</script>     
+            
+            
+            
+            
 
             <footer class="footer">
                 Dashboard
