@@ -1,0 +1,443 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page import="javax.servlet.http.HttpSessionListener"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="java.util.Calendar"%>
+<%@ page import="com.asha.icgweb.utils.HMSUtil"%>
+
+
+<%@include file="..//view/leftMenu.jsp"%>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Coast Guard</title>
+    <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+    <meta content="Coderthemes" name="author" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- App favicon -->
+    <link rel="icon" type="images/favicon-32x32.png" sizes="32x32" href="${pageContext.request.contextPath}/resources/images/favicon.ico">
+   
+    <script src="${pageContext.request.contextPath}/resources/js/canvasjs.min.js"></script>
+	<%@include file="..//view/commonJavaScript.jsp"%>
+</head>
+
+<%
+int hospitalId=0;
+if(session.getAttribute("hospital_id")!=null)
+{
+hospitalId =(Integer)session.getAttribute("hospital_id"); 
+}
+
+int userId=0;
+if(session.getAttribute("user_id")!=null)
+{
+	userId =(Integer)session.getAttribute("user_id"); 
+}
+
+SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); 
+
+Calendar c = Calendar.getInstance(); 
+Date currentDate1 = c.getTime();
+String currentDate=formatter.format(currentDate1); 
+
+c.set(Calendar.DATE, 01);
+Date startDate1 = c.getTime();
+String startDate=formatter.format(startDate1); 
+%>
+
+<body>
+
+    <!-- Begin page -->
+    <div id="wrapper">
+
+        <!-- Top Bar Start -->
+        <div class="topbar">
+
+            <!-- LOGO -->
+            <div class="topbar-left">
+                <a href="index.html" class="logo">
+                    <span>
+                        <img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="" height="100%">
+                    </span>
+                </a>
+            </div>
+
+            <nav class="navbar-custom">
+               
+
+                <ul class="list-inline menu-left mb-0">
+                    <li class="float-left">
+                        <button class="button-menu-mobile open-left waves-light waves-effect">
+                            <i class="mdi mdi-menu"></i>
+                        </button>
+                    </li>
+                    
+                </ul>
+
+            </nav>
+
+        </div>
+        
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <div class="content-page">
+            <!-- Start content -->
+            <div class="">
+                <div class="container-fluid">
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <h4 class="page-title float-left"></h4>
+
+                                <ol class="breadcrumb float-right">
+                                    <li class="breadcrumb-item active"></li>
+                                   
+                                </ol>
+
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end row -->
+
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6">
+                            <div class="widget-panel widget-style-2 bg-pink">
+                                <i class="ion-md-eye"></i>
+                                <h2 class="m-0 text-white" data-plugin="counterup"><span id="opdspan">0</span></h2>
+                                <div>Today OPD</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="widget-panel widget-style-2 bg-purple">
+                                <i class="ion-md-paper-plane"></i>
+                                <h2 class="m-0 text-white" data-plugin="counterup"><span id="attcspan">0</span></h2>
+                                <div>Today Att'c</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="widget-panel widget-style-2 bg-info">
+                                <i class="ion-ios-pricetag"></i>
+                                <h2 class="m-0 text-white" data-plugin="counterup"><span id="mespan">0</span></h2>
+                                <div>Today Medical Exam</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="widget-panel widget-style-2 bg-primary">
+                                <i class="ion-md-contacts"></i>
+                                <h2 class="m-0 text-white" data-plugin="counterup"><span id="mbspan">0</span></h2>
+                                <div>Today Medical Board</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end row -->
+
+                    <div class="row dashboard_graph">
+                      
+							
+
+
+
+
+
+<div class="col-md-12">
+			<div class="row">
+			<div class="col-md-4">
+						  <div class="form-group row">
+						          <label class="col-md-5">From Date</label>		  
+								  <div class="col-md-6">
+											<input  class="form-control custom_date" type="text" name="fromDate" id="fromDate" value="<% out.print(startDate);%>">
+										 
+								</div>
+						 </div>
+				  </div>  
+				  <div class="col-md-4">
+						  <div class="form-group row">
+						          <label class="col-md-4">To Date</label>		  
+								  <div class="col-md-6">
+										
+										<input  class="form-control custom_date" type="text" name="toDate" id="toDate" value="<% out.print(startDate);%>">
+								</div>
+						 </div>
+				  </div>
+				   
+			  
+				  <div class="col-md-4">
+						  <div class="form-group row">
+						          <label class="col-md-4">Unit / Location</label>		  
+								  <div class="col-md-6">
+											<select class="form-control" id="unitId" name="unitId" onchange="executeEvent();">
+											</select>
+											
+								</div>
+						 </div>
+				  </div>  
+			</div>										
+
+</div>
+								  
+
+			                      
+			                     
+			                      <div  style="height:20px;width:100%;border:none;"> </div>
+			                      
+			                      <div class="col-md-2"></div>
+			                      <div class="col-md-8">
+			                      		<div id="graphDiv"></div> 
+			                      </div>
+			                      <div class="col-md-2"></div> 
+			</div>
+						
+						 
+                    <!-- End row -->
+
+                    <!-- end row -->
+                    <!-- end row -->
+
+                </div>
+                <!-- container -->
+
+            </div>
+            <!-- content -->
+            <script type="text/javascript">
+            
+            $j(document).ready(function() {
+            	
+            	
+            	
+            });
+            
+										window.onload = function()
+										{
+											executeDbProcedure();														
+										
+										
+										}
+										
+									
+										
+										function executeDbProcedure()
+										{
+										
+									
+											var hospitalId=<%=hospitalId%>;
+											var userId=<%=userId%>;
+											var params = {
+													"hospitalId":hospitalId,
+													"userId":userId
+								
+											}
+											$j.ajax({
+												type : "POST",
+												contentType : "application/json",
+												url : '${pageContext.request.contextPath}/v0.1/dashboard/executeDbProcedure',
+												data : JSON.stringify(params),
+												dataType : "json",
+												cache : false,
+												success : function(response) {
+													console.log(response)
+													
+													
+													if (response.status == '1') {
+														/* alert("successprocedure"); */
+														var unitValues="";
+														 var respData = response.data 
+														 for(count in respData){
+															 unitValues += '<option value='+respData[count].hospitalId+'>'
+																			+ respData[count].name
+																			+ '</option>';
+														 }
+														 $j('#unitId').append(unitValues); 
+														 executeDbProcedureforStatistics();
+														birtReportOpen();
+														
+													}
+													
+												  	
+														
+												},
+												error : function(msg) {
+													alert("An error has occurred while contacting the server");
+												}
+											});
+										}
+										
+											 
+											
+										
+									/* Ended	 */
+										
+							function birtReportOpen()
+							{
+								 // var $j = jQuery.noConflict();
+								  var fromDate=document.getElementById('fromDate').value;
+								  var toDate=document.getElementById('toDate').value; 
+								  
+								  /* alert(fromDate)
+								  alert(toDate) */
+								  var hospitalId=0;
+								  var sHospitalId=<%=hospitalId%>;
+								  if(document.getElementById('unitId').value){
+								  hospitalId=document.getElementById('unitId').value;
+								  if(hospitalId==sHospitalId)
+									  var hospitalId=0;  
+								  }
+								  
+								  var pathname = window.location.pathname;
+							      var accessGroup = pathname.split("/")[1];
+							
+							      var url = window.location.protocol + "//" + window.location.host + "/" + accessGroup + "/v0.1/dashboard/openBirtReport"; 
+								  
+								 $j("#graphDiv").empty();
+								  
+							        $j.ajax(
+							        {
+							            
+							             type: "POST",
+							             contentType: "application/json",
+							           	 url:url,
+							             data: JSON.stringify({"fileName":"hospitalwise_opd_statistics","hospitalId":hospitalId,"fromDate":fromDate,"toDate":toDate}),
+							             dataType: "html",
+							            beforeSend : function()
+							            {
+							             
+							            },
+							            success : function(data)
+							            {
+							            	
+							                var dom = $j.parseHTML(data);
+							               
+							                $j("#graphDiv").append(dom);
+							                
+							              
+							            }
+							        });
+								  }
+									
+							function executeDbProcedureforStatistics()
+							{
+							
+						
+								var hospitalId=<%=hospitalId%>;
+								var userId=<%=userId%>;
+								var combohospitalId=0;
+								//alert(document.getElementById('unitId').value);
+								
+									combohospitalId=document.getElementById('unitId').value;
+									//alert(combohospitalId);
+								
+								var params = {
+										"userhospitalId":hospitalId,
+										"combohospitalId":combohospitalId,
+										"userId":userId
+					
+								}
+								$j.ajax({
+									type : "POST",
+									contentType : "application/json",
+									url : '${pageContext.request.contextPath}/v0.1/dashboard/executeDbProcedureforStatistics',
+									data : JSON.stringify(params),
+									dataType : "json",
+									cache : false,
+									success : function(result) {
+										console.log(result)
+										
+										
+										if (result.status == '1') {
+														
+											if(result.data.opd != undefined)
+												{													
+													$j("#opdspan").html(result.data.opd)
+												}
+											if(result.data.attc != undefined)
+											{
+												$j("#attcspan").html(result.data.attc)
+												
+											}
+											if(result.data.me != undefined)
+											{
+												$j("#mespan").html(result.data.me)
+												
+											}
+											if(result.data.mb != undefined)
+											{
+												$j("#mbspan").html(result.data.mb)
+												
+											}
+											
+											
+										}
+										
+									  	
+											
+										else if(result.status==0)
+								    	{
+								        	
+								        	if(result.msg != undefined)
+								        		{
+									        		alert(result.err_mssg);
+										        	
+								        		}
+								        	if(result.err_mssg != undefined)
+							        		{
+								        		alert(result.err_mssg);
+									        	
+							        		}
+								        	
+								        }
+								    	
+								    	else
+								    	{
+								        	
+								        	if(result.msg != undefined)
+								        		{
+								        		alert(result.msg);
+										        	
+								        		}
+								        	if(result.err_mssg != undefined)
+							        		{
+								        		alert(result.err_mssg);
+									        	
+							        		}
+								        	
+								        }
+								    },
+									error : function(msg) {
+										alert("An error has occurred while contacting the server");
+									}
+								});
+							}
+							
+							
+							
+							function executeEvent()
+							{
+								executeDbProcedureforStatistics();
+								birtReportOpen();
+							}
+							</script>     
+            
+            
+            
+            
+
+            <footer class="footer">
+                
+            </footer>
+
+        </div>
+
+
+    </div>
+    
+
+</body>
+
+</html>

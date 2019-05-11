@@ -1,0 +1,55 @@
+package com.asha.icgweb.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.asha.icgweb.utils.HMSUtil;
+import com.asha.icgweb.utils.RestUtils;
+
+@RequestMapping("/ehr")
+@RestController
+@CrossOrigin
+public class WebEHRController {
+
+	@RequestMapping(value="/patientSummary", method = RequestMethod.GET)
+	public ModelAndView doctorRoaster() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String jsp = "patientSummary";
+		ModelAndView mv =new ModelAndView();
+		mv.setViewName(jsp);
+		return mv;		
+	}
+	
+	@RequestMapping(value = "/patientSummaryDetail", method = RequestMethod.POST)
+	public String patientSummaryDetail(@RequestBody String payload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();		
+		String patientSummary = RestUtils.postWithHeaders("http://192.168.10.59:7003/EHR_GetPatientSummary/ProxyService/GetPatientSummary",requestHeaders, payload);
+		System.out.println("patientSummary "+patientSummary);
+		return patientSummary;    
+		
+	}
+	
+	@RequestMapping(value = "/visitSummary", method = RequestMethod.POST)
+	public String visitSummary(@RequestBody String payload, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();			
+		String visitSummary = RestUtils.postWithHeaders("http://192.168.10.59:7003/EHR_GetVisitSummary/ProxyService/GetVisitSummary",requestHeaders, payload);
+		System.out.println("visit summary "+visitSummary);
+		return visitSummary;
+		
+	}
+	
+}

@@ -1,0 +1,36 @@
+package com.icg.jkt.controller;
+
+import java.util.HashMap;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.icg.jkt.service.EHRService;
+
+@RestController
+@CrossOrigin
+@RequestMapping("/ehr")
+public class EHRController {
+	
+	@Autowired
+	EHRService ehrService;
+	
+	@RequestMapping(value="getPatientSummary", method=RequestMethod.POST, produces="application/json", consumes="application/json")
+	public String getPatientSummary(@RequestBody HashMap<String, Object> map, HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("ehr controller called");
+		return ehrService.getPatientSummary(map,request,response);
+	}
+	
+	@RequestMapping(value="getVisitSummary", method=RequestMethod.POST, produces="application/json", consumes="application/json")
+	public String getVisitSummary(@RequestBody HashMap<String, Object> map, HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("ehr controller called");
+		return ehrService.getVisitSummary(map,request,response);
+	}
+}
