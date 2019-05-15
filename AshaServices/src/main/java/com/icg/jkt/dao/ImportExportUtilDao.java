@@ -1,0 +1,21 @@
+package com.icg.jkt.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.json.JSONObject;
+import org.springframework.stereotype.Repository;
+
+import com.icg.jkt.entity.MasIcd;
+import com.icg.jkt.entity.SyncTable;
+
+@Repository
+public interface ImportExportUtilDao {	
+	
+	List<SyncTable> getExportSyncTableList();
+	String genrateCSV();
+	String importCSV();
+	List<MasIcd> getICDNameSearch(JSONObject jsonObject);
+	Map<String,Object> getImportSyncTableList();
+	
+}

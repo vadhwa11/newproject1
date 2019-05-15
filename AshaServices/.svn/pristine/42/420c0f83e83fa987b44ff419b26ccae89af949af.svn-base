@@ -1,0 +1,261 @@
+package com.icg.jkt.dao.impl;
+
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.AliasToBeanResultTransformer;
+import org.hibernate.transform.Transformers;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+
+import com.icg.jkt.dao.AdminDao;
+import com.icg.jkt.entity.DoctorRoaster;
+import com.icg.jkt.entity.MasAppointmentSession;
+import com.icg.jkt.entity.MasDepartment;
+import com.icg.jkt.entity.MasDoctorMapping;
+import com.icg.jkt.entity.MasEmpanelledHospital;
+import com.icg.jkt.entity.MasEmployee;
+import com.icg.jkt.entity.MasHospital;
+import com.icg.jkt.entity.UserApplication;
+import com.icg.jkt.entity.Users;
+import com.icg.jkt.hibernateutils.GetHibernateUtils;
+import com.icg.jkt.utils.CommonUtil;
+import com.icg.jkt.utils.HMSUtil;
+
+@Repository
+public class AdminDaoImpl implements AdminDao {
+	
+	@Autowired
+	GetHibernateUtils getHibernateUtils;	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<MasDepartment> getDepartmentList(HashMap<String, Object> map) {
+		String hID = (String)map.get("hospitalID");
+		Long hospitalID = Long.parseLong(hID);	
+		long departmentTypeId = Long.parseLong(HMSUtil.getProperties("adt.properties", "DEPARTMENT_TYPE_ID").trim());
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();			
+			//list = session.createSQLQuery("select m.department_name, m.department_id from mas_department m join mas_department_type mt on m.DEPARTMENT_TYPE_ID = mt.DEPARTMENT_TYPE_ID where m.STATUS = 'y'	and mt.DEPARTMENT_TYPE_CODE = 'OPD' order by department_name asc").list();
+			List<MasDepartment> departmentList = session.createCriteria(MasDepartment.class)	
+					.add(Restrictions.eq("status", "Y").ignoreCase())
+					.createAlias("masDepartmentType", "dt")
+					.add(Restrictions.eq("dt.departmentTypeId",departmentTypeId))
+					.addOrder(Order.asc("departmentName"))
+					.list();
+			System.out.println("size is "+departmentList.size());
+		    getHibernateUtils.getHibernateUtlis().CloseConnection();
+		    
+			return departmentList;
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<MasDoctorMapping> getDoctorList(HashMap<String, Object> jsondata) {
+		String deptID = (String) jsondata.get("departmentID");
+		Long dpid = Long.parseLong(deptID);
+		System.out.println("department id is "+dpid);
+		List<MasDoctorMapping> list = new ArrayList<MasDoctorMapping> ();
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		list = session.createCriteria(MasDoctorMapping.class)
+				.createAlias("departmentID", "dt")
+				.add(Restrictions.eq("dt.departmentTypeId", dpid)).list();
+		
+		return list;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, Object> getDoctorRoaster(HashMap<String, Object> map) {
+		System.out.println(map.toString());
+		Map<String, Object> jsonResponse = new HashMap<>();
+		HashMap<String, Object> roasterData = new HashMap<>();
+		String deptId = (String) map.get("departmentID");
+		long hospitalId = Long.parseLong(map.get("hospital_id")+"");
+		long dpid = Long.parseLong(deptId);
+		//SimpleDateFormat formatter = new SimpleDateFormat("yy-MM-dd");
+		SimpleDateFormat formatter = new SimpleDateFormat("yy-MM-dd");
+		SimpleDateFormat formatter2 = new SimpleDateFormat("dd-MMM-yy");
+		java.util.Date fromDate =null;
+		java.util.Date toDate =null;
+		 if(map.get("fromDate")!=null)
+	     {
+			 
+			 try {				 
+				 java.util.Date utilDate = formatter.parse((String)map.get("fromDate"));
+				 String fdate = formatter2.format(utilDate);
+				 
+				 System.out.println("fromDate "+fdate);
+				 SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yy");
+				 java.util.Date parsed = format.parse(fdate);
+			      fromDate = new java.sql.Date(parsed.getTime());
+			      fromDate = parsed;
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			 
+				Calendar c = Calendar.getInstance();
+				c.setTime(fromDate);
+				c.add(Calendar.DATE, 6); 
+				toDate = new java.sql.Date(c.getTime().getTime());
+	     }
+		 
+		System.out.println("dpid "+dpid+" fromdate"+fromDate+" todate "+toDate);
+		List<DoctorRoaster> list = new ArrayList<>();
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		Criteria c=session.createCriteria(DoctorRoaster.class,"dr")
+				.createAlias("dr.masHospital", "mh")
+				.createAlias("dr.masDepartment", "md")
+				.add(Restrictions.eq("mh.hospitalId", hospitalId))				
+				.add(Restrictions.between("roasterDate", fromDate, toDate))				
+				.add(Restrictions.eq("md.departmentId", dpid));
+				list=c.list();	 
+				
+		List<MasAppointmentSession> checkboxConfigurationDetail = new ArrayList<>();
+		checkboxConfigurationDetail = session.createCriteria(MasAppointmentSession.class,"mas")
+				.createAlias("masAppointmentType", "mat")
+				.createAlias("mas.masHospital","mh")
+				.add(Restrictions.eq("mh.hospitalId", hospitalId))
+				.add(Restrictions.eq("masDepartment.departmentId", dpid))
+				.addOrder(Order.asc("mat.appointmentTypeName"))
+				.list();	
+		
+		jsonResponse.put("doctorRoasterDetail", list);
+		jsonResponse.put("checkboxConfigurationDetail", checkboxConfigurationDetail);
+		return jsonResponse;
+		
+	}
+	
+
+	@Override
+	public String submitDepartmentRoaster(List<String[]> allrowdata, String changeDate, String changeTime, Long changeBy, Long dept_id, Long hostpitalID) {
+		try {
+
+		String result = "";
+		java.util.Date currentDate =  CommonUtil.convertStringTypeDateToDateType(changeDate);
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();		
+		Transaction tx = session.beginTransaction();
+		MasDepartment md = new MasDepartment();
+		md.setDepartmentId(dept_id);
+		MasHospital mh = new MasHospital();
+		mh.setHospitalId(hostpitalID);
+		/*MasEmployee me = new MasEmployee();
+		me.setEmployeeId(1l);*/
+		Users users = new Users();
+		users.setUserId(changeBy);
+		DoctorRoaster dr = null;
+		System.out.println("dept_id "+dept_id+" changeBy "+changeBy+" doctorId");
+		boolean flag = false;
+		for(int i=0;i<allrowdata.size();i++) {
+			
+			String[] rowdata = allrowdata.get(i);
+			long id = 0;
+			java.util.Date roasterDate = null;
+			String roasterValue = null;	
+				if (rowdata.length > 0) {
+					if(rowdata[0].equals("")) {
+						rowdata[0] = "0";
+					}
+					DateTimeFormatter sdf = DateTimeFormatter.ofPattern("dd-MM-yyyy");	
+					id = Long.parseLong(rowdata[0]);
+					//roasterDate = CommonUtil.convertStringDateToSQLDate(rowdata[1]);
+					roasterDate = CommonUtil.convertStringTypeDateToDateType(rowdata[1]);
+					LocalDate roastLdate = new java.sql.Date(roasterDate.getTime()).toLocalDate();					
+					LocalDate roasterDates = LocalDate.parse(rowdata[1], sdf);
+					System.out.println("local roaster date is "+roasterDates);
+					
+					//today Local date
+					LocalDate todayLocalDate = LocalDate.now();				
+					String todayDate = sdf.format(todayLocalDate);
+					LocalDate tDate = LocalDate.parse(todayDate, sdf);
+					System.out.println("today date is "+tDate);
+					
+					
+					if(roasterDates.isBefore(tDate)) {  
+						System.out.println("roaster date is small");
+						continue;
+					}else {
+						System.out.println("roaster date is larger");
+					}
+					
+					roasterValue = rowdata[2];
+					System.out.println("id " + id+" roasterDate "+roasterDate+" roasterValue "+roasterValue);
+				} 
+			
+					System.out.println("id is "+id);
+					dr = (DoctorRoaster) session.get(DoctorRoaster.class, id);	
+					if(dr!=null) {
+						
+						dr.setRoasterDate(roasterDate);
+						dr.setRoasterValue(roasterValue);
+						dr.setLastChgDate(new Timestamp(currentDate.getTime()));
+						dr.setUser(users);
+						dr.setMasDepartment(md);
+						dr.setMasHospital(mh);	
+						//dr.setMasEmployee(me);						
+						
+						session.update(dr);	
+					}else {
+						dr = new DoctorRoaster();						
+						dr.setRoasterDate(roasterDate);
+						dr.setRoasterValue(roasterValue);
+						dr.setLastChgDate(new Timestamp(currentDate.getTime()));
+						dr.setUser(users);
+						dr.setMasDepartment(md);
+						dr.setMasHospital(mh);		
+						session.save(dr);	
+					}
+				
+					/*md.setDepartmentId(dept_id);
+					//mh.setHospitalID(hostpitalID);
+					dr.setRoasterDate(roasterDate);
+					dr.setRoasterValue(roasterValue);
+					dr.setChgDate(roasterDate);
+					dr.setChgTime(changeTime);
+					dr.setUser(users);
+					dr.setMasDepartment(md);
+					dr.setMasEmployee(me);
+					dr.setHospitalId(hostpitalID);		
+					session.saveOrUpdate(dr);			*/		
+					flag = true;
+			}
+		if(flag == false) {
+			return "Roaster could not be saved for previous dates";
+		}
+		
+		tx.commit();
+		session.close();
+		return "Records Added Successfully";
+		
+	}catch(Exception ex) {
+		ex.printStackTrace();
+		return "Error";
+	}
+	}	
+
+}

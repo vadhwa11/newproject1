@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Most_recent_imaging_result_sub_report"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="595"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="P_PATIENTID" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT ORDER_ID,INVESTIGATION_DATE,INVESTIGATION_TYPE,INVESTIGATION_NAME FROM (
+SELECT  HD.ORDERHD_ID  AS ORDER_ID,
+        HD.ORDER_DATE  AS INVESTIGATION_DATE,
+        MMC.MAIN_CHARGECODE_NAME AS INVESTIGATION_TYPE,
+        DMI.INVESTIGATION_NAME AS INVESTIGATION_NAME ,
+        DENSE_RANK() OVER (PARTITION BY  DT.ORDERHD_ID ORDER BY  HD.ORDER_DATE  Desc)  AS AKS
+FROM    DG_ORDER_HD HD
+        LEFT OUTER JOIN DG_ORDER_DT DT   ON HD.ORDERHD_ID=DT.ORDERHD_ID 
+        LEFT OUTER JOIN DG_MAS_INVESTIGATION DMI ON DMI.INVESTIGATION_ID=DT.INVESTIGATION_ID 
+        LEFT OUTER JOIN MAS_MAIN_CHARGECODE MMC ON MMC.MAIN_CHARGECODE_ID=DMI.MAIN_CHARGECODE_ID 
+WHERE   HD.PATIENT_ID=$P{P_PATIENTID} and   MMC.MAIN_CHARGECODE_ID=1 )AKS
+WHERE   AKS.AKS >=1]]></queryString>
+
+	<field name="ORDER_ID" class="java.math.BigDecimal"/>
+	<field name="INVESTIGATION_DATE" class="java.util.Date"/>
+	<field name="INVESTIGATION_TYPE" class="java.lang.String"/>
+	<field name="INVESTIGATION_NAME" class="java.lang.String"/>
+
+	<variable name="S.No." class="java.lang.Integer" resetType="Report" calculation="Count">
+		<variableExpression><![CDATA[new Integer(0)]]></variableExpression>
+	</variable>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="53"  isSplitAllowed="true" >
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="26"
+						width="534"
+						height="0"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="51"
+						width="534"
+						height="0"
+						key="line-2"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="535"
+						y="26"
+						width="0"
+						height="26"
+						key="line-3"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="26"
+						width="0"
+						height="26"
+						key="line-4"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="49"
+						y="26"
+						width="0"
+						height="26"
+						key="line-5"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="118"
+						y="26"
+						width="0"
+						height="26"
+						key="line-6"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="11"
+						y="28"
+						width="30"
+						height="22"
+						key="staticText-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" isBold="false"/>
+					</textElement>
+				<text><![CDATA[S.No. Text]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="57"
+						y="28"
+						width="55"
+						height="22"
+						key="staticText-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Order ID]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="123"
+						y="28"
+						width="112"
+						height="22"
+						key="staticText-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Investigation Date]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="238"
+						y="26"
+						width="0"
+						height="26"
+						key="line-7"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="426"
+						y="28"
+						width="36"
+						height="22"
+						key="staticText-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Result]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="398"
+						y="26"
+						width="0"
+						height="26"
+						key="line-10"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="246"
+						y="28"
+						width="114"
+						height="22"
+						key="staticText-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Investigation Name]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="2"
+						width="142"
+						height="22"
+						key="staticText-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="10" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Most Recent Imaging Result]]></text>
+				</staticText>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="25"  isSplitAllowed="true" >
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="23"
+						width="534"
+						height="0"
+						key="line-14"
+						positionType="Float"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="535"
+						y="-2"
+						width="0"
+						height="26"
+						key="line-15"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="-2"
+						width="0"
+						height="26"
+						key="line-16"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="49"
+						y="-2"
+						width="0"
+						height="26"
+						key="line-17"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="118"
+						y="-2"
+						width="0"
+						height="26"
+						key="line-18"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="238"
+						y="-2"
+						width="0"
+						height="26"
+						key="line-19"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="398"
+						y="-2"
+						width="0"
+						height="26"
+						key="line-23"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<textField isStretchWithOverflow="true" pattern="###0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="57"
+						y="3"
+						width="55"
+						height="18"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{ORDER_ID}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="13"
+						y="3"
+						width="35"
+						height="18"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$V{S.No.}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="125"
+						y="3"
+						width="103"
+						height="18"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{INVESTIGATION_DATE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="246"
+						y="3"
+						width="147"
+						height="18"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{INVESTIGATION_NAME}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

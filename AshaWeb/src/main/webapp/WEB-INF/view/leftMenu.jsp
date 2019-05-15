@@ -17,19 +17,31 @@
      <link href="${pageContext.request.contextPath}/resources/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
     
     <script src="${pageContext.request.contextPath}/resources/js/jquery.min.js"></script>
+     <script src="${pageContext.request.contextPath}/resources/js/modernizr.min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/js/metisMenu.min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/js/waves.js"></script>
     <script src="${pageContext.request.contextPath}/resources/js/jquery.slimscroll.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/js/jquery.scrollTo.min.js"></script>    
+    <script src="${pageContext.request.contextPath}/resources/js/jquery.scrollTo.min.js"></script>
+      
+    
+      
     <script src="${pageContext.request.contextPath}/resources/js/jquery.core.js"></script>
     <script src="${pageContext.request.contextPath}/resources/js/jquery.app.js"></script>    
-    <script src="${pageContext.request.contextPath}/resources/js/modernizr.min.js"></script>
+    
     <script src="${pageContext.request.contextPath}/resources/js/datepicker.js"></script>
     
-   
-
     
+    
+    <script src="${pageContext.request.contextPath}/resources/js/pages/morris.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/pages/raphael.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/js/pages/morris.init.js"></script>
+
+   
+  
+   
+    
+     
 </head>
 
 <body>
@@ -47,7 +59,7 @@
                             <img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="" height="100%">
                         </span>
                          <i>
-                            <img src="assets/images/logo_sm.png" alt="" height="22">
+                             <img src="${pageContext.request.contextPath}/resources/images/logo_sm.png" alt="" height="22">
                         </i>
                     
                 </a>
@@ -123,8 +135,12 @@
                     <!-- Left Menu Start -->
                     <ul class="metismenu" id="side-menu">
                         <li class="menu-title">Menu</li>
+                         <li>
+                            <a href="${pageContext.request.contextPath}/dashboard/dashboard"><i class="ion-md-home"></i><span> Home </span> </a>
+                           
+                        </li>
                         <li>
-                            <a href="javascript: void(0);"><i class="ion-md-home"></i> <span>Reception</span> <span class="menu-arrow"></span></a>
+                            <a href="javascript: void(0);"><i class="ion-ios-list"></i> <span>Reception</span> <span class="menu-arrow"></span></a>
                             <ul class="nav-second-level" aria-expanded=false>
 								<li><a href="${pageContext.request.contextPath}/registration/showemployeeanddependent">Registration and Appointment ICG</a></li>
 								<li><a href="${pageContext.request.contextPath}/registration/registrationandappointmentothers">Registration and Appointment Others</a></li>
@@ -138,18 +154,18 @@
                                 <span>OPD</span> <span class="menu-arrow"></span></a>
                             <ul class="nav-second-level" aria-expanded="false">
                                 
-                                <li><a href="${pageContext.request.contextPath}/v0.1/opd/preOpdWaitingList">Pre-Consultation Waiting List</a></li>
-                                <li><a href="${pageContext.request.contextPath}/v0.1/opd/opdWaitingList">OPD Waiting List</a></li>
-                                <li><a href="${pageContext.request.contextPath}/v0.1/opd/opdPatientRecall">OPD Patient Recall</a></li>
-                                <li><a href="${pageContext.request.contextPath}/v0.1/opd/obesityWaitingJsp">Obesity Waiting List</a></li>    
-                                <li><a href="${pageContext.request.contextPath}/v0.1/opd/referralWaitingList">Referral Waiting List</a></li>   
-                                <li><a href="${pageContext.request.contextPath}/v0.1/opd/admissionPending">Pending Admission List</a></li>
-                                <li><a href="${pageContext.request.contextPath}/v0.1/opd/dischargePending">Pending Discharge List</a></li>  
-                                <li><a href="${pageContext.request.contextPath}/v0.1/opd/nursingCareWaitingJSP">Nursing Care Waiting List</a></li>
-                                <li><a href="${pageContext.request.contextPath}/v0.1/opd/physioTherapyWaitingJSP">Physiotherapy Waiting List</a></li>
-                                 <li><a href="${pageContext.request.contextPath}/v0.1/opd/minorSurgeryWaitingJSP">Minor Surgery Waiting List</a></li>
-                                <li><a href="${pageContext.request.contextPath}/v0.1/opd/opdPrescriptionReports">OPD Reports</a></li>
-                                <li><a href="${pageContext.request.contextPath}/v0.1/opd/opdEhrReports">EHR</a></li>
+                                <li><a href="${pageContext.request.contextPath}/opd/preOpdWaitingList">Pre-Consultation Waiting List</a></li>
+                                <li><a href="${pageContext.request.contextPath}/opd/opdWaitingList">OPD Waiting List</a></li>
+                                <li><a href="${pageContext.request.contextPath}/opd/opdPatientRecall">OPD Patient Recall</a></li>
+                                <li><a href="${pageContext.request.contextPath}/opd/obesityWaitingJsp">Obesity Waiting List</a></li>    
+                                <li><a href="${pageContext.request.contextPath}/opd/referralWaitingList">Referral Waiting List</a></li>   
+                                <li><a href="${pageContext.request.contextPath}/opd/admissionPending">Pending Admission List</a></li>
+                                <li><a href="${pageContext.request.contextPath}/opd/dischargePending">Pending Discharge List</a></li>  
+                                <li><a href="${pageContext.request.contextPath}/opd/nursingCareWaitingJSP">Nursing Care Waiting List</a></li>
+                                <li><a href="${pageContext.request.contextPath}/opd/physioTherapyWaitingJSP">Physiotherapy Waiting List</a></li>
+                                 <li><a href="${pageContext.request.contextPath}/opd/minorSurgeryWaitingJSP">Minor Surgery Waiting List</a></li>
+                                <li><a href="${pageContext.request.contextPath}/opd/opdPrescriptionReports">OPD Reports</a></li>
+                                <li><a href="${pageContext.request.contextPath}/opd/opdEhrReports">EHR</a></li>
                                
                                
                                 
@@ -276,6 +292,9 @@
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/empanelledHospitalMaster">Empanelled Hospital Master </a></li>                                
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/physiotherapyMaster">Physiotherapy Master </a></li>
                                 <li><a href="${pageContext.request.contextPath}/v0.1/master/serviceTypeMaster">Service Type</a></li>
+                               <%--  <li><a href="${pageContext.request.contextPath}/v0.1/master/storeGroupMaster">Store Group</a></li>
+                                <li><a href="${pageContext.request.contextPath}/v0.1/master/itemTypeMaster">Item Type</a></li>
+                                <li><a href="${pageContext.request.contextPath}/v0.1/master/itemSectionMaster">Item Section</a></li>--%>
                               
                             </ul>
                         </li>

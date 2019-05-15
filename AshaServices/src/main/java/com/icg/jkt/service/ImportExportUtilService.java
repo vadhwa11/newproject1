@@ -1,0 +1,23 @@
+package com.icg.jkt.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONObject;
+import org.springframework.stereotype.Service;
+
+import com.icg.jkt.entity.MasIcd;
+
+@Service
+public interface ImportExportUtilService {
+	
+	String getExportSyncTableList(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+	String genrateCSV(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);	
+	String importCSV(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+	List<MasIcd> getICDNameSearch(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response);
+	String getImportSyncTableList(HttpServletRequest request, HttpServletResponse response);
+	
+}
