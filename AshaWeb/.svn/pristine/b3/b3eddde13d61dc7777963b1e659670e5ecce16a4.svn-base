@@ -107,7 +107,7 @@ String enddate=formatter.format(enddate1);
                                     	
                                     	
                                     	for(var i=0;i<result.dashboardData.ref_cursor3.length;i++){
-											alert(result.dashboardData.ref_cursor3.length);
+											
 											
 											if(result.dashboardData.ref_cursor3[0]!= undefined){
 												

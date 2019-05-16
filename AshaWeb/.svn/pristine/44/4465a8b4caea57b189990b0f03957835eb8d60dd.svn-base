@@ -26,7 +26,7 @@
 	<parameter name="VISIT_ID" isForPrompting="true" class="java.lang.Integer">
 		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
 	</parameter>
-	<queryString><![CDATA[SELECT MMC.MAIN_CHARGECODE_NAME AS INVESTIGATION_TYPE, DT.ORDER_DATE  AS INVESTIGATION_DATE, DMI.INVESTIGATION_NAME AS INVESTIGATION_NAME , HD.OTHER_INVESTIGATION
+	<queryString><![CDATA[SELECT MMC.MAIN_CHARGECODE_NAME AS INVESTIGATION_TYPE, DT.ORDER_DATE  AS INVESTIGATION_DATE, DMI.INVESTIGATION_NAME AS INVESTIGATION_NAME , DG_ORDER_HD.OTHER_INVESTIGATION
 FROM DG_ORDER_DT DT 
 LEFT OUTER JOIN DG_ORDER_HD HD  ON HD.ORDERHD_ID=DT.ORDERHD_ID 
 LEFT OUTER JOIN DG_MAS_INVESTIGATION DMI ON DMI.INVESTIGATION_ID=DT.INVESTIGATION_ID 
@@ -36,7 +36,6 @@ WHERE HD.VISIT_ID=$P{VISIT_ID}]]></queryString>
 	<field name="INVESTIGATION_TYPE" class="java.lang.String"/>
 	<field name="INVESTIGATION_DATE" class="java.sql.Timestamp"/>
 	<field name="INVESTIGATION_NAME" class="java.lang.String"/>
-	<field name="OTHER_INVESTIGATION" class="java.lang.String"/>
 
 	<variable name="S.No." class="java.lang.Integer" resetType="Report" calculation="Count">
 		<variableExpression><![CDATA[new Integer(0)]]></variableExpression>

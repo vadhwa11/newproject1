@@ -883,7 +883,7 @@
 											</div>
 											 
 											
-												<div class="col-md-4" id="markObesityId">
+												<div class="col-md-4">
 												<div class="form-group row">
 													<label class="col-md-5 col-form-label">Mark Obesity
 													</label>
@@ -2533,13 +2533,14 @@ function obsistyFunctionRecall() {
                 if(data.data[0].disposalIdValue!=null){
                 	  	disposalValueId  =data.data[0].disposalIdValue;
                 }
+				 
                 if(data.data[0].obesityHdId!=null && data.data[0].relation!=null && data.data[0].relation=='SELF'){
                 	var x = document.getElementById("obsistyMark");
                 	  x.checked = true;
                 	  $('#obsitymarkvalue').val(1);
                 	  $('#markObesityId').show();
                 	}
-                else{ 
+                else{
                 	$('#obsitymarkvalue').val(0);
                 	$('#markObesityId').hide();
                 }
