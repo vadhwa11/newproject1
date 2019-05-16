@@ -1,0 +1,223 @@
+package com.icg.jkt.entity;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+/**
+ * The persistent class for the MAS_RELATION database table.
+ * 
+ */
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+
+@Entity
+@Table(name = "MAS_RELATION")
+@NamedQuery(name = "MasRelation.findAll", query = "SELECT m FROM MasRelation m")
+public class MasRelation implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@SequenceGenerator(name = "MAS_RELATION_SEQ", sequenceName = "MAS_RELATION_SEQ", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MAS_RELATION_SEQ")
+	@Column(name = "RELATION_ID", nullable = false)
+	private Long relationId;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "LAST_CHG_DATE", nullable = false)
+	private Date lastChgDate;
+
+	@Column(name = "NEW_RELATION_CODE", nullable = false)
+	private Long newRelationCode;
+
+	@Column(name = "NEW_RELATION_NAME", nullable = false)
+	private String newRelationName;
+
+	@Column(name = "RELATION_CODE", nullable = false)
+	private Long relationCode;
+
+	@Column(name = "RELATION_NAME", nullable = false)
+	private String relationName;
+
+	@OneToMany(mappedBy = "masRelation")
+	@JsonBackReference
+	private List<MasEmployee> masEmployees;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LAST_CHG_BY", nullable = true)
+	private Users user;
+
+	@OneToMany(mappedBy = "masRelation")
+	@JsonBackReference
+	private List<MasEmployeeDependent> masEmployeeDependents;
+
+	@OneToMany(mappedBy = "masRelation")
+	@JsonBackReference
+	private List<Patient> patient;
+
+	@OneToMany(mappedBy = "masRelationNok1")
+	@JsonBackReference
+	private List<Patient> patientsNok1;
+
+	@OneToMany(mappedBy = "masRelationNok2")
+	@JsonBackReference
+	private List<Patient> patientsNok2;
+
+	@Column(name = "STATUS")
+	private String status;
+
+	public Long getRelationId() {
+		return relationId;
+	}
+
+	public void setRelationId(Long relationId) {
+		this.relationId = relationId;
+	}
+
+	public Date getLastChgDate() {
+		return lastChgDate;
+	}
+
+	public void setLastChgDate(Date lastChgDate) {
+		this.lastChgDate = lastChgDate;
+	}
+
+	public Long getNewRelationCode() {
+		return newRelationCode;
+	}
+
+	public void setNewRelationCode(Long newRelationCode) {
+		this.newRelationCode = newRelationCode;
+	}
+
+	public String getNewRelationName() {
+		return newRelationName;
+	}
+
+	public void setNewRelationName(String newRelationName) {
+		this.newRelationName = newRelationName;
+	}
+
+	public Long getRelationCode() {
+		return relationCode;
+	}
+
+	public void setRelationCode(Long relationCode) {
+		this.relationCode = relationCode;
+	}
+
+	public String getRelationName() {
+		return relationName;
+	}
+
+	public void setRelationName(String relationName) {
+		this.relationName = relationName;
+	}
+
+	public List<MasEmployeeDependent> getMasEmployeeDependents() {
+		return masEmployeeDependents;
+	}
+
+	public void setMasEmployeeDependents(List<MasEmployeeDependent> masEmployeeDependents) {
+		this.masEmployeeDependents = masEmployeeDependents;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public List<Patient> getPatient() {
+		return patient;
+	}
+
+	public void setPatient(List<Patient> patient) {
+		this.patient = patient;
+	}
+
+	public MasEmployeeDependent addMasEmployeeDependent(MasEmployeeDependent masEmployeeDependent) {
+		getMasEmployeeDependents().add(masEmployeeDependent);
+		masEmployeeDependent.setMasRelation(this);
+
+		return masEmployeeDependent;
+	}
+
+	public MasEmployeeDependent removeMasEmployeeDependent(MasEmployeeDependent masEmployeeDependent) {
+		getMasEmployeeDependents().remove(masEmployeeDependent);
+		masEmployeeDependent.setMasRelation(null);
+
+		return masEmployeeDependent;
+	}
+
+	public List<MasEmployee> getMasEmployees() {
+		return masEmployees;
+	}
+
+	public void setMasEmployees(List<MasEmployee> masEmployees) {
+		this.masEmployees = masEmployees;
+	}
+
+	/*
+	 * public Users getUser() { return user; }
+	 * 
+	 * public void setUser(Users user) { this.user = user; }
+	 */
+
+	public List<Patient> getPatientsNok1() {
+		return patientsNok1;
+	}
+
+	public void setPatientsNok1(List<Patient> patientsNok1) {
+		this.patientsNok1 = patientsNok1;
+	}
+
+	public List<Patient> getPatientsNok2() {
+		return patientsNok2;
+	}
+
+	public void setPatientsNok2(List<Patient> patientsNok2) {
+		this.patientsNok2 = patientsNok2;
+	}
+
+	public Patient addPatient(Patient patient) {
+		getPatient().add(patient);
+		patient.setMasRelation(this);
+
+		return patient;
+	}
+
+	public Patient removePatient(Patient patient) {
+		getPatient().remove(patient);
+		patient.setMasRelation(null);
+
+		return patient;
+	}
+}

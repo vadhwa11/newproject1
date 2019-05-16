@@ -1,0 +1,778 @@
+package com.icg.jkt.service.impl;
+
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.json.Json;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.icg.jkt.dao.GenericApiDao;
+import com.icg.jkt.dao.MasterDao;
+import com.icg.jkt.entity.MasCommand;
+import com.icg.jkt.entity.MasDepartment;
+import com.icg.jkt.entity.MasEmployee;
+import com.icg.jkt.entity.MasIcd;
+import com.icg.jkt.entity.MasState;
+import com.icg.jkt.entity.MasTrade;
+import com.icg.jkt.entity.MasUOM;
+import com.icg.jkt.entity.MasUnit;
+import com.icg.jkt.entity.MasUnitType;
+import com.icg.jkt.service.MasterService;
+import com.icg.jkt.utils.ProjectUtils;
+
+@Repository
+public class MasterServiceImpl implements MasterService{
+
+	@Autowired
+	MasterDao md;
+	
+	/////////////////////// MasDepartmrent get Method /////////////////////////
+	@Override
+	public String departmentList(HashMap<String, String> jsondata, HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+        try
+        {
+		if (jsondata.get("EMPLOYEE_ID") == null || jsondata.get("EMPLOYEE_ID").toString().trim().equals(""))
+		{
+			return "{\"status\":\"0\",\"msg\":\"json is not contain EMPLOYEE_ID as a  key or value or it is null\"}";
+		} 
+		else
+		{
+			    MasEmployee checkEmp = md.checkEmp(Long.parseLong(jsondata.get("EMPLOYEE_ID").toString()));
+			    if(checkEmp!=null)
+			    {
+				List<MasDepartment> mst_depart = md.getDepartmentList();
+			    if (mst_depart.size() == 0)
+			    {
+			    	 return "{\"status\":\"0\",\"msg\":\"Data not found\"}";
+			    } 
+			    else 
+			    {
+			    	json.put("departmentList", checkEmp);
+			    	json.put("departmentList", mst_depart);
+			    	json.put("msg", "department List  get  sucessfull... ");
+			    	json.put("status", "1");
+
+			   }
+
+		}
+	   else
+	   {
+		   return "{\"status\":\"0\",\"msg\":\"json is not contain EMPLOYEE_ID Not Found\"}";
+    	
+		}
+
+		return json.toString();
+	}
+        }finally
+        {
+        	System.out.println("Exception Occured");
+        }
+	}
+	
+	//////////////////////// Get Master ICD Business Logic //////////////////////
+
+	@Override
+	public String getICD(HashMap<String, String> jsondata, HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+        try
+        {
+		if (jsondata.get("employeeId") == null || jsondata.get("employeeId").toString().trim().equals(""))
+		{
+			return "{\"status\":\"0\",\"msg\":\"json is not contain employeeId as a  key or value or it is null\"}";
+		} 
+		else
+		{
+			    MasEmployee checkEmp = md.checkEmp(Long.parseLong(jsondata.get("employeeId").toString()));
+			    if(checkEmp!=null)
+			    {
+				List<MasIcd> mst_icd = md.getIcd();
+			    if (mst_icd.size() == 0)
+			    {
+			    	 return "{\"status\":\"0\",\"msg\":\"Data not found\"}";
+			    } 
+			    else 
+			    {
+			    	json.put("ICDList", checkEmp);
+			    	json.put("ICDList", mst_icd);
+			    	json.put("msg", "ICD List  get  sucessfull... ");
+			    	json.put("status", "1");
+
+			   }
+
+		}
+	   else
+	   {
+		   return "{\"status\":\"0\",\"msg\":\"json is not contain EMPLOYEE_ID Not Found\"}";
+    	
+		}
+
+		return json.toString();
+	}
+        }finally
+        {
+        	System.out.println("Exception Occured");
+        }
+	}
+
+	@Override
+	public String getAllStates(JSONObject jsonObject,HttpServletRequest request, HttpServletResponse response) {
+		
+		JSONObject json = new JSONObject();
+		List<MasState> sList = new ArrayList<MasState>();	
+				Map<String, List<MasState>>  stateMap = md.getAllStates(jsonObject);
+					if(stateMap.get("stateList")!=null) {
+						sList = stateMap.get("stateList");
+						
+						if(sList!=null && sList.size()>0) {
+							json.put("data", sList);							
+							json.put("count", sList.size());
+							json.put("status", 1);
+						}else {
+							json.put("data", sList);
+							json.put("count", sList.size());
+							json.put("msg", "State Not Found");
+							json.put("status", 0);
+						}
+						
+					}else {
+						json.put("msg", "Data Not Found... ");
+				    	json.put("status", 0);
+					}
+					
+			
+		
+		return json.toString();
+	
+	}
+
+	@Override
+	public String getTradeDetails(HashMap<String, String> tradePayload, HttpServletRequest request, 
+									HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		
+		try {
+			if(tradePayload.get("tradeName") == null && tradePayload.get("tradeName").trim().equalsIgnoreCase("")) {
+				return "{\"status\":\"0\",\"msg\":\"Invalid Trade Name !!!\"}";
+			}else {
+				MasTrade chkTrade = md.checkTrade(tradePayload.get("tradeName"));
+				if(chkTrade!=null) {
+					List<MasTrade> masTradeLst =  md.getTradeDetails(tradePayload.get("tradeName"));
+					System.out.println("masTradeLst :: "+masTradeLst.size());
+					if(masTradeLst!=null && masTradeLst.size()>0) {
+						json.put("masTradeLst", masTradeLst);
+						json.put("msg", "List of State get sucessfully... ");
+				    	json.put("status", "1");
+					}
+						
+				}else {
+					return "{\"status\":\"0\",\"msg\":\"Data not found\"}";
+				}
+			}
+			
+			return json.toString();
+		}finally
+	    {
+	    	System.out.println("Exception Occured");
+	    }
+		}
+
+	@Override
+	public Map<String, Object> getTradeList(HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		Map<String,Object> map = new HashMap<String,Object>();
+		map = md.getTradeList();
+		if(map.get("masTradeList")!=null) {
+			//return map;
+			
+			map.put("status", "1");
+			map.put("msg", "Data found");
+			return map;
+		}else {
+			map.put("status", "0");
+			map.put("msg", "Data not found");
+			return map;
+		}
+	}
+
+	
+
+/*	@Override
+	public List<MasTrade> getTradeList(HttpServletRequest request, HttpServletResponse response) {
+		List<MasTrade> masTradeList = new ArrayList<MasTrade>();
+		masTradeList = md.getTradeList();
+		if(masTradeList.size()>0) {
+			return masTradeList;
+		}else {
+			return masTradeList.add("No Record found");
+		}
+		
+	}*/
+	
+	@Override
+	public String addTradeDetails(JSONObject json, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject jsonObject = new JSONObject();
+		MasTrade masTrade = new MasTrade();
+		
+		
+		if(json.get("tradeName")==null) {
+			return "{\"status\":\"0\",\"msg\":\"tradeName is not contain in json data or it will be null or blank please check\"}";
+		}
+		
+		
+		
+		else {
+			//masTrade.setTradeId(Long.parseLong(json.get("tradeId").toString()));
+			masTrade.setTradeName(json.get("tradeName").toString());
+			masTrade.setStatus("y");
+			masTrade.setLastChgBy("1");
+			
+			long d = System.currentTimeMillis();
+			Date date = new Date(d);
+			masTrade.setLastChgDate(date);
+			
+			String lastChgTime = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
+			masTrade.setLastChgTime(lastChgTime);
+			
+			List<MasTrade> masTradeList = md.validateMasTrade(json.get("tradeName").toString());
+				if(masTradeList!=null && masTradeList.size()>0) {
+					if(masTradeList.get(0).getTradeName().equalsIgnoreCase(json.get("tradeName").toString())) {
+						
+						return "{\"status\":\"2\",\"msg\":\"Trade Name is already Existing.\"}";
+						
+					}else {
+						String addTrade = md.addTradeDetails(masTrade);
+						if(addTrade!=null && addTrade.equalsIgnoreCase("200")) {
+							jsonObject.put("msg", "Successfully Added!!");
+							jsonObject.put("addTrade", addTrade);
+							jsonObject.put("status", 1);
+						}else if(addTrade == null && addTrade.equalsIgnoreCase("500")){
+							jsonObject.put("msg", "fail to Added!!");
+							jsonObject.put("addTrade", addTrade);
+							jsonObject.put("status", 0);
+						}else {
+							jsonObject.put("msg", addTrade);
+							jsonObject.put("status", 0);
+						}
+					}
+				}
+			
+		}
+		
+		
+		return jsonObject.toString();
+	}
+
+	@Override
+	public String addCommand(JSONObject json, HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("json object :: "+json);
+		//JSONObject jsonCommand =  json.getJSONObject("command");
+		JSONObject jsonObj = new JSONObject();
+		MasCommand masCommand = new MasCommand();
+		
+		if(!json.equals(null)) {
+			
+			if(json.get("cmdCode")==null) {
+				return "{\"status\":\"0\",\"msg\":\"cmdCode is not contain in json data or it will be null or blank please check\"}";
+			}
+			if(json.get("cmdName")==null) {
+				return "{\"status\":\"0\",\"msg\":\"cmdName is not contain in json data or it will be null or blank please check\"}";
+			}
+			
+			
+		else {
+			masCommand.setCmdCode(json.get("cmdCode").toString().toUpperCase());
+			masCommand.setCmdName(json.get("cmdName").toString().toUpperCase());			
+			
+			long d = System.currentTimeMillis();
+			Date date = new Date(d);			
+			masCommand.setLastChgDate(date);			
+			
+			String lastChgTime = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
+			
+			//masCommand.setLastChgTime(lastChgTime);
+			masCommand.setLastChgBy(new Long(1));
+			masCommand.setStatus("y");
+			String cmdType="";
+			
+			if(json.get("cmdType").toString().equalsIgnoreCase("Delhi HQ")) {
+				cmdType = "Delhi HQ";
+				masCommand.setCmdType(cmdType);
+			}
+			if(json.get("cmdType").toString().equalsIgnoreCase("Noida HQ")) {
+				cmdType = "Noida HQ";
+				masCommand.setCmdType(cmdType);
+			}
+			
+			
+			List<MasCommand> masCmd = md.validateMasCommand(masCommand.getCmdCode().toString(),masCommand.getCmdName().toString());
+			if(masCmd.size()!=0) {
+				if(masCmd!=null && masCmd.size()>0) {
+					if(masCmd.get(0).getCmdCode().equalsIgnoreCase(json.get("cmdCode").toString())) {
+					
+						return "{\"status\":\"2\",\"msg\":\"Command Code is already Existing.\"}";
+					}
+					if(masCmd.get(0).getCmdName().equalsIgnoreCase(json.get("cmdName").toString())) {
+						
+						return "{\"status\":\"2\",\"msg\":\"Command Name is already Existing.\"}";
+					}
+				}
+			}else {
+				String masCmdObj = md.addMasCommand(masCommand);
+				if(masCmdObj!=null && masCmdObj.equalsIgnoreCase("200")) {
+					jsonObj.put("status", 1);
+					jsonObj.put("msg", "Command has been Successfully Added !!");
+					
+				}else if(masCmdObj!=null && masCmdObj.equalsIgnoreCase("403")) {
+					jsonObj.put("status", 0);
+					jsonObj.put("msg", "You are not authorized person!!!");
+					
+				}else {
+					jsonObj.put("msg", masCmdObj);
+					jsonObj.put("status", 0);
+				}
+			}
+		}
+		}else {
+			jsonObj.put("msg", "Cannot Contains Any Data!!!");
+			jsonObj.put("status", 0);
+		}
+		
+		return jsonObj.toString();
+	}
+
+	@Override
+	public String getCommand(HashMap<String, Object> command, HttpServletRequest request) {
+		JSONObject jsonObject = new JSONObject();
+			if(command.get("cmdName") == null && command.get("cmdName").toString().trim().equalsIgnoreCase("")) {
+				
+				return "{\"status\":\"0\",\"msg\":\"cmdCode is not available !!!\"}";
+			}else {
+				MasCommand chkCommand =  md.chkCommand(command.get("cmdName").toString());
+				if(chkCommand!=null) {
+					List<MasCommand> masCmdLst =  md.getCommand(command.get("cmdName").toString());
+					if(masCmdLst!=null && masCmdLst.size()>0) {
+						System.out.println("masCmdLst :: "+masCmdLst);
+						jsonObject.put("masCmdLst", masCmdLst);
+						jsonObject.put("msg", "List of command successfully...");
+						jsonObject.put("status", 1);
+					}else {
+						return "{\"status\":\"0\",\"msg\":\"Data not found\"}";
+					}
+				}else {
+					return "{\"status\":\"0\",\"msg\":\"Data not found\"}";
+				}
+			}
+		
+		return jsonObject.toString();
+	}
+	
+	@Override
+	public String getAllCommand(JSONObject jsonObj, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<MasCommand> cList = new ArrayList<MasCommand>();
+		
+		Map<String, List<MasCommand>> cmdMap = md.getAllCommand(jsonObj);
+		List totalMatches = new ArrayList();
+		if(cmdMap.get("masCmdList")!=null) {
+			cList = cmdMap.get("masCmdList");
+			totalMatches = cmdMap.get("totalMatches");
+			
+			if(cList!=null && cList.size()>0) {
+				json.put("data", cList);			
+				
+				json.put("count", totalMatches.size());
+				json.put("status", 1);
+			}else {
+				json.put("data", cList);
+				
+				json.put("count", totalMatches.size());
+				json.put("msg", "Data not found");
+				json.put("status", 0);
+			}
+		}
+		
+		
+		System.out.println("json.toString()"+json.toString());
+		return json.toString();
+	}
+	
+	@Override
+	public String updateCommand(HashMap<String, Object> command, HttpServletRequest request,HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		
+		if(command.get("cmdCode")!=null && !command.get("cmdCode").toString().equalsIgnoreCase("")) {
+			
+				String cmdUpdate=md.updateCommand(Long.parseLong(command.get("cmdId").toString()),command.get("cmdCode").toString().toString(),
+						command.get("cmdName").toString(), command.get("cmdType").toString());
+				if(cmdUpdate!=null && !cmdUpdate.equalsIgnoreCase("")) {
+					json.put("cmdUpdate", cmdUpdate);
+					json.put("msg", "Successfully Updated!!!");
+					json.put("status", 1);
+				}else if(cmdUpdate == null && cmdUpdate.equalsIgnoreCase("")) {
+					json.put("msg", "Not Updated!!!");
+					json.put("status", 0);
+				}
+				
+				else {
+					return "{\"status\":\"0\",\"msg\":\"cmdCode is not available !!!\"}";
+				}
+			
+		}else {
+			return "{\"status\":\"0\",\"msg\":\"cmdCode is not available !!!\"}";
+		}
+		
+		return json.toString();
+	}
+
+	@Override
+	public String statusCommand(HashMap<String, Object> command, HttpServletRequest request,HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(command.get("cmdCode")!=null && !command.get("cmdCode").toString().equalsIgnoreCase("")) {
+			MasCommand chkCommand =  md.chkCommand(command.get("cmdCode").toString());
+			if(chkCommand!=null) {
+				String masCmdStatus = md.updateCommandStatus(Long.parseLong(command.get("cmdId").toString()),command.get("cmdCode").toString(), command.get("status").toString());
+				if(masCmdStatus!=null && masCmdStatus.equalsIgnoreCase("200")) {
+					json.put("masCmdStatus", masCmdStatus);
+					json.put("msg", "Status Active!!!");
+					json.put("status", 1);
+				}else {
+					//json.put("masCmdStatus", masCmdStatus);
+					json.put("msg", "Status InActive!!!");
+					json.put("status", 0);
+				}
+			}
+		}else {
+			return "{\"status\":\"0\",\"msg\":\"cmdCode is not available !!!\"}";
+		}
+			
+		return json.toString();
+	}
+	/*********************************MAS UOM****************************************************/
+	@Override
+	public String addMasUOM(JSONObject jsonObject, HttpServletRequest request) {
+		JSONObject jsonObj = new JSONObject();
+		MasUOM masUOM = new MasUOM();
+		if(jsonObject!=null) {
+			String status = "y";
+			Long lastChgBy = new Long(1);
+			masUOM.setUOMCode(jsonObject.get("UOMCode").toString().toUpperCase());
+			masUOM.setUOMName(jsonObject.get("UOMName").toString().toUpperCase());
+			
+			masUOM.setUOMStatus(status.toUpperCase());
+			
+			long d = System.currentTimeMillis();
+			Date date = new Date(d);
+			String lastChgTime = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
+			
+			masUOM.setLastChgBy(lastChgBy);
+			masUOM.setLastChgDate(date);
+			/*masUOM.setLastChgTime(lastChgTime);
+			masUOM.setUOMDesc(jsonObject.get("UOMDesc").toString().toUpperCase());*/
+			
+			List<MasUOM> checkMasUOM =  md.validateMasUOM(masUOM.getUOMCode(), masUOM.getUOMName());
+			if(checkMasUOM.size()!=0) {
+			if(checkMasUOM!=null && checkMasUOM.size()>0) {
+				
+				if(checkMasUOM.get(0).getUOMCode().equalsIgnoreCase(jsonObject.get("UOMCode").toString())) {
+					
+					return "{\"status\":\"2\",\"message\":\"UOM Code is already Existing.\"}";
+				}
+						if(checkMasUOM.get(0).getUOMName().equalsIgnoreCase(jsonObject.get("UOMName").toString())) {
+					
+					return "{\"status\":\"2\",\"message\":\"UOM Name is already Existing.\"}";
+				}
+			}
+			}else {
+				String masUOMObject = md.addMasUOM(masUOM);
+				if(masUOMObject!=null && masUOMObject.equalsIgnoreCase("200")) {
+					jsonObj.put("status", 1);
+					jsonObj.put("msg", "Successfully Added!!!");
+				}else {
+					jsonObj.put("status", 0);
+					jsonObj.put("msg", "Not Added!!!");
+				}
+				
+			}
+			
+		}
+		return jsonObj.toString();
+	}
+
+	@Override
+	public String getAllUOM(JSONObject jsonObject, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(jsonObject!=null) {
+			List totalMatches = new ArrayList();
+			List<MasUOM> uList = new ArrayList<MasUOM>();
+			Map<String, List<MasUOM>> map = md.getAllUOM(jsonObject);
+			if(map.get("unitList")!=null) {
+				uList = map.get("unitList");
+				totalMatches = map.get("totalMatches");
+				
+				if(uList!=null && uList.size()>0) {
+					json.put("data", uList);
+					json.put("msg", "unitList");
+					json.put("count", totalMatches.size());
+					json.put("status", 1);
+				}else {
+					json.put("data", uList);			
+					json.put("count", totalMatches.size());
+					json.put("msg", "Data not found");
+					json.put("status", 0);
+				}
+			}
+		}else {
+			json.put("msg", "Object Not Found!!!");
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String updateUOMDetails(HashMap<String, Object> masUnit, HttpServletRequest request,
+			HttpServletResponse response) {		
+		JSONObject json = new JSONObject();
+		
+		if(masUnit.get("UOMCode")!=null && !masUnit.get("UOMCode").toString().equalsIgnoreCase("")) {
+			
+			String updateUOM = md.updateUOMDetails(Long.parseLong(masUnit.get("UOMId").toString()),	masUnit.get("UOMCode").toString().trim(),masUnit.get("UOMName").toString().trim());
+			
+			if(updateUOM!=null && !updateUOM.equalsIgnoreCase("")) {
+				json.put("updateUOM", updateUOM);
+				json.put("msg", "Successfully Updated!!!");
+				json.put("status", 1);
+			}else if(updateUOM == null && updateUOM.equalsIgnoreCase("")) {
+				json.put("msg", "Not Updated!!!");
+				json.put("status", 0);
+			}
+			
+			else {
+				return "{\"status\":\"0\",\"msg\":\"UOM Code is not available !!!\"}";
+			}
+		}else {
+			return "{\"status\":\"0\",\"msg\":\"UOMCode is not available !!!\"}";
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String updateUOMStatus(HashMap<String, Object> masUnit, HttpServletRequest request,
+			HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(masUnit.get("UOMCode")!=null && !masUnit.get("UOMCode").toString().equalsIgnoreCase("")) {
+			MasUOM chkMasUnit =  md.chkMasUnit(masUnit.get("UOMCode").toString());
+			if(chkMasUnit!=null) {
+				String masUnitStatus = md.updateUOMStatus(Long.parseLong(masUnit.get("UOMId").toString()),masUnit.get("UOMCode").toString(), masUnit.get("UOMStatus").toString());
+				if(masUnitStatus!=null && masUnitStatus.equalsIgnoreCase("200")) {
+					json.put("masUnitStatus", masUnitStatus);
+					json.put("msg", "Status Active!!!");
+					json.put("status", 1);
+				}else {
+					//json.put("masCmdStatus", masCmdStatus);
+					json.put("msg", "Status InActive!!!");
+					json.put("status", 0);
+				}
+			}
+		}else {
+			return "{\"status\":\"0\",\"msg\":\"UOMCode is not Existing !!!\"}";
+		}
+			
+		return json.toString();
+	}
+/********************************UNIT MASTER***********************************************/
+	@Override
+	public String getAllUnit(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		List<MasUnit> uList = new ArrayList<MasUnit>();
+		List list = new ArrayList();
+		if(jsondata!=null) {
+			Map<String, List<MasUnit>> mapUnit = md.getAllUnit(jsondata);
+			List totalMatches = new ArrayList();
+			if(mapUnit.get("masUnitList")!=null) {
+				uList = mapUnit.get("masUnitList");
+				totalMatches = mapUnit.get("totalMatches");
+				for(MasUnit unit :uList) {
+					HashMap<String, Object> mapObj = new HashMap<String, Object>();
+					
+					mapObj.put("unitId", unit.getUnitId()) ;
+					mapObj.put("unitName", unit.getUnitName()) ;
+					mapObj.put("status", unit.getStatus()) ;
+					mapObj.put("commandName", unit.getCommand().getCmdName()) ;
+					list.add(mapObj);
+				}
+				
+				
+				if(list!=null && list.size()>0) {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "successfully");
+					json.put("status", 1);
+				}else {
+					json.put("data", list);
+					json.put("count", totalMatches.size());
+					json.put("msg", "No Record Found");
+					json.put("status", 0);
+				}
+				
+			}else {
+				json.put("statut", 0);
+				json.put("msg", "No Record Found");
+			}
+			
+		}else {
+			json.put("msg", "No Record Found");
+			json.put("status", 0);
+		}
+		return json.toString();
+	}
+
+@Override
+public String addUnits(JSONObject jsondata, HttpServletRequest request, HttpServletResponse response) {
+	JSONObject json = new JSONObject();
+	if(jsondata!=null) {
+		String status = "y";
+		Long lastChgBy = new Long(1);
+		//Long unitType = new Long(1);
+		String unitAddress = "delhi";
+		
+		long d = System.currentTimeMillis();
+		Date date = new Date(d);
+		String lastChgTime = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
+		
+		MasUnit masUnit = new MasUnit();
+		MasCommand command = new MasCommand();
+		
+		
+		masUnit.setUnitName(jsondata.get("unitName").toString().toUpperCase());
+		masUnit.setUnitAddress(unitAddress);
+			command.setCmdId(Long.parseLong(jsondata.get("cmdId").toString()));
+			System.out.println("command id :: "+command.getCmdId());
+		masUnit.setCommand(command);
+		
+		System.out.println("masUnit cmdId :: "+masUnit.getCommand().getCmdId());
+		
+		masUnit.setLastChgBy(lastChgBy);
+		masUnit.setStatus(status.toUpperCase());
+		masUnit.setLastChgDate(date);
+		
+		MasUnitType unitType = new MasUnitType();		
+		/*unitType.setUnitTypId(new Long(2));*/
+		unitType.setUnitTypId(Long.parseLong(jsondata.get("unitTypId").toString()));		
+		masUnit.setUnitType(unitType);
+		
+		System.out.println("masUnit typeId :: "+masUnit.getUnitType().getUnitTypId());
+		
+		List<MasUnit> chkUnitLst = md.validateUnit(masUnit.getUnitName());
+		if(chkUnitLst!=null && chkUnitLst.size()>0) {
+			if(chkUnitLst.get(0).getUnitName().equalsIgnoreCase(jsondata.get("unitName").toString())) {
+				
+				return "{\"status\":\"2\",\"msg\":\"Unit Name is already Existing.\"}";
+			}
+			
+		}else {
+			String addUnit = md.addMasUnit(masUnit);
+			if(addUnit!=null && addUnit.equalsIgnoreCase("200")) {
+				json.put("status", 1);
+				json.put("msg", "Successfully Added!!!");
+			}else {
+				json.put("status", 0);
+				json.put("msg", "Not Added!!!");
+			}
+		}
+		
+	}else {
+		json.put("msg", "No Record Found");
+		json.put("status", 0);
+	}
+	
+	return json.toString();
+}
+
+@Override
+public String getCommandList(HttpServletRequest request, HttpServletResponse response) {
+	JSONObject json = new JSONObject();
+	List<MasCommand> cList = md.getCommandList();
+	if(cList!=null && cList.size()>0) {
+		json.put("data", cList);
+		json.put("count", cList.size());				
+		json.put("status", 1);
+	}else {
+		json.put("data", cList);
+		json.put("count", cList.size());
+		json.put("msg", "No Record Found");		
+		json.put("status", 0);
+		
+	}
+	return json.toString();
+}
+
+@Override
+public String getUnitType(HttpServletRequest request, HttpServletResponse response) {
+	JSONObject json = new JSONObject();
+	
+		List<MasUnitType> utList = md.getUnitType();
+		if(utList!=null && utList.size()>0) {			
+			json.put("data", utList);
+			json.put("count", utList.size());					
+			json.put("status", 1);
+		}else {
+			json.put("data", utList);
+			json.put("count", utList.size());
+			json.put("msg", "No Record Found");		
+			json.put("status", 0);
+		}
+	
+	return json.toString();
+}
+
+@Override
+public String updateUnit(HashMap<String, Object> unitPayload, HttpServletRequest request,
+		HttpServletResponse response) {
+	JSONObject json = new JSONObject();
+	if(unitPayload!=null) {
+		
+		System.out.println("id :: "+unitPayload.get("unitId"));
+		System.out.println("name :: "+unitPayload.get("unitName"));
+		System.out.println("cmdid :: "+unitPayload.get("cmdId"));
+		System.out.println("type :: "+unitPayload.get("unitTypId"));
+	
+	if(unitPayload.get("unitName")!=null && !unitPayload.get("unitName").toString().equalsIgnoreCase("")
+			|| unitPayload.get("cmdId").toString()!=null
+			|| unitPayload.get("unitTypId").toString()!=null) {
+		String updateUnit = md.updateUnit(Long.parseLong(unitPayload.get("unitId").toString()),unitPayload.get("unitName").toString(), Long.parseLong(unitPayload.get("cmdId").toString()), Long.parseLong(unitPayload.get("unitTypId").toString()));
+		if(updateUnit!=null && !updateUnit.equalsIgnoreCase("")) {
+			json.put("updateUnit", updateUnit);
+			json.put("msg", "successfully updated");
+			json.put("status", 1);
+		}else {
+			json.put("updateUnit", updateUnit);
+			json.put("msg", "Not Updated");
+			json.put("status", 0);
+		}
+		
+	}else {		
+		json.put("msg", "Invalid Input Paramter");		
+		json.put("status", 0);
+	}
+	}else {
+		json.put("msg", "Data Not Found");		
+		json.put("status", 0);
+	}
+	return json.toString();
+}
+
+	
+	
+}

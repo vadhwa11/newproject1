@@ -1,0 +1,135 @@
+<div class="row">
+  <div class="span6">
+    <div class="widget widget-nopad">
+      <div class="widget-header"> <i class="icon-list-alt"></i>
+        <h3> Add End User</h3>
+      </div>
+      <!-- /widget-header -->
+      <div class="widget-content">
+        <div class="widget big-stats-container">
+          <div class="widget-content" style="padding:10px;">
+            <div>
+              <form novalidate name="addendUserForm" autocomplete="off" class="form-horizontal">
+                <fieldset>
+                  <div class="control-group">
+                    <label class="control-label" for="distributorID">Distributor ID<sup>*</sup></label>
+                    <div class="controls">
+                      <input type="text" class="span4" ng-model="dist_id" validator="required" valid-method="watch" ng-disabled="disabled"/>
+                      <!-- <p class="help-block">Your username is for logging in and cannot be changed.</p> -->
+                    </div>
+                    <!-- /controls -->
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label" for="Name">Name<sup>*</sup></label>
+                    <div class="controls">
+                      <input type="text" class="span4" placeholder="Enter Name" id="Name" ng-model="name" validator="required" required-error-message=" Name is required" valid-method="watch" />
+                      <!-- <p class="help-block">Your username is for logging in and cannot be changed.</p> -->
+                    </div>
+                    <!-- /controls -->
+                  </div>
+
+                  <!-- /controls -->
+                  <!-- /control-group -->
+                  <div class="control-group">
+                    <label class="control-label" for="Mobile">Mobile No<sup>*</sup></label>
+                    <div class="controls">
+                      <input class="span4" name="firstname" placeholder="Enter Mobile No." ng-model="Mobile" validator="required" required-error-message="Mobile No. is required" valid-method="watch" />
+                    </div>
+                    <!-- /controls -->
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label" for="email">Email Address<sup>*</sup></label>
+                    <div class="controls">
+                      <input class="span4" name="email" placeholder="Email" ng-model="email" validator="required, email" required-error-message="Email is required" email-error-message="Invalid email address" valid-method="watch" />
+                    </div>
+                    <!-- /controls -->
+                  </div>
+                  <!-- /control-group -->
+                  <div class="control-group">
+                    <label class="control-label" for="GSTIN">GSTIN<sup>*</sup></label>
+                    <div class="controls">
+                      <input class="span4" name="GSTIN" placeholder="GSTIN" ng-model="GSTIN" validator="required" required-error-message="GSTIN is required" valid-method="watch" />
+                    </div>
+                    <!-- /controls -->
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label" for="PAN">PAN NO<sup>*</sup></label>
+                    <div class="controls">
+                      <input class="span4" name="PAN" placeholder="PAN" ng-model="PAN" validator="required" required-error-message="PAN is required" valid-method="watch" />
+                    </div>
+                    <!-- /controls -->
+                  </div>
+                  <!-- /control-group -->
+                  <!-- <div class="control-group">
+                    <label class="control-label" for="State">State<sup>*</sup></label>
+                    <div class="controls">
+                      <select class="span4" name="country" ng-model="State" validator="required" ng-options="s.state for s in stateCode" required-error-message="State is required" valid-method="watch">
+								</select>
+                    </div>
+                    /controls
+                  </div> -->
+                  <!-- <div class="control-group">
+                    <label class="control-label" for="City">City<sup>*</sup></label>
+                    <div class="controls">
+                      <input class="span4" name="City" placeholder="City" ng-model="City" validator="required" required-error-message="City is required" valid-method="watch" />
+                    </div>
+                    /controls -->
+                  <!-- </div> -->
+                  <!-- /control-group -->
+                  <!-- <div class="control-group">
+                    <label class="control-label" for="pin_code">Pin Code<sup>*</sup></label>
+                    <div class="controls">
+                      <input class="span4" name="pin_code" placeholder="pin code" ng-model="pin_code" validator="required" required-error-message="pin code is required" valid-method="watch" />
+                    </div>
+                    /controls
+                  </div> -->
+                  <!-- /control-group -->
+                  <!-- /control-group -->
+                  <div class="form-actions">
+                    <button type="button" class="btn btn-primary" ng-click="AddendUser($event)">Save</button>
+                    <!-- <button ng-click="cancel()" class="btn">Cancel</button> -->
+                  </div>
+                  <!-- /form-actions -->
+                </fieldset>
+              </form>
+            </div>
+          </div>
+          <!-- /widget-content -->
+
+        </div>
+      </div>
+    </div>
+    <!-- /widget -->
+  </div>
+  <!-- Distributor List -->
+  <div class="span6">
+    <div class="widget widget-table
+  ">
+      <div class="widget-header"> <i class="icon-th-list"></i>
+        <h3>End User List</h3>
+      </div>
+      <!-- /widget-header -->
+      <div class="widget-content">
+
+        <table ng-table="endUserList" show-filter="true" class="table table-striped table-bordered">
+          <tr ng-repeat="End_Users in $data">
+            <td data-title="'ID'">
+              {{$index+1}}
+            </td>
+            <td data-title="'Name'" sortable="'name'" filter="{ 'name': 'text' }">
+              {{End_Users.name}}
+            </td>
+            <td data-title="'End User Email'" sortable="'Email'" filter="{ 'Email': 'text' }">
+              {{End_Users.email}}
+            </td>
+          </tr>
+        </table>
+      </div>
+      <!-- /widget-content -->
+    </div>
+    <!-- /widget -->
+
+  </div>
+
+</div>
+<!-- /row -->

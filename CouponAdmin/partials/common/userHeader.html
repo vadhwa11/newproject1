@@ -1,0 +1,121 @@
+<div class="navbar navbar-fixed-top" ng-controller="adminCtrl">
+  <!-- Admin/distributor Portal -->
+  <div ng-switch="usertype">
+    <div ng-switch-when="admin">
+      <div class="navbar-inner">
+        <div class="container"> <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+	<span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span> </a><a class="brand" href="javascript:;">Welcome to Admin Portal of FileGstNow</a>
+          <div class="nav-collapse">
+            <ul class="nav pull-right">
+              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
+                            class="icon-cog"></i> Account <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="javascript:;">Settings</a></li>
+                  <li><a href="javascript:;">Help</a></li>
+                </ul>
+              </li>
+              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
+                            class="icon-user"></i> Welcome <b>{{u_name}}</b><b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="javascript:;">Profile</a></li>
+                  <li><a ui-sref="logout">Logout</a></li>
+                </ul>
+              </li>
+            </ul>
+            <form class="navbar-search pull-right">
+              <input type="text" class="search-query" placeholder="Search">
+            </form>
+          </div>
+          <!--/.nav-collapse -->
+        </div>
+        <!-- /container -->
+      </div>
+      <!-- /navbar-inner -->
+      <!-- /navbar -->
+      <div class="subnavbar">
+        <div class="subnavbar-inner">
+          <div class="container">
+            <ul class="mainnav">
+              <li ng-class="{active: $state.includes('dashboard')}"><a ui-sref="dashboard"><i class="icon-dashboard"></i><span>Dashboard</span> </a> </li>
+              <li ng-class="{active: $state.includes('reports')}"><a ui-sref="reports"><i class="icon-list-alt"></i><span>Reports</span> </a> </li>
+              <li ng-class="{active: $state.includes('customers') || $state.includes('customer.view') || $state.includes('customer.edit')}"><a ui-sref="customers"><i class="icon-facetime-video"></i><span>Customers</span> </a></li>
+              <li ng-class="{active: $state.includes('addCustomer')}"><a ui-sref="addCustomer"><i class="icon-bar-chart"></i><span>Assign Vouchers</span> </a> </li>
+              <li ng-class="{active: $state.includes('addDistributor')}"><a ui-sref="addDistributor"><i class="icon-code"></i><span>Add Distributor</span> </a> </li>
+              <li class="dropdown"><a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-long-arrow-down"></i><span>Others</span> <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="javascript:;">Process1</a></li>
+                  <li><a href="javascript:;">FAQ</a></li>
+                  <li><a href="javascript:;">Alottment</a></li>
+                  <li><a href="javascript:;">Agreement</a></li>
+                  <li><a href="javascript:;">Terms & Conditions</a></li>
+                  <li><a href="javascript:;">Plans</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <!-- /container -->
+        </div>
+      </div>
+    </div>
+    <!-- end of Admin Portal -->
+    <!-- Distributor Portal -->
+    <div ng-switch-when="distributor">
+      <div class="navbar-inner">
+        <div class="container"> <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+<span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span> </a><a class="brand" href="javascript:;">Welcome to Distributor Portal of FileGstNow</a>
+          <div class="nav-collapse">
+            <ul class="nav pull-right">
+              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
+                 class="icon-cog"></i> Account <b class="caret"></b></a>
+                <!-- <ul class="dropdown-menu">
+                  <li><a href="javascript:;">Settings</a></li>
+                  <li><a href="javascript:;">Help</a></li>
+                </ul> -->
+              </li>
+              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
+                 class="icon-user"></i> Welcome <b>{{u_name}}</b><b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <!-- <li><a href="javascript:;">Profile</a></li> -->
+                  <li><a ui-sref="logout">Logout</a></li>
+                </ul>
+              </li>
+            </ul>
+            <form class="navbar-search pull-right">
+              <input type="text" class="search-query" placeholder="Search">
+            </form>
+          </div>
+          <!--/.nav-collapse -->
+        </div>
+        <!-- /container -->
+      </div>
+      <!-- /navbar-inner -->
+      <!-- /navbar -->
+      <div class="subnavbar">
+        <div class="subnavbar-inner">
+          <div class="container">
+            <ul class="mainnav">
+              <li ng-class="{active: $state.includes('distributorDashboard')}"><a ui-sref="distributorDashboard"><i class="icon-dashboard"></i><span>Distributor Dashboard</span> </a> </li>
+              <li ng-class="{active: $state.includes('distributorreports')}"><a ui-sref="distributorreports"><i class="icon-list-alt"></i><span>Distributor Reports</span> </a> </li>
+              <li ng-class="{active: $state.includes('IssuedVouchers')}"><a ui-sref="IssuedVouchers"><i class="icon-list-alt"></i><span>Issued Vouchers</span> </a> </li>
+              <!-- <li ng-class="{active: $state.includes('customers') || $state.includes('customer.view') || $state.includes('customer.edit')}"><a ui-sref="customers"><i class="icon-facetime-video"></i><span>Customers</span> </a></li> -->
+              <!-- <li ng-class="{active: $state.includes('addCustomer')}"><a ui-sref="addCustomer"><i class="icon-bar-chart"></i><span>Assign Vouchers</span> </a> </li>
+              <li ng-class="{active: $state.includes('addDistributor')}"><a ui-sref="addDistributor"><i class="icon-code"></i><span>Add Distributor</span> </a> </li>
+              <li class="dropdown"><a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-long-arrow-down"></i><span>Others</span> <b class="caret"></b></a> -->
+                <!-- <ul class="dropdown-menu">
+                  <li><a href="javascript:;">Process1</a></li>
+                  <li><a href="javascript:;">FAQ</a></li>
+                  <li><a href="javascript:;">Alottment</a></li>
+                  <li><a href="javascript:;">Agreement</a></li>
+                  <li><a href="javascript:;">Terms & Conditions</a></li>
+                  <li><a href="javascript:;">Plans</a></li>
+                </ul> -->
+              </li>
+            </ul>
+          </div>
+          <!-- /container -->
+        </div>
+      </div>
+    </div><!-- End of Distributor Portal -->
+  </div>
+  <!-- End of Admin/distributor Portal -->
+</div>

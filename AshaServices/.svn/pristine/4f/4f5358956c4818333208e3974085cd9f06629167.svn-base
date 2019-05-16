@@ -1,0 +1,66 @@
+package com.icg.jkt.entity;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.SecondaryTable;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+
+@Entity
+@Table(name="MAS_TRADE")
+@SecondaryTable(name = "MAS_SERVICE_TYPE", pkJoinColumns = @PrimaryKeyJoinColumn(name = "SERVICE_TYPE_ID"))
+public class MasTrade implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	@Id
+	@SequenceGenerator(name="MAS_TRADE_GENERATOR", sequenceName="MAS_TRADE_SEQ3")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="MAS_TRADE_GENERATOR")
+	@Column(name="TRADE_ID")
+	private Long tradeId;
+	
+	@Column(name="TRADE_NAME")
+	private String tradeName;
+		
+	@Column(name="STATUS")
+	private String status;
+	
+	@Column(name="LAST_CHG_BY")
+	private String lastChgBy;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="LAST_CHG_DATE")
+	private Date lastChgDate;
+	
+	/*
+	 * @Column(name="LAST_CHG_TIME") private String lastChgTime;
+	 */
+	@ManyToOne
+	@JoinColumn(name="SERVICE_TYPE_ID", nullable=false, insertable=false, updatable=false)
+	private MasServiceType masServiceType;
+	
+
+}

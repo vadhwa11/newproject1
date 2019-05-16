@@ -1,0 +1,151 @@
+package com.icg.jkt.entity;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.Date;
+import java.util.List;
+
+
+/**
+ * The persistent class for the MAS_RELIGION database table.
+ * 
+ */
+@Entity
+@Table(name="MAS_RELIGION")
+@NamedQuery(name="MasReligion.findAll", query="SELECT m FROM MasReligion m")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class MasReligion implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1069755963689039783L;
+
+	@Id
+	@SequenceGenerator(name="MAS_RELIGION_RELIGIONID_GENERATOR", sequenceName="RELIGION_ID")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="MAS_RELIGION_RELIGIONID_GENERATOR")
+	@Column(name="RELIGION_ID")
+	private long religionId;
+
+	@Column(name="LAST_CHG_BY")
+	private Long lastChgBy;
+
+	@Column(name="LAST_CHG_DATE")
+	private Date lastChgDate;
+
+	@Column(name="RELIGION_CODE")
+	private String religionCode;
+
+	@Column(name="RELIGION_NAME")
+	private String religionName;
+
+	private String status;
+
+	@OneToMany(mappedBy="masReligion")
+	@JsonBackReference
+	private List<MasEmployee> masEmployees;
+
+	@OneToMany(mappedBy="masReligion")
+	@JsonBackReference
+	private List<Patient> patients;
+
+	public MasReligion() {
+	}
+
+	public long getReligionId() {
+		return this.religionId;
+	}
+
+	public void setReligionId(long religionId) {
+		this.religionId = religionId;
+	}
+
+	public Long getLastChgBy() {
+		return this.lastChgBy;
+	}
+
+	public void setLastChgBy(Long lastChgBy) {
+		this.lastChgBy = lastChgBy;
+	}
+
+	public Date getLastChgDate() {
+		return this.lastChgDate;
+	}
+
+	public void setLastChgDate(Date lastChgDate) {
+		this.lastChgDate = lastChgDate;
+	}
+
+	public String getReligionCode() {
+		return this.religionCode;
+	}
+
+	public void setReligionCode(String religionCode) {
+		this.religionCode = religionCode;
+	}
+
+	public String getReligionName() {
+		return this.religionName;
+	}
+
+	public void setReligionName(String religionName) {
+		this.religionName = religionName;
+	}
+
+	public String getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public List<MasEmployee> getMasEmployees() {
+		return this.masEmployees;
+	}
+
+	public void setMasEmployees(List<MasEmployee> masEmployees) {
+		this.masEmployees = masEmployees;
+	}
+
+	public MasEmployee addMasEmployee(MasEmployee masEmployee) {
+		getMasEmployees().add(masEmployee);
+		masEmployee.setMasReligion(this);
+
+		return masEmployee;
+	}
+
+	public MasEmployee removeMasEmployee(MasEmployee masEmployee) {
+		getMasEmployees().remove(masEmployee);
+		masEmployee.setMasReligion(null);
+
+		return masEmployee;
+	}
+
+	public List<Patient> getPatients() {
+		return this.patients;
+	}
+
+	public void setPatients(List<Patient> patients) {
+		this.patients = patients;
+	}
+
+	public Patient addPatient(Patient patient) {
+		getPatients().add(patient);
+		patient.setMasReligion(this);
+
+		return patient;
+	}
+
+	public Patient removePatient(Patient patient) {
+		getPatients().remove(patient);
+		patient.setMasReligion(null);
+
+		return patient;
+	}
+
+}

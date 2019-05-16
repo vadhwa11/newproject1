@@ -1,0 +1,150 @@
+#-----------------------------------------------------------------------------------------------------------------------------------------#
+############################################################## REST SERVICE URL #####################################################
+#=========================================================================================================================================#
+
+#/************************************************** COMMAND MASTER *********************************************************/
+addCommand = http://192.168.10.59:7002/AshaServices/v0.1/master/addCommand
+updateCommand = http://192.168.10.59:7002/AshaServices/v0.1/master/updateCommand
+statusCommand = http://192.168.10.59:7002/AshaServices/v0.1/master/statusCommand
+getAllCommand = http://192.168.10.59:7002/AshaServices/v0.1/master/getAllCommand
+getCommandTypeList=http://192.168.10.59:7002/AshaServices/v0.1/master/getCommandTypeList
+
+
+#/************************************************** UNIT MASTER **********************************************************/
+getUnitTypeList = http://192.168.10.59:7002/AshaServices/v0.1/master/getUnitTypeList
+getCommandList = http://192.168.10.59:7002/AshaServices/v0.1/master/getCommandList
+#getCommandTypeList=http://localhost:8083/AshaServices/v0.1/master/getCommandTypeList
+updateUnit=http://192.168.10.59:7002/AshaServices/v0.1/master/updateUnit
+getAllUnit=http://192.168.10.59:7002/AshaServices/v0.1/master/getAllUnit
+addUnit=http://192.168.10.59:7002/AshaServices/v0.1/master/addUnit
+updateUnitStatus=http://192.168.10.59:7002/AshaServices/v0.1/master/updateStatus
+
+#/************************************************* MAS HOSPITAL ********************************************************/
+updateHospitalMasterStatus=http://192.168.10.59:7002/AshaServices/v0.1/master/updateHospitalMasterStatus
+updateHospitalDetails=http://192.168.10.59:7002/AshaServices/v0.1/master/updateHospitalDetails
+getAllHospital=http://192.168.10.59:7002/AshaServices/v0.1/master/getAllHospital
+getUnitNameList=http://192.168.10.59:7002/AshaServices/v0.1/master/getUnitNameList
+addMasHospital=http://192.168.10.59:7002/AshaServices/v0.1/master/addMasHospital
+
+#/************************************************* MAS RELATION *******************************************************/
+addRelation=http://192.168.10.59:7002/AshaServices/v0.1/master/addRelation
+updateRelationStatus=http://192.168.10.59:7002/AshaServices/v0.1/master/updateRelationStatus
+updateRelationDetails=http://192.168.10.59:7002/AshaServices/v0.1/master/updateRelationDetails
+getAllRelation=http://192.168.10.59:7002/AshaServices/v0.1/master/getAllRelation
+
+#/************************************************* DISPOSAL MASTER ****************************************************/
+addDisposal=http://192.168.10.59:7002/AshaServices/v0.1/master/addDisposal
+getAllDisposal=http://192.168.10.59:7002/AshaServices/v0.1/master/getAllDisposal
+updateDisposalDetails=http://192.168.10.59:7002/AshaServices/v0.1/master/updateDisposalDetails
+updateDisposalStatus=http://192.168.10.59:7002/AshaServices/v0.1/master/updateDisposalStatus
+
+#/************************************************* APPOINTMENT TYPE ***************************************************/
+addAppointmentType=http://192.168.10.59:7002/AshaServices/v0.1/master/addAppointmentType
+getAllAppointmentType=http://192.168.10.59:7002/AshaServices/v0.1/master/getAllAppointmentType
+updateAppointTypeDetails=http://192.168.10.59:7002/AshaServices/v0.1/master/updateAppointmentTypeDetails
+updateAppointStatus=http://192.168.10.59:7002/AshaServices/v0.1/master/updateAppointmentTypeStatus
+
+#/************************************************* MAS DEPARTMENT *****************************************************/
+getDepartmentTypeList=http://192.168.10.59:7002/AshaServices/v0.1/master/getDepartmentTypeList
+getAllDepartment=http://192.168.10.59:7002/AshaServices/v0.1/master/getAllDepartment
+addDepartment=http://192.168.10.59:7002/AshaServices/v0.1/master/addDepartment
+updateDepartmentStatus=http://192.168.10.59:7002/AshaServices/v0.1/master/updateDepartmentStatus
+updateDepartmentDetails=http://192.168.10.59:7002/AshaServices/v0.1/master/updateDepartmentDetails
+
+#/************************************************* MAS OPD FREQUENCY **************************************************/
+getAllOpdFrequency=http://192.168.10.59:7002/AshaServices/v0.1/master/getAllOpdFrequency
+addOpdFrequency=http://192.168.10.59:7002/AshaServices/v0.1/master/addOpdFrequency
+updateOpdFrequencyDetails=http://192.168.10.59:7002/AshaServices/v0.1/master/updateOpdFrequencyDetails
+updateOpdFrequencyStatus=http://192.168.10.59:7002/AshaServices/v0.1/master/updateOpdFrequencyStatus
+
+#/************************************************* MAS EMPANELLED HOSPITAL *****************************************/
+addEmpanelledHospital=http://192.168.10.59:7002/AshaServices/v0.1/master/addEmpanelledHospital
+getAllEmpanelledHospital=http://192.168.10.59:7002/AshaServices/v0.1/master/getAllEmpanelledHospital
+updateEmpanelledHospital=http://192.168.10.59:7002/AshaServices/v0.1/master/updateEmpanelledHospital
+
+#/************************************************* MAS IDEAL WEIGHT *****************************************/
+getAllIdealWeight=http://192.168.10.59:7002/AshaServices/v0.1/master/getAllIdealWeight
+getAge=http://192.168.10.59:7002/AshaServices/v0.1/master/getAge
+
+#/************************************************* Physiotherapy/Procedure *****************************************/
+getAllPhysiotherapy=http://192.168.10.59:7002/AshaServices/v0.1/master/getAllPhysiotherapy
+addPhsiotherapyCare=http://192.168.10.59:7002/AshaServices/v0.1/master/addPhsiotherapyCare
+updatePhysiotherapyDetails=http://192.168.10.59:7002/AshaServices/v0.1/master/updatePhysiotherapyDetails
+
+
+#-----------------------------------------------------------------------------------------------------------------------------------------#
+############################################################## OSB SERVICES END POINT #####################################################
+#=========================================================================================================================================#
+
+#/************************************************* MAS DEPARTMENT *****************************************************/
+osb_getDepartmentTypeList=http://192.168.10.59:7003/MasterGetDepartmentTypeList/RestService/GetDepartmentTypeList
+osb_getAllDepartment=http://192.168.10.59:7003/MasterGetAllDepartment/ProxyService/GetAllDepartment
+osb_addDepartment=http://192.168.10.59:7003/MasterAddDepartment/ProxyService/AddDepartment
+osb_updateDepartmentStatus=http://192.168.10.59:7003/MasterUpdateDepartmentStatus/ProxytService/UpdateDepartmentStatus
+osb_updateDepartmentDetails=http://192.168.10.59:7003/MasterUpdateDepartmentDetails/ProxyService/UpdateDepartmentDetails
+
+#/************************************************* MAS OPD FREQUENCY **************************************************/
+osb_getAllOpdFrequency=http://192.168.10.59:7003/MasterGetAllOpdFrequency/ProxyService/GetAllOpdFrequency
+osb_addOpdFrequency=http://192.168.10.59:7003/MasterAddOpdFrequency/ProxyService/AddOpdFrequency
+osb_updateOpdFrequencyDetails=http://192.168.10.59:7003/MasterU/ProxyService/UpdateOpdFrequency
+osb_updateOpdFrequencyStatus=http://192.168.10.59:7003/MasterUpdateOpdFrequencyStatus/ProxyService/UpdateOpdFrequencyStatus
+
+#/************************************************* APPOINTMENT TYPE ***************************************************/
+osb_addAppointmentType=http://192.168.10.59:7003/Master_AddAppointmentType/ProxyService/AddAppointmentType
+osb_getAllAppointmentType=http://192.168.10.59:7003/Master_GetAllAppointmentType/ProxyService/GetAllAppointmentType
+osb_updateAppointTypeDetails=http://192.168.10.59:7003/Master_UpdateAppointmentTypeDetails/ProxyService/UpdateAppointmentTypeDetails
+osb_updateAppointStatus=http://192.168.10.59:7003/Master_UpdateAppointmentTypeStatus/ProxyService/UpdateAppointmentTypeStatus
+
+#/************************************************* DISPOSAL MASTER ****************************************************/
+osb_addDisposal=http://192.168.10.59:7003/Master_AddDisposal/ProxyService/AddDisposal
+osb_getAllDisposal=http://192.168.10.59:7003/Master_GetAllDisposal/ProxyService/GetAllDisposal
+osb_updateDisposalDetails=http://192.168.10.59:7003/Master_UpdateDisposalDetails/ProxyService/UpdateDisposalDetails
+osb_updateDisposalStatus=http://192.168.10.59:7003/Master_UpdateDisposalStatus/ProxyService/UpdateDisposalStatus
+
+#/************************************************** COMMAND MASTER *********************************************************/
+osb_addCommand = http://localhost:8083/AshaServices/v0.1/master/addCommand
+osb_updateCommand = http://localhost:8083/AshaServices/v0.1/master/updateCommand
+osb_statusCommand = http://localhost:8083/AshaServices/v0.1/master/statusCommand
+osb_getAllCommand = http://localhost:8083/AshaServices/v0.1/master/getAllCommand
+
+#/************************************************** UNIT MASTER **********************************************************/
+osb_getUnitType = http://192.168.10.59:7002/AshaServices/v0.1/master/getUnitType
+osb_getCommandList = http://localhost:8083/AshaServices/v0.1/master/getCommandList
+osb_getCommandTypeList=http://localhost:8083/AshaServices/v0.1/master/getCommandTypeList
+osb_updateUnit=http://localhost:8083/AshaServices/v0.1/master/updateUnit
+osb_getAllUnit=http://localhost:8083/AshaServices/v0.1/master/getAllUnit
+osb_addUnit=http://localhost:8083/AshaServices/v0.1/master/addUnit
+osb_updateUnitStatus=http://localhost:8083/AshaServices/v0.1/master/updateStatus
+osb_getUnitTypeList = http://192.168.10.59:7003/Master_GetUnitTypeList/ProxyService/GetUnitTypeList
+
+# /******************USER APPLICATION*********************************************/
+getAllUserApplication=http://192.168.10.59:7002/AshaServices/admin/getAllUserApplication
+
+
+#/************************************************* MAS HOSPITAL ********************************************************/
+updateHospitalMasterStatus=http://192.168.10.59:7002/AshaServices/v0.1/master/updateHospitalMasterStatus
+updateHospitalDetails=http://192.168.10.59:7002/AshaServices/v0.1/master/updateHospitalDetails
+osb_getAllHospital=http://192.168.10.59:7003/Master_GetAllHospital/ProxyService/GetAllHospatal
+osb_getUnitNameList=http://192.168.10.59:7003/Master_GetUnitNameList/ProxyService/GetUnitNameList
+addMasHospital=http://192.168.10.59:7002/AshaServices/v0.1/master/addMasHospital
+
+
+
+#Self Relation code
+SELF_RELATION_ID=8
+REGISTRATION_TYPE_NAME=ICG
+REGISTRATION_TYPE_OTHER_DEFENCE_ID=2
+REGISTRATION_TYPE_OTHER_CIVIL_ID=3
+APPOINTMENTTYPE=1
+
+searchOthersRegisteredPatient=http://192.168.10.59:7002/AshaServices/registration/searchOthersRegisteredPatient
+submitPatientDetailsForOthers=http://192.168.10.59:7002/AshaServices/registration/submitPatientDetailsForOthers
+tokenNoOfDepartmentForOthers=http://192.168.10.59:7002/AshaServices/registration/tokenNoOfDepartmentForOthers
+showAppointmentForOthers=http://192.168.10.59:7002/AshaServices/registration/showAppointmentForOthers
+submitPatientDetails=http://192.168.10.59:7002/AshaServices/registration/submitPatientDetails
+tokenNoForDepartmentMultiVisit=http://192.168.10.59:7002/AshaServices/registration/tokenNoForDepartmentMultiVisit
+patients=http://192.168.10.59:7002/AshaServices/registration/patients
+departmentBloodGroupAndMedicalCategory=http://192.168.10.59:7002/AshaServices/registration/departmentBloodGroupAndMedicalCategory
+
+getDoctorRoasterDetail=http://192.168.10.59:7002/AshaServices/admin/getDoctorRoasterDetail
+getDepartmentList=http://192.168.10.59:7002/AshaServices/admin/getDepartmentList

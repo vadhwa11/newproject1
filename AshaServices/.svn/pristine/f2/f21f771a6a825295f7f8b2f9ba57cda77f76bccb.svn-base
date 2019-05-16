@@ -1,0 +1,356 @@
+package com.icg.jkt.controller;
+
+/** Copyright 2019 JK Technosoft Ltd. All rights reserved.
+* Use is subject to license terms.
+* Purpose of the Asha-ICG -  This is for login.
+* @author  Krishna Thakur
+* Create Date: 14/01/2019 
+* @version 0.1
+*/
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.icg.jkt.service.LoginService;
+import com.icg.jkt.service.OpdService;
+import com.icg.jkt.service.impl.OpdServiceImpl;
+import com.icg.jkt.utils.RequestConstants;
+
+
+@RequestMapping("/v0.1/opd")
+@RestController
+@CrossOrigin
+
+public class OpdController {
+	
+	@Autowired
+	OpdService os;
+	
+	@Autowired
+	OpdServiceImpl osl;
+	
+Map<String, Object> map = new HashMap<String, Object>();
+	
+	////////////////// Get Waiting Patient List for Pre-Consultation Assessment /////////////////////////////
+	
+	@RequestMapping(value="/getPreConsPatientWatingList", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String PreConsPatientWatingList(@RequestBody HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		return os.PreConsPatientWatingList(jsondata, request, response);
+	}
+	
+	@RequestMapping(value="/getPreConsPatientWatingListMapped", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String PreConsPatientWatingListMapped(@RequestBody HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		return os.PreConsPatientWatingListMapped(jsondata, request, response);
+	}
+	
+	@RequestMapping(value="/searchPatientWatingList", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String searchPatientWatingList(@RequestBody HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		return os.searchPatientWatingList(jsondata, request, response);
+	}
+	
+	/*@RequestMapping(value="/getIdealWeight", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String idealWeight(@RequestBody HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		return os.idealWeight(jsondata, request, response);
+	}
+	*/
+	
+	///////////////////Insert Pre-Consultation Assessment /////////////////////////
+	
+	@RequestMapping(value="/addVitalDetails", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String addVitalPreConsulataionDetails(@RequestBody HashMap<String, Object> payload, HttpServletRequest request,
+			HttpServletResponse response) {
+		return os.addVitalPreConsulataionDetails(payload, request, response);
+	}
+	
+	@RequestMapping(value="/getOpdPatientWatingList", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String OpdPatientWatingList(@RequestBody HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		return os.OpdPatientWatingList(jsondata, request, response);
+	}
+	
+	@RequestMapping(value="/getPatientDetails", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String OpdPatientDetails(@RequestBody HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		return os.OpdPatientDetails(jsondata, request, response);
+	}
+	
+	@RequestMapping(value="/getFamilyHistoryDetails", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String familyHistoryDetails(@RequestBody HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		return os.familyHistoryDetails(jsondata, request, response);
+	}
+	
+	//////////////////////////// save opd details controller 27th Feb 2019 ////////////////////////
+	
+	@RequestMapping(value="/saveOpdPatientDetails", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String saveOpdPatientDetails(@RequestBody HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		return os.saveOpdPatientDetails(jsondata, request, response);
+	}
+	
+	
+	////////////////////////////// Save OPD Template Controller 05th March 2019 ///////////////////////
+	
+	@RequestMapping(value="/saveOpdTemplates", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String saveOpdTemplates(@RequestBody HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		return os.saveOpdTemplates(jsondata, request, response);
+	}
+		
+	//////////////////// cpoy from HAL project---Get Waiting Patient List for OPD ///////////////////////////////
+	
+	@RequestMapping(value = "/saveInvestigationDetails", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String saveInvestigationDetails(@RequestBody HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response) {
+		return os.saveInvestigationDetails(jsondata, request, response);
+	}
+	
+	@RequestMapping(value = "/saveReferalDetails", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String saveReferalDetails(@RequestBody HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response) 
+	{
+		return os.saveReferalDetails(jsondata, request, response);
+	}
+	
+	///////////////////////////////// OPD Reports Sections //////////////////////////////
+	
+	@RequestMapping(value = "/getOpdReportsDetailsbyServiceNo", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getOpdReportsDetailsbyServiceNo(@RequestBody HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response) 
+	{
+		return os.getOpdReportsDetailsbyServiceNo(jsondata, request, response);
+	}
+	
+	
+	@RequestMapping(value = "/getOpdReportsDetailsbyPatinetId", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getOpdReportsDetailsbyPatinetId(@RequestBody HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response) 
+	{
+		return os.getOpdReportsDetailsbyPatinetId(jsondata, request, response);
+	}
+	
+	@RequestMapping(value = "/getOpdReportsDetailsbyVisitId", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public String getOpdReportsDetailsbyVisitId(@RequestBody HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response) 
+	{
+		return os.getOpdReportsDetailsbyVisitId(jsondata, request, response);
+	}
+	
+	
+	@RequestMapping(value="/getObesityWaitingList", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String  getObesityWaitingList(@RequestBody HashMap<String, Object> map){		
+		
+		String resultMap = os.getObesityWaitingList(map);
+		
+		return resultMap;
+		
+	}
+	
+	@RequestMapping(value="/getObesityDetails", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String  getObesityDetails(@RequestBody HashMap<String, Object> map){		
+		
+		String resultMap = os.getObesityDetails(map);
+		System.out.println("resultMap "+resultMap);
+		return resultMap;
+		
+	}
+	
+	@RequestMapping(value="/getIdealWeight", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String getIdealWeight(@RequestBody HashMap<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+		String idealWeight = os.idealWeight(map, request, response);
+		System.out.println("idealWeight "+idealWeight);
+		return idealWeight;
+	}
+	
+	@RequestMapping(value="/saveObesityDetails", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String saveObesityDetails(@RequestBody HashMap<String, Object> map, HttpServletRequest request, HttpServletResponse response) {
+		String idealWeight = os.saveObesityDetails(map);
+		return idealWeight;  
+	}
+	
+	@RequestMapping(value="/referredPatientList", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String referredPatientList(@RequestBody HashMap<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+		String idealWeight = os.referredPatientList(map, request,response);
+		return idealWeight;  
+	}	
+	
+	@RequestMapping(value="/referredPatientDetail", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String referredPatientDetail(@RequestBody HashMap<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+		String referredPatientDetail = os.referredPatientDetail(map, request,response);
+		return referredPatientDetail;  
+	}
+	
+/*	@RequestMapping(value="/updateReferralDetail", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String updateReferralDetail(@RequestBody List<HashMap<String, String>> list, HttpServletRequest request, HttpServletResponse response) {
+		String referralDetailStatus = os.updateReferralDetail(list, request,response);
+		return referralDetailStatus; 
+	}*/
+	
+	@RequestMapping(value="/updateReferralDetail", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String updateReferralDetail(@RequestBody HashMap<String, Object> map, HttpServletRequest request, HttpServletResponse response) {
+		String referralDetailStatus = os.updateReferralDetail(map, request,response);
+		return referralDetailStatus; 
+	}
+	
+	@RequestMapping(value="/getPendingDischargeList", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String getPendingDischargeList(@RequestBody HashMap<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+		String referralDetailStatus = os.getPendingDischargeList(map, request,response);		
+		return referralDetailStatus; 
+	}
+	
+	@RequestMapping(value="/getAdmissionDischargeList", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String getAdmissionDischargeList(@RequestBody HashMap<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+		String referralDetailStatus = os.getAdmissionDischargeList(map, request,response);		
+		return referralDetailStatus; 
+	}
+	
+	@RequestMapping(value="/admissionAndDischarge", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String admissionAndDischarge(@RequestBody HashMap<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+ 		String result = os.admissionAndDischarge(map, request,response);		
+		System.out.println("result is "+result);
+		return result; 
+	}	
+	
+	@RequestMapping(value="/savePatientAdmission", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String savePatientAdmission(@RequestBody HashMap<String, String> jsondata, HttpServletRequest request,HttpServletResponse response) {
+		return os.savePatientAdmission(jsondata, request, response);
+	}
+	
+	@RequestMapping(value="/getServiceWisePatientList", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String getServiceWisePatientList(@RequestBody HashMap<String, String> jsondata, HttpServletRequest request,HttpServletResponse response) {
+		return os.getServiceWisePatientList(jsondata, request, response);
+	}
+	
+	@RequestMapping(value="/saveNewAdmission", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String saveNewAdmission(@RequestBody HashMap<String, String> jsondata, HttpServletRequest request,HttpServletResponse response) {
+		return os.saveNewAdmission(jsondata, request, response);
+	}
+	
+	@RequestMapping(value="/nursingCareWaitingList",  method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String nursingCareWaitingList(@RequestBody HashMap<String, String> jsondata, HttpServletRequest request, HttpServletResponse response) {
+		String result = os.nursingCareWaitingList(jsondata, request, response);
+		return os.nursingCareWaitingList(jsondata, request, response);
+	}
+	
+	@RequestMapping(value="/getNursingCareDetail",  method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String getNursingCareDetail(@RequestBody HashMap<String, String> jsondata, HttpServletRequest request, HttpServletResponse response) {
+		//String result = os.nursingCareWaitingList(jsondata, request, response);
+		return os.getNursingCareDetail(jsondata, request, response);
+	}
+	
+	@RequestMapping(value="/getProcedureDetail",  method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String getProcedureDetail(@RequestBody HashMap<String, String> jsondata, HttpServletRequest request, HttpServletResponse response) {
+		//String result = os.nursingCareWaitingList(jsondata, request, response);
+		return os.getProcedureDetail(jsondata, request, response);
+	}
+	
+	@RequestMapping(value="/saveProcedureDetail",  method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String saveProcedureDetail(@RequestBody HashMap<String, String> jsondata, HttpServletRequest request, HttpServletResponse response) {
+		//String result = os.nursingCareWaitingList(jsondata, request, response);
+		return os.saveProcedureDetail(jsondata, request, response);
+	}
+	
+	@RequestMapping(value="/physioTherapyWaitingList",  method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String physioTherapyWaitingList(@RequestBody HashMap<String, String> jsondata, HttpServletRequest request, HttpServletResponse response) {
+		return os.physioTherapyWaitingList(jsondata, request, response);
+	}
+	
+	@RequestMapping(value="/getphysioTherapyDetail",  method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String getphysioTherapyDetail(@RequestBody HashMap<String, String> jsondata, HttpServletRequest request, HttpServletResponse response) {
+		return os.getphysioTherapyDetail(jsondata, request, response);
+	}
+	
+	
+	//Added by Avinash
+	
+	
+	@RequestMapping(value="/getExaminationDetail", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String getExaminationDetail(@RequestBody HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		return os.getExaminationDetail(jsondata, request, response);
+	}
+	
+	@RequestMapping(value="/getInvestigationDetail", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String getInvestigationDetail(@RequestBody HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		return os.getInvestigationDetail(jsondata, request, response);
+	}
+	 
+	@RequestMapping(value="/getTreatmentPatientDetail", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String getTreatmentPatientDetail(@RequestBody HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		return os.getTreatmentPatientDetail(jsondata, request, response);
+	}
+	
+	@RequestMapping(value="/submitPatientRecall", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String submitPatientRecall(@RequestBody HashMap<String, Object> payload, HttpServletRequest request,
+			HttpServletResponse response) {
+		return os.submitPatientRecall(payload, request, response);
+		
+		
+	}
+	@RequestMapping(value="/getPatientHistoryDetail", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String getPatientHistoryDetail(@RequestBody HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		return os.getPatientHistoryDetail(jsondata, request, response);
+	}
+	
+	@RequestMapping(value="/getPatientReferalDetail", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String getPatientReferalDetail(@RequestBody HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		return os.getPatientReferalDetail(jsondata, request, response);
+	}
+	@RequestMapping(value="/deleteGridRow", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String deleteGridRow(@RequestBody HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		return os.deleteGridRow(jsondata, request, response);
+	}
+	
+	
+	
+	
+}
+
+
+
+
+
+
+
+
+
+

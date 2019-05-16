@@ -46,7 +46,8 @@ public class MasAdministrativeSex implements Serializable {
 	@Temporal(TemporalType.DATE)
 	@Column(name="LAST_CHG_DATE")
 	private Date lastChgDate;
-
+	
+	@Column(name="STATUS")
 	private String status;
 	
 	

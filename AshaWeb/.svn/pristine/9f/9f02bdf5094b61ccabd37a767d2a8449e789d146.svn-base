@@ -1,0 +1,45 @@
+package com.asha.icgweb.service.impl;
+
+import java.util.HashMap;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
+import com.asha.icgweb.service.WebAdminService;
+import com.asha.icgweb.utils.HMSUtil;
+import com.asha.icgweb.utils.RestUtils;
+
+@Service
+public class WebAdminServiceImpl implements WebAdminService {
+
+	@Override
+	public String getDepartmentList(String data, HttpServletRequest request, HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String OSBURL = HMSUtil.getProperties("urlextension.properties", "getDepartmentList");
+		return RestUtils.postWithHeaders(OSBURL, requestHeaders, data);
+	}
+
+	@Override
+	public String getDoctorRoasterDetail(String data, HttpServletRequest request, HttpServletResponse response) {
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String OSBURL = HMSUtil.getProperties("urlextension.properties", "getDoctorRoasterDetail");
+		return RestUtils.postWithHeaders(OSBURL, requestHeaders, data);
+
+	}
+
+	@Override
+	public String saveDoctorRoaster(String data, HttpServletRequest request, HttpServletResponse response) {
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		return RestUtils.postWithHeaders("http://192.168.10.59:7003/SubmitDepartmentRoaster/ProxyService/SubmitDeptRoaster",
+				   requestHeaders,data);
+
+	}
+
+
+
+	
+}

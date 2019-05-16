@@ -145,17 +145,14 @@ public interface OpdDao {
 
 	//////////////by dhiraj /////////////////////////
 	Map<String, Object> minorSurgeryWaitingList(HashMap<String, String> jsondata, HttpServletRequest request,
-	HttpServletResponse response);
+			HttpServletResponse response);
 
 	Map<String,Object> getMinorSurgeryDetail(HashMap<String, String> jsondata, HttpServletRequest request,
-	HttpServletResponse response);
+			HttpServletResponse response);
 	List<MasAnesthesia> getAnesthesiaList();
 	String saveMinorSurgery(HashMap<String, Object> jsondata);
 	String deleteMinorSurgery(HashMap<String, Object> jsondata);
 	
-
-
-
 
 
 	

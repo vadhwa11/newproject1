@@ -1,0 +1,153 @@
+package com.icg.jkt.dao.impl;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.ParameterMode;
+
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.procedure.ProcedureCall;
+import org.hibernate.procedure.ProcedureOutputs;
+import org.hibernate.transform.AliasToBeanResultTransformer;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.icg.jkt.dao.ImportExportUtilDao;
+import com.icg.jkt.entity.MasIcd;
+import com.icg.jkt.entity.MasState;
+import com.icg.jkt.entity.SyncTable;
+import com.icg.jkt.hibernateutils.GetHibernateUtils;
+
+@Repository
+public class ImportExportUtilDaoImpl implements ImportExportUtilDao {
+	
+	@Autowired
+	GetHibernateUtils getHibernateUtils;	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SyncTable> getExportSyncTableList() {
+		
+		List<SyncTable> exportTablist = new ArrayList<SyncTable>();
+		
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();						
+			exportTablist = session.createCriteria(SyncTable.class).add(Restrictions.eq("ashaSyncFlag", new Long(1))).list();		
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		System.out.println(exportTablist);
+		return exportTablist;
+	
+	}
+	
+	
+public String genrateCSV() {
+		
+		
+		JSONObject jsonObj=new JSONObject();
+		
+		try {
+			
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			
+			 	ProcedureCall query =  session.createStoredProcedureCall("ASP_CSV_GENERATE");	            
+	            query.registerParameter("out", Integer.class, ParameterMode.OUT);
+	            ProcedureOutputs procedureResult=query.getOutputs();
+	            Integer result= (Integer)procedureResult.getOutputParameterValue("out");
+	            if(result==0) {
+	            	jsonObj.put("status", "error");
+	            
+	            }
+	            else if(result==1) {
+	            	jsonObj.put("status", "success");
+		         }
+
+		} catch (Exception e) {
+			jsonObj.put("status", "error");
+			e.printStackTrace();
+		}
+		finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		
+		return jsonObj.toString();
+	
+	}
+
+
+public String importCSV() {
+	
+	
+	JSONObject jsonObj=new JSONObject();
+	
+	try {
+		
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		
+		 	ProcedureCall query =  session.createStoredProcedureCall("ASP_MERGER_TABLE");	            
+            query.registerParameter("out", Integer.class, ParameterMode.OUT);
+            ProcedureOutputs procedureResult=query.getOutputs();
+            Integer result= (Integer)procedureResult.getOutputParameterValue("out");
+            if(result==0) {
+            	jsonObj.put("status", "error");
+            
+            }
+            else if(result==1) {
+            	jsonObj.put("status", "success");
+	         }
+
+	} catch (Exception e) {
+		jsonObj.put("status", "error");
+		e.printStackTrace();
+	}
+	finally {
+		getHibernateUtils.getHibernateUtlis().CloseConnection();
+	}
+	
+	return jsonObj.toString();
+
+}
+
+@Override
+@SuppressWarnings("unchecked")
+public List<MasIcd> getICDNameSearch(JSONObject jsonObject) {
+	
+	List<MasIcd> icdlist = new ArrayList<MasIcd>();
+	
+	try {
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		Criteria cr=session.createCriteria(MasIcd.class);
+		if(jsonObject.get("icdName")!=null && !jsonObject.get("icdName").equals("")) {
+		cr.add(Restrictions.like("icdName", jsonObject.get("icdName").toString(),MatchMode.ANYWHERE));
+		}
+		ProjectionList p=Projections.projectionList();
+        p.add(Projections.property("icdId").as("icdId"));
+        p.add(Projections.property("icdName").as("icdName"));        
+        cr.setProjection(p);
+		icdlist=cr.setResultTransformer(new AliasToBeanResultTransformer(MasIcd.class)).list();			
+		
+
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	finally {
+		getHibernateUtils.getHibernateUtlis().CloseConnection();
+	}
+	
+	return icdlist;
+
+}
+
+
+
+}

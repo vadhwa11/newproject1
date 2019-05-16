@@ -1,0 +1,55 @@
+<fieldset class="coupenField">
+  <div id="exportable">
+    <div class="coupenDiv">
+      <div class="panel-heading">
+        <div class="col-md-3">
+          <img src="img/sd_old.svg" width="40px">
+        </div>
+        <div class="col-md-6">
+          <h3>
+                To login and activate the product please go to website
+                <br> www.filegstnow.com
+                </h3>
+        </div>
+      </div>
+      <div class="panel-heading">
+        <div style="border: 1px solid #000000; width: 30%;  float: right; text-align: center;">
+
+          <h2 class="customContentQrcode">Voucher ID : {{$state.params.id}}</h2>
+
+          <div class="qrcode">
+            <img src="{{FinalImage}}" width="130px" />
+          </div>
+
+        </div>
+        <!--borderBoxBoundry-->
+
+        <ul class="none">
+          <li>Please scan QR Code using filegstnow activation application. Download application from google play store.</li>
+          <li>Please check the genuinity of this license by scanning the QR Code above at the time of purchase of this product.</li>
+        </ul>
+        <ul>
+          <li>The activation of this voucher will be treated as commencement of services.This service will be valid for one year </br>from the date of activation.</li>
+          <li>This Voucher is non transferable and non refundable.</li>
+          <li>Each voucher will be linked to a unique GSTN No. of the user and this cannot be relinked to any other </br>GSTN No. during the consumption period of one year.</li>
+          <li>After the expiry of usage period the same need to be renewed with a new voucher under same user id and </br>end user licence agreement.</li>
+          <li>Company is not responsible for any missuse / theft / misplace of this voucher.</li>
+          <li>For any service related issue contact at<strong>
+ service@filegstnow.com</strong></li>
+        </ul>
+        <ul class="none">
+          <li>One prepaid licence copy of filegstnow tax filing application:</li>
+          <li>
+            <strong>MRP Rs. 2499 /- (taxes &amp; other levies extra) </strong></li>
+          <li>Valid for one year from the date of activation.</li>
+          <li>In case of any damage to the QR Code because of any reason, the company shall note be liable to give any alternative code.</li>
+          <li>Please read the terms &amp; conditions carefully at the time of activation.</li>
+        </ul>
+        <img src="img/wave.jpg" style="z-index:;position:relative;top:5px;left:-39px;width:107.3%;">
+
+        <img src="img/logoP.svg" class="btmimg" style="z-index:11;relative:inherit;bottom:80px;">
+      </div>
+    </div>
+  </div>
+</fieldset><br>
+<button type="button" ng-click="generatePDF()" class="btn btn-success btn-lg">Download</button>

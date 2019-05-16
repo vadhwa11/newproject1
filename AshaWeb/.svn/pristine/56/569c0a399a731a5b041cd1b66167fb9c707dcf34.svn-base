@@ -1,0 +1,185 @@
+#-----------------------------------------------------------------------------------------------------------------------------------------#
+############################################################## API URL #####################################################
+#=========================================================================================================================================#
+OSB_IP_AND_PORT=http://192.168.10.59:7003
+#-----------------------------------------------------------------------------------------------------------------------------------------#
+############################################################## OSB SERVICES END POINT #####################################################
+#=========================================================================================================================================#
+
+#/************************************************* MAS DEPARTMENT *****************************************************/
+osb_getDepartmentTypeList=/MasterGetDepartmentTypeList/RestService/GetDepartmentTypeList
+osb_getAllDepartment=/MasterGetAllDepartment/ProxyService/GetAllDepartment
+osb_addDepartment=/MasterAddDepartment/ProxyService/AddDepartment
+osb_updateDepartmentStatus=/MasterUpdateDepartmentStatus/ProxytService/UpdateDepartmentStatus
+osb_updateDepartmentDetails=/MasterUpdateDepartmentDetails/ProxyService/UpdateDepartmentDetails
+
+#/************************************************* MAS OPD FREQUENCY **************************************************/
+osb_getAllOpdFrequency=/MasterGetAllOpdFrequency/ProxyService/GetAllOpdFrequency
+osb_addOpdFrequency=/MasterAddOpdFrequency/ProxyService/AddOpdFrequency
+osb_updateOpdFrequencyDetails=/MasterU/ProxyService/UpdateOpdFrequency
+osb_updateOpdFrequencyStatus=/MasterUpdateOpdFrequencyStatus/ProxyService/UpdateOpdFrequencyStatus
+
+#/************************************************* APPOINTMENT TYPE ***************************************************/
+osb_addAppointmentType=/Master_AddAppointmentType/ProxyService/AddAppointmentType
+osb_getAllAppointmentType=/Master_GetAllAppointmentType/ProxyService/GetAllAppointmentType
+osb_updateAppointTypeDetails=/Master_UpdateAppointmentTypeDetails/ProxyService/UpdateAppointmentTypeDetails
+osb_updateAppointStatus=/Master_UpdateAppointmentTypeStatus/ProxyService/UpdateAppointmentTypeStatus
+
+#/************************************************* DISPOSAL MASTER ****************************************************/
+osb_addDisposal=/Master_AddDisposal/ProxyService/AddDisposal
+osb_getAllDisposal=/Master_GetAllDisposal/ProxyService/GetAllDisposal
+osb_updateDisposalDetails=/Master_UpdateDisposalDetails/ProxyService/UpdateDisposalDetails
+osb_updateDisposalStatus=/Master_UpdateDisposalStatus/ProxyService/UpdateDisposalStatus
+
+#/************************************************** COMMAND MASTER *********************************************************/
+osb_addCommand=/Master_AddCommand/ProxyService/addCommand
+osb_updateCommand=/AshaServices/v0.1/master/updateCommand
+osb_statusCommand=/Master_StatusCommand/ProxyService/StatusCommand
+osb_getAllCommand=/Master_GetAllCommand/ProxyService/getAllCommand
+
+#/************************************************** UNIT MASTER **********************************************************/
+osb_getUnitType = http://192.168.10.59:7002/AshaServices/v0.1/master/getUnitType
+osb_getCommandList = http://localhost:8083/AshaServices/v0.1/master/getCommandList
+osb_getCommandTypeList=/Master_GetCommandTypeList/ProxyService/GetCommandType
+osb_updateUnit=http://localhost:8083/AshaServices/v0.1/master/updateUnit
+osb_getAllUnit=http://localhost:8083/AshaServices/v0.1/master/getAllUnit
+osb_addUnit=http://localhost:8083/AshaServices/v0.1/master/addUnit
+osb_updateUnitStatus=http://localhost:8083/AshaServices/v0.1/master/updateStatus
+osb_getUnitTypeList=/Master_GetUnitTypeList/ProxyService/GetUnitTypeList
+
+getAllUserApplication=http://192.168.10.59:7002/AshaServices/admin/getAllUserApplication
+getApplicationAutoComplete=http://192.168.203.195:8082/AshaServices/user/getApplicationAutoComplete
+
+#/*************************************************Start Patient Registration And Appointment ********************************************************/
+
+
+DEPT_BlOOD_MEDICAL_CAT=/DeptBloodGroupAndMeCat/ProxyService/departmentBloodGroupAndMedicalCategory
+PATIEN_DETAILS=/PatientsRegistration/ProxyRestService/PatientsRegistration
+TOKEN_FOR_MULTI_VISIT=/TokenNoForDeptMultiVisit/ProxyService/tokenNoForDepartmentMultiVisit
+SUBMIT_PATIENT_DETAILS=/SubmitPatientDetails/ProxyService/submitPatientDetails
+APPOINTMENT_FOR_OTHERS=/ShowAppointmentForOthers/ProxyService/ShowAppointmentForOthers
+TOKEN_FOR_OTHERS=/TokenNoOfDeptForOthers/ProxyService/TokenNoOfDeptForOthers
+SUBMIT_OTHERS_PATIENTS_DATA=/SubmitPatientDetailsForOthers/ProxyService/SubmitPatientDetailsForOthers
+SEARCH_FOR_REGISTERED_PATIENT=/SearchOthersRegisteredPatient/proxyService/SearchOthersRegisteredPatient
+RECORD_FOR_APPOINTMENT_SETUP=/RecordsforAppointmentSetUp/ProxyService/RecordsforAppointment
+LOCATION_WISE_APPOINTMENT=/AppointmentType/ProxyService/locationWiseAppointment
+APPOINTMENT_SETUP_DETAIL=/AppointmentSetupDetails/ProxyService/AppointmentSetup
+SUBMIT_APPOINTMENT_SETUP=/SubmitAppointmentSetup/ProxyService/SubmitAppointment
+SHOW_APPOINTMENT_SESSION=/ShowAppointmentSession/ProxyService/ShowAppointmentSession
+SUBMIT_APPOINTMENT_SESSION=/SubmitAppointmentSession/ProxyService/SubmitAppointmentSession
+
+#Self Relation code
+SELF_RELATION_ID=8
+REGISTRATION_TYPE_NAME_ICG=ICG
+REGISTRATION_TYPE_ICG_ID=1
+REGISTRATION_TYPE_OTHER_DEFENCE_ID=2
+REGISTRATION_TYPE_OTHER_CIVIL_ID=3
+APPOINTMENT_TYPE=OPD
+#/*************************************************End Patient Registration And Appointment ********************************************************/
+
+#/************************************************************ OPD Module 02/04/2019******************************************************************************/
+
+	preConsPatientWatingWeb=/GetPreConsPatientWatingListMapped/ProxyService/GetPreConsPatientWating;
+	saveVitailsPatientdetails=/AddVitalDetails/ProxyServices/AddVitalDetails;
+	getOpdWaitingList=/GetOpdPatientWatingList/ProxyService/GetOpdPatientWating;
+	getIcdList=/GetICDList/ProxyService/GetICDList;
+	getFamilyPatientHistory=/GetFamilyHistoryDetails/ProxyService/GetFamilyHistory;
+	getOpdPatientDetailModel=/OPD_GetPatientDetails/ProxyServices/GetPatientDetails;
+	saveOpdPatientdetails=/SaveOpdPatientDetails/ProxyService/SaveOpdPatientDetails;
+	saveOpdTemplates=/AshaServices/v0.1/opd/saveOpdTemplates;
+	getIinvestigationList=/GetInvestigationList/ProxyService/GetInvestigationList;
+	getMasStoreItemList=/GetMasStoreItem/ProxyService/GetMasStoreItem;
+	getEmpanelledHospital=/GetEmpHospital/ProxyService/GetEmpHospital;
+	getTemplateName=/GetTemplateName/ProxyService/GetTemplateName;
+	getMasFrequency=/GetMasFrequency/ProxyService/GetMasFrequency;
+	
+
+#/************************************************************End OPD ***************************************************************************/
+#doctor roaster
+getDepartmentList=/GetDepartmentList/ProxyService/getDepartment
+getDoctorRoasterDetail=/GetDoctorRoaster/ProxyService/GetRoaster
+submitDepartmentRoaster=//SubmitDepartmentRoaster/ProxyService/SubmitDeptRoaster
+
+#obesity module
+getObesityDetail=/GetObesityDetails/ProxyService/GetObesityDetails
+obesityWaitingList=/GetObesityWaiting/ProxyService/GetObesity
+getIdealWeight=/GetIdealWeight/ProxyService/GetIdealWeight
+saveObesityDetail=/SaveObesityDetails/ProxyService/SaveObesityDetails
+
+#Referral patient outside
+referralWaitingList=/ReferredPatientList/ProxyService/ReferredPatient
+referralDetailList=/ReferredPatientDetail/ProxyServices/ReferredPatientDetail
+updateReferralDetail=/UpdateReferralDetail/ProxyService/UpdateReferralDetail
+
+#admission discharge outside module
+getAdmissionDischargeList=/OPD_GetAdmissionDischargeList/ProxyService/GetAdmissionDischargeList
+admissionAndDischarge=/OPD_AdmissionAndDischarge/ProxyService/AdmissionAndDischarge
+savePatientAdmission=/OPD_SavePatientAdmission/ProxyService/SavePatientAdmission
+saveNewAdmission=/OPD_SaveNewAdmission/ProxyService/SaveNewAdmission
+getServiceWisePatientList=/OPD_GetServiceWisePatientList/ProxyServices/GetServiceWisePatientList
+
+
+
+#/*******************************MAS RANK******************************************/
+
+osb_getRank = http://localhost:8082/AshaServices/v0.1/master/getAllRank
+osb_addRank = http://localhost:8082/AshaServices/v0.1/master/addRank
+osb_updateRank = http://localhost:8082/AshaServices/v0.1/master/updateRank
+osb_statusRank =  http://localhost:8082/AshaServices/v0.1/master/statusRank
+osb_getEmployeeCategoryList = http://localhost:8082/AshaServices/v0.1/master/getEmployeeCategoryList
+
+
+#/*******************************MAS TRADE*************************************/
+getAllTrade = http://localhost:8082/AshaServices/v0.1/master/getAllTrade
+updateTrade = http://localhost:8082/AshaServices/v0.1/master/updateTrade 
+statusTrade = http://localhost:8082/AshaServices/v0.1/master/statusTrade
+getServiceTypeList = http://localhost:8082/AshaServices/v0.1/master/getServiceTypeList
+addTrade = http://localhost:8082/AshaServices/v0.1/master/addTrade
+
+#/****************************MAS RELIGION***********************************/
+getAllReligion=http://localhost:8082/AshaServices/v0.1/master/getAllReligion
+addReligion=http://localhost:8082/AshaServices/v0.1/master/addReligion
+updateReligionDetails=http://localhost:8082/AshaServices/v0.1/master/updateReligion
+updateReligionStatus=http://localhost:8082/AshaServices/v0.1/master/updateReligionStatus
+
+#/****************************MAS MARITAL STATUS***********************************/
+getAllMaritalStatus=http://localhost:8082/AshaServices/v0.1/master/getAllMaritalStatus
+addMaritalStatus=http://localhost:8082/AshaServices/v0.1/master/addMaritalStatus
+updateMaritalStatusDetails=http://localhost:8082/AshaServices/v0.1/master/updateMaritalStatusDetails
+updateMaritalStatusStatus=http://localhost:8082/AshaServices/v0.1/master/updateMaritalStatusStatus
+
+#/****************************MAS EMPLOYEE CATEGORY***********************************/
+getAllEmployeeCategory=http://localhost:8082/AshaServices/v0.1/master/getAllEmployeeCategory
+addEmployeeCategory=http://localhost:8082/AshaServices/v0.1/master/addEmployeeCategory
+updateEmployeeCategoryDetails=http://localhost:8082/AshaServices/v0.1/master/updateEmployeeCategoryDetails
+updateEmployeeCategoryStatus=http://localhost:8082/AshaServices/v0.1/master/updateEmployeeCategoryStatus
+
+#/***********************************MAS Administrative Sex***********************************/
+getAllAdministrativeSex=http://localhost:8082/AshaServices/v0.1/master/getAllAdministrativeSex
+addAdministrativeSex=http://localhost:8082/AshaServices/v0.1/master/addAdministrativeSex
+updateAdministrativeSexDetails=http://localhost:8082/AshaServices/v0.1/master/updateAdministrativeSexDetails
+updateAdministrativeSexStatus=http://localhost:8082/AshaServices/v0.1/master/updateAdministrativeSexStatus
+
+#/***********************************MAS MedicalCategory***********************************/
+getAllMedicalCategory=http://localhost:8082/AshaServices/v0.1/master/getAllMedicalCategory
+addMedicalCategory=http://localhost:8082/AshaServices/v0.1/master/addMedicalCategory
+updateMedicalCategoryDetails=http://localhost:8082/AshaServices/v0.1/master/updateMedicalCategoryDetails
+updateMedicalCategoryStatus=http://localhost:8082/AshaServices/v0.1/master/updateMedicalCategoryStatus
+
+#/***********************************MAS Blood Group***********************************/
+getAllBloodGroup=http://localhost:8082/AshaServices/v0.1/master/getAllBloodGroup
+addBloodGroup=http://localhost:8082/AshaServices/v0.1/master/addBloodGroup
+updateBloodGroupDetails=http://localhost:8082/AshaServices/v0.1/master/updateBloodGroupDetails
+updateBloodGroupStatus=http://localhost:8082/AshaServices/v0.1/master/updateBloodGroupStatus
+
+#/***********************************MAS SAMPLE***********************************/
+getAllSample=http://localhost:8082/AshaServices/v0.1/master/getAllSample
+addSample=http://localhost:8082/AshaServices/v0.1/master/addSample
+updateSampleDetails=http://localhost:8082/AshaServices/v0.1/master/updateSampleDetails
+updateSampleStatus=http://localhost:8082/AshaServices/v0.1/master/updateSampleStatus
+
+#***********************************MAS UOM***********************************/
+getAllUOM=http://localhost:8082/AshaServices/v0.1/master/getAllUOM
+addUOM=http://localhost:8082/AshaServices/v0.1/master/addUOM
+updateUOMDetails=http://localhost:8082/AshaServices/v0.1/master/updateUOMDetails
+updateUOMStatus=http://localhost:8082/AshaServices/v0.1/master/updateUOMStatus

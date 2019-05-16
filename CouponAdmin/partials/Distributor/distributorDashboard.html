@@ -1,0 +1,69 @@
+<div class="row">
+  <div class="span6">
+    <div class="widget widget-nopad">
+      <div class="widget-header"> <i class="icon-list-alt"></i>
+        <h3> Today's Stats</h3>
+      </div>
+      <!-- /widget-header -->
+      <div class="widget-content">
+        <div class="widget big-stats-container">
+          <div class="widget-content">
+            <h6 class="bigstats">A fully qunatitative and analysed version for the flow of Voucher end to end(firm to tax payer).</h6>
+            <div id="big_stats" class="cf">
+              <div class="stat"> Total Vouchers <span class="value">{{generatedvouchersCount}}</span> </div>
+              <!-- .stat -->
+
+              <div class="stat">Total issued Vouchers<span class="value">{{assignedVouchersCount}}</span> </div>
+              <!-- .stat -->
+
+              <div class="stat">Total running vouchers<span class="value">{{data.response.twitter}}</span> </div>
+              <!-- .stat -->
+
+              <div class="stat"> <i class="icon-bullhorn"></i> <span class="value">{{data.response.announcements}}%</span> </div>
+              <!-- .stat -->
+            </div>
+            <div ng-show="data.error" class="alert">
+              <strong>Error!</strong> {{data.errorMsg}}
+            </div>
+          </div>
+          <!-- /widget-content -->
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- /widget -->
+
+  <!-- /span6 -->
+  <div class="span6">
+    <div class="widget widget-table action-table">
+    <div class="widget-header"> <i class="icon-th-list"></i>
+      <h3>Distributor with having Vouchers</h3>
+    </div>
+    <div class="widget-content">
+      <table ng-table="assignEnduserVouchers" show-filter="true" class="table table-striped table-bordered">
+        <tr ng-repeat="assignVoucher in $data">
+          <td data-title="'ID'">
+            {{$index+1}}
+          </td>
+          <td data-title="'Voucher No'" sortable="'couponCode'" filter="{ 'couponCode': 'text' }">
+            {{assignVoucher.couponCode}}
+          </td>
+          <td data-title="'Email of End User'">
+            <select ng-model="email[$index]" ng-options="x.EndUserEmail for x in emailIdWithDistributor" name="email" ng-change="assignedVouchersEndUserList(email[$index])">
+                  </select>
+          </td>
+          <td data-title="'Action'">
+            <a ui-sref="customer.view({id: assignVoucher.couponCode})"><button class="btn  btn-success">View</button></a>
+            <!-- <button type="submit" class="btn  btn-success" name="submit" value="Assign" ng-click="endUserAssignToDb(assignVoucher, email[$index])">Assign</button> -->
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+    <!-- /widget -->
+  </div>
+  <!-- /span6 -->
+  <!-- /row -->
+</div>

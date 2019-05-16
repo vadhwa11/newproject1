@@ -624,7 +624,6 @@ public class MasterController {
 			HttpServletResponse response) {
 		String status = "";
 		status = masterService.statusRank(rank, request, response);
-		System.out.println("rank-STATUS"+rank);
 		return status;
 	}
 

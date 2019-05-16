@@ -1,0 +1,132 @@
+package com.icg.jkt.entity;
+
+import java.io.Serializable;
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.List;
+
+
+/**
+ * The persistent class for the MAS_EMPLOYEE_CATEGORY database table.
+ * 
+ */
+@Entity
+@Table(name="MAS_EMPLOYEE_CATEGORY")
+@NamedQuery(name="MasEmployeeCategory.findAll", query="SELECT m FROM MasEmployeeCategory m")
+public class MasEmployeeCategory implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@SequenceGenerator(name="MAS_EMPLOYEE_CATEGORY_EMPLOYEECATEGORYID_GENERATOR" )
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="MAS_EMPLOYEE_CATEGORY_EMPLOYEECATEGORYID_GENERATOR")
+	@Column(name="EMPLOYEE_CATEGORY_ID")
+	private long employeeCategoryId;
+
+	@Column(name="EMPLOYEE_CATEGORY_CODE")
+	private BigDecimal employeeCategoryCode;
+
+	@Column(name="EMPLOYEE_CATEGORY_NAME")
+	private String employeeCategoryName;
+
+	@Column(name="LAST_CHG_DATE")
+	private Timestamp lastChgDate;
+
+	private String status;
+
+	//bi-directional many-to-one association to MasEmployee
+	@OneToMany(mappedBy="masEmployeeCategory")
+	private List<MasEmployee> masEmployees;
+
+	//bi-directional many-to-one association to User
+	@ManyToOne
+	@JoinColumn(name="LAST_CHG_BY")
+	private Users user;
+
+	//bi-directional many-to-one association to MasRank
+	@OneToMany(mappedBy="masEmployeeCategory")
+	private List<MasRank> masRanks;
+
+	public MasEmployeeCategory() {
+	}
+
+	public long getEmployeeCategoryId() {
+		return this.employeeCategoryId;
+	}
+
+	public void setEmployeeCategoryId(long employeeCategoryId) {
+		this.employeeCategoryId = employeeCategoryId;
+	}
+
+	public BigDecimal getEmployeeCategoryCode() {
+		return this.employeeCategoryCode;
+	}
+
+	public void setEmployeeCategoryCode(BigDecimal employeeCategoryCode) {
+		this.employeeCategoryCode = employeeCategoryCode;
+	}
+
+	public String getEmployeeCategoryName() {
+		return this.employeeCategoryName;
+	}
+
+	public void setEmployeeCategoryName(String employeeCategoryName) {
+		this.employeeCategoryName = employeeCategoryName;
+	}
+
+	public Timestamp getLastChgDate() {
+		return this.lastChgDate;
+	}
+
+	public void setLastChgDate(Timestamp lastChgDate) {
+		this.lastChgDate = lastChgDate;
+	}
+
+	public String getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public List<MasEmployee> getMasEmployees() {
+		return this.masEmployees;
+	}
+
+	public void setMasEmployees(List<MasEmployee> masEmployees) {
+		this.masEmployees = masEmployees;
+	}
+
+	public MasEmployee addMasEmployee(MasEmployee masEmployee) {
+		getMasEmployees().add(masEmployee);
+		masEmployee.setMasEmployeeCategory(this);
+
+		return masEmployee;
+	}
+
+	public MasEmployee removeMasEmployee(MasEmployee masEmployee) {
+		getMasEmployees().remove(masEmployee);
+		masEmployee.setMasEmployeeCategory(null);
+
+		return masEmployee;
+	}
+
+	public Users getUser() {
+		return this.user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
+	}
+
+	public List<MasRank> getMasRanks() {
+		return this.masRanks;
+	}
+
+	public void setMasRanks(List<MasRank> masRanks) {
+		this.masRanks = masRanks;
+	}
+
+
+}

@@ -1,0 +1,479 @@
+package com.icg.jkt.service.impl;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.icg.jkt.dao.AppointmentDAO;
+import com.icg.jkt.dao.PatientRegistrationDao;
+import com.icg.jkt.entity.AppSetup;
+import com.icg.jkt.entity.MasAppointmentSession;
+import com.icg.jkt.entity.MasAppointmentType;
+import com.icg.jkt.entity.MasDepartment;
+import com.icg.jkt.entity.MasHospital;
+import com.icg.jkt.entity.Users;
+import com.icg.jkt.service.AppointmentService;
+
+@Service("AppointmentService")
+public class AppointmentServiceImpl implements AppointmentService{
+	
+	@Autowired
+	AppointmentDAO appointmentDAO;
+	
+	@Autowired
+	PatientRegistrationDao patientRegistrationDao;
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, Object> getDataForDoctorAppointment() {
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		Map<String, Object> responseMap = new HashMap<String, Object>();
+		dataMap = appointmentDAO.getDataForDoctorAppointment();
+		List<Object> responseList = new ArrayList<Object>();
+		if (dataMap.size() > 0) {
+			List<MasDepartment> departmentList = (List<MasDepartment>) dataMap.get("departmentList");
+			if (departmentList.size() > 0 && departmentList != null) {
+				for (MasDepartment md : departmentList) {
+					HashMap<String, Object> map = new HashMap<String, Object>();
+					map.put("departmentId", md.getDepartmentId());
+					map.put("departmentName", md.getDepartmentName());
+					responseList.add(map);
+				}
+				if (responseList != null && responseList.size() > 0) {
+					responseMap.put("departmentList", responseList);
+					responseMap.put("status", 1);
+				} 
+			}else {
+				responseMap.put("data", responseList);
+				responseMap.put("msg", "Data not found");
+				responseMap.put("status", 0);
+			}
+		}
+		return responseMap;
+	}
+	
+		
+	@Override
+	public Map<String, Object> getlocationWiseAppointmentType(Map<String, String> requestData) {
+		Map<String, Object> responseMap = new HashMap<String, Object>();
+		List<Map<String,Object>> appointmentTypeList = new ArrayList<Map<String,Object>>();
+		long departmentId = Long.parseLong(requestData.get("deptId"));
+		List<MasAppointmentSession> appointmentSessionList = appointmentDAO.getlocationWiseAppointmentType(departmentId);
+		if (appointmentSessionList.size() > 0) {
+			for(MasAppointmentSession appSession :appointmentSessionList) {
+				Map<String, Object> map = new HashMap<String, Object>();
+				long appointmentTypeId =appSession.getMasAppointmentType().getAppointmentTypeId();
+				String appointmentTypeName=appSession.getMasAppointmentType().getAppointmentTypeName();
+				map.put("appointmentTypeId", appointmentTypeId);
+				map.put("appointmentTypeName", appointmentTypeName);
+				appointmentTypeList.add(map);
+			}
+			if (appointmentTypeList != null && appointmentTypeList.size() > 0) {
+				responseMap.put("appointmentTypeList", appointmentTypeList);
+				responseMap.put("status", 1);
+			} 
+		}else {
+			responseMap.put("appointmentTypeList", appointmentTypeList);
+			responseMap.put("msg", "Data not found");
+			responseMap.put("status", 0);
+		}
+		return responseMap;
+	}
+	
+	
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getappointmentSetupDetails(Map<String, String> requestData) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		long appointmentTypeId=0;
+		long deptId=0;
+		if (!requestData.isEmpty() && requestData != null ) {
+
+			if (requestData.get("deptId") != null && !requestData.get("deptId").isEmpty()) {
+				deptId=Long.parseLong(requestData.get("deptId"));
+			}
+			if(requestData.get("appointmentTypeId") != null && !requestData.get("appointmentTypeId").isEmpty()) {
+				appointmentTypeId=Long.parseLong(requestData.get("appointmentTypeId"));
+			}
+			resultMap = appointmentDAO.getappointmentSetupDetails(deptId,appointmentTypeId);
+			List<AppSetup> appSetUpList =(List<AppSetup>) resultMap.get("appSetupList");
+		if(appSetUpList!=null &&  appSetUpList.size()>0 ) {
+				resultMap.put("status", 1);
+			}
+		else {
+				resultMap.put("status", 0);
+			}
+		return resultMap;
+		}
+		return resultMap;
+	}
+
+
+	@Override
+	public String submitAppointmentSetup(String requestData) {
+		JSONObject json = new JSONObject();
+		JSONObject jObject = new JSONObject(requestData);
+		JSONObject jsonobjData = jObject.getJSONObject("appSetupData");
+		
+		
+		JSONArray appointment = jsonobjData.getJSONArray("appointment");
+		JSONArray days = jsonobjData.getJSONArray("days");
+		JSONArray tokenStart= jsonobjData.getJSONArray("TokenStart");
+		JSONArray tokenInterval= jsonobjData.getJSONArray("TokenInterval");
+		JSONArray totalToken= jsonobjData.getJSONArray("TotalToken");
+		JSONArray totalOnlineToken= jsonobjData.getJSONArray("TotalOnlineToken");
+		JSONArray totalPortalToken= jsonobjData.getJSONArray("totalPortalToken");
+		JSONArray totalMobileToken= jsonobjData.getJSONArray("totalMobileToken");
+		JSONArray maxDays= jsonobjData.getJSONArray("maxdays");
+		JSONArray minDays= jsonobjData.getJSONArray("maxdays");
+		
+		long departmentId = Long.parseLong(jsonobjData.getString("department"));
+		long appointmentTypeId = Long.parseLong(jsonobjData.getString("appointmentType"));
+		long hospitalId= 1; // This hospital Id must be come from session
+		
+		long appointmentSessionId= patientRegistrationDao.getAppointmentSessionId(hospitalId,departmentId,appointmentTypeId) ;
+		
+		String stratTime=jsonobjData.getString("startTime");
+		String endTime=jsonobjData.getString("endTime");
+		String resp="";
+		
+		// below code 
+		for(int i=0;i<appointment.length();i++) {
+			// check null condition and row count value 
+			AppSetup appSetup =null;
+			if(appointment.get(i).equals(""))
+			{
+				appSetup	= new AppSetup();
+			}
+			else
+			{
+				appSetup = appointmentDAO.getAppSetupObject(Long.parseLong((String) appointment.get(i)));
+			}
+			
+				appSetup.setDays((String)days.get(i));
+				
+				if(!tokenStart.get(i).toString().isEmpty()) {
+					appSetup.setStartToken((new BigDecimal((String)tokenStart.get(i))));
+				}
+				if(!totalToken.get(i).toString().isEmpty()) {
+					appSetup.setTotalToken((new BigDecimal((String)totalToken.get(i))));
+				}
+				
+				if(!tokenInterval.get(i).toString().isEmpty()) {
+					appSetup.setTotalInterval((new BigDecimal((String)tokenInterval.get(i))));
+				}
+			
+				if(!totalOnlineToken.get(i).toString().isEmpty()) {
+					appSetup.setTotalOnlineToken((new BigDecimal((String)totalOnlineToken.get(i))));
+				}
+				
+				
+				if(!totalPortalToken.get(i).toString().isEmpty()) {
+					appSetup.setTotalPortalToken((new BigDecimal((String)totalPortalToken.get(i))));
+				}
+				if(!totalMobileToken.get(i).toString().isEmpty()) {
+					appSetup.setTotalMobileToken((new BigDecimal((String)totalMobileToken.get(i))));
+				}
+				
+				
+				if(!maxDays.get(i).toString().isEmpty()) {
+					appSetup.setMaxNoOfDays((new BigDecimal((String)maxDays.get(i))));
+				}
+				
+				if(!minDays.get(i).toString().isEmpty()) {
+					appSetup.setMinNoOfDays((new BigDecimal((String)minDays.get(i))));
+				}
+				
+				
+
+				/*
+				 * if (null != breakFromTime3.get(i) && !breakFromTime3.get(i).equals(""))
+				 * appSetup.setTotalToken(Integer.parseInt((String) breakFromTime3.get(i)));
+				 * 
+				 * if (null != TotalOnlineToken.get(i) && !TotalOnlineToken.get(i).equals(""))
+				 * appSetup.setTotalOnlineToken(Integer.parseInt((String)
+				 * TotalOnlineToken.get(i)));
+				 * 
+				 * if (null != breakToTime2.get(i) && !breakToTime2.get(i).equals(""))
+				 * appSetup.setTotalInterval(Integer.parseInt((String) breakToTime2.get(i)));
+				 * 
+				 * if (null != breakFromTime2.get(i) && !breakFromTime2.get(i).equals(""))
+				 * appSetup.setStartToken(Integer.parseInt((String) breakFromTime2.get(i))); if
+				 * (!maxDays.get(i).equals("") && maxDays.get(i) != null) {
+				 * appSetup.setMaxNoOfDays(Integer.parseInt((String) maxDays.get(i))); } else {
+				 * appSetup.setMaxNoOfDays(0); }
+				 * 
+				 * if (!minDays.get(i).equals("") && minDays.get(i) != null) {
+				 * appSetup.setMinNoOfDays(Integer.parseInt((String) minDays.get(i))); } else {
+				 * appSetup.setMinNoOfDays(0); }
+				 */
+				
+				
+
+				MasDepartment masDepartment = new MasDepartment();
+				masDepartment.setDepartmentId(departmentId);
+				appSetup.setMasDepartment(masDepartment);
+
+				
+
+				if (appointmentSessionId != 0) {
+					MasAppointmentSession masAppSession = new MasAppointmentSession();
+					masAppSession.setId(appointmentSessionId);
+					appSetup.setMasAppointmentSession(masAppSession);;
+
+				}
+
+				
+				// Adding Start Time 
+				if(!(stratTime.isEmpty())) {
+					appSetup.setStartTime(stratTime);
+				}
+				
+				// Adding End Time
+				if(!(endTime.isEmpty())) {
+					appSetup.setEndTime(endTime);
+				}
+				
+				MasHospital masHospital = new MasHospital();
+				masHospital.setHospitalId(hospitalId);
+				appSetup.setMasHospital(masHospital);
+
+				// saving user data is pending in this method
+				 Users user = new Users();
+				 long usr =2L; // This data also come from session 
+				 user.setUserId(usr);
+				 appSetup.setUser(user);
+				
+			 resp= appointmentDAO.saveAppointmentSetup(appSetup);
+			
+		}
+		if (resp != null && resp.equalsIgnoreCase("200")) {
+			json.put("msg", "Appointment saved successfully ");
+			json.put("status", "1");
+		} else if (resp != null && resp.equalsIgnoreCase("403")) { //currently not using this else if loop but make it useful
+			json.put("msg", " you are not authorized for this activity ");
+			json.put("status", "0");
+		} else {
+			resp ="Appointment not saved successfully";
+			json.put("msg", resp);
+			json.put("status", "0");
+		}
+		return json.toString();
+	}
+
+
+	@Override
+	public Map<String, Object> getAppointmentSessionDetails() {
+		Map<String,Object>map = new HashMap<String, Object>();
+		List<MasDepartment> departmentList = new ArrayList<MasDepartment>();
+		List<MasAppointmentType> appointmentTypeList = new ArrayList<MasAppointmentType>();
+		
+		
+		departmentList=appointmentDAO.getDepartmentList();
+		appointmentTypeList=appointmentDAO.getAppointmentTypeList();
+		
+		map.put("departmentList", departmentList);
+		map.put("appointmentTypeList", appointmentTypeList);
+		
+		return map;
+	}
+
+	@Override
+	public String submitAppointmentSession(String requestData) {
+		System.out.println("Server side requestData" +requestData);
+		JSONObject json = new JSONObject();
+		JSONObject jsonObj = new JSONObject(requestData);
+		
+		String resp="";
+		long departmentId=0;
+		long appointmentTypeId=0;
+		long hospitalId=0;
+		
+		MasAppointmentSession appointmentSession = new MasAppointmentSession();
+		
+		if(jsonObj.getLong("departmentId")!=0) {
+			departmentId= jsonObj.getLong("departmentId");
+			MasDepartment md = new MasDepartment();
+			md.setDepartmentId(departmentId);
+			appointmentSession.setMasDepartment(md);
+			
+		}
+		
+		if(jsonObj.getLong("appointmentTypeId")!=0) {
+			appointmentTypeId =jsonObj.getLong("appointmentTypeId");
+			MasAppointmentType appType = new MasAppointmentType();
+			appType.setAppointmentTypeId(appointmentTypeId);
+			appointmentSession.setMasAppointmentType(appType);
+		}
+		
+	//	HospitalId will get fetch from session
+		
+		if(jsonObj.getLong("hospitalId")!=0) {
+			hospitalId=jsonObj.getLong("hospitalId");
+			MasHospital hospital = new MasHospital();
+			hospital.setHospitalId(hospitalId);
+			appointmentSession.setMasHospital(hospital);
+		}
+		
+		if(!jsonObj.getString("startTime").isEmpty()) {
+			String startTime =jsonObj.getString("startTime");
+			appointmentSession.setFromTime(startTime);
+		}
+		
+		if(!jsonObj.getString("endTime").isEmpty()) {
+			String endTime=jsonObj.getString("endTime");
+			appointmentSession.setToTime(endTime);
+		}
+		
+		appointmentSession.setStatus("y");
+		
+		
+		boolean existingRecord = appointmentDAO.validateAppSession(departmentId,appointmentTypeId,hospitalId);
+		if(!existingRecord) {
+			resp= appointmentDAO.submitAppointmentSession(appointmentSession);
+		}
+		
+		if (resp != null && !resp.isEmpty() && resp.equalsIgnoreCase("200")) {
+			json.put("msg", "Appointment Session saved successfully ");
+			json.put("status", "1");
+		} else {
+			resp ="Appointment Session already exists";
+			json.put("msg", resp);
+			json.put("status", "0");
+		}
+		return json.toString();
+	}
+
+
+	@Override
+	public String getAllAppointmentSession(JSONObject jsonObject) {
+		
+		JSONObject json = new JSONObject();
+		List<MasAppointmentSession> appointmentSessionsList = new ArrayList<MasAppointmentSession>();
+
+		Map<String, List<MasAppointmentSession>> appointmentSessionMap = appointmentDAO.getAllAppointmentSession(jsonObject);
+		List appListObj = new ArrayList();
+		List totalMatches = new ArrayList();
+		if (appointmentSessionMap.get("masAppointSessionList") != null) {
+			appointmentSessionsList = appointmentSessionMap.get("masAppointSessionList");
+			totalMatches = appointmentSessionMap.get("totalMatches");
+
+			for (MasAppointmentSession masAppointmentSession : appointmentSessionsList) {
+				HashMap<String, Object> mapObj = new HashMap<String, Object>();
+
+				mapObj.put("Id", masAppointmentSession.getId());
+				mapObj.put("departmentName", masAppointmentSession.getMasDepartment().getDepartmentName());
+				mapObj.put("departmentId", masAppointmentSession.getMasDepartment().getDepartmentId());
+				mapObj.put("apppointmentType", masAppointmentSession.getMasAppointmentType().getAppointmentTypeName());
+				mapObj.put("apppointmentTypeId", masAppointmentSession.getMasAppointmentType().getAppointmentTypeId());
+				mapObj.put("startTime", masAppointmentSession.getFromTime());
+				mapObj.put("endTime", masAppointmentSession.getToTime());
+				mapObj.put("status", masAppointmentSession.getStatus());
+				appListObj.add(mapObj);
+			}
+
+			if (appListObj != null && appListObj.size() > 0) {
+				json.put("data", appListObj);
+
+				json.put("count", totalMatches.size());
+				json.put("status", 1);
+			} else {
+				json.put("data", appListObj);
+				json.put("count", totalMatches.size());
+				json.put("msg", "Data not found");
+				json.put("status", 0);
+			}
+		}
+
+		return json.toString();
+	}
+
+
+	@Override
+	public Map<String, Object> getHospitalList(String requestData) {
+		Map<String,Object>map = new HashMap<String, Object>();
+		List<Object> responseList = new ArrayList<Object>();
+		List<MasHospital> hospitalList = new ArrayList<MasHospital>();
+		hospitalList=appointmentDAO.getHospitalList();
+		
+		if(hospitalList!=null && hospitalList.size()>0) {
+			for(MasHospital hospital: hospitalList) {
+				HashMap<String, Object> jsonMap = new HashMap<String, Object>();
+				jsonMap.put("hospitalId", hospital.getHospitalId());
+				jsonMap.put("hospitalName", hospital.getHospitalName());
+				responseList.add(jsonMap);
+			}
+			if (responseList != null && responseList.size() > 0) {
+				map.put("data", responseList);
+				map.put("status", 1);
+			} else {
+				map.put("data", responseList);
+				map.put("msg", "Data not found");
+				map.put("status", 0);
+			}
+		}
+		return map;
+	}
+
+
+	@Override
+	public String updateAppointmentSession(String requestData) {
+		JSONObject json = new JSONObject();
+		JSONObject jsonObj = new JSONObject(requestData);
+		String resp="";
+		long rowId=0;
+		long departmentId=0;
+		long appointmentType=0;
+		String stratTime="";
+		String endTime="";
+		String status="";
+		
+		if(!(jsonObj.get("rowId").toString().isEmpty()) && jsonObj.get("rowId")!=null ) {
+			rowId =Long.parseLong(jsonObj.get("rowId").toString());
+			
+		}
+		
+		if(!(jsonObj.get("departmentId").toString().isEmpty()) && jsonObj.get("departmentId")!=null ) {
+			departmentId =Long.parseLong(jsonObj.get("departmentId").toString());
+			
+		}
+		if(!(jsonObj.get("appointmentTypeId").toString().isEmpty()) && jsonObj.get("appointmentTypeId")!=null ) {
+			appointmentType =Long.parseLong(jsonObj.get("appointmentTypeId").toString());
+			
+		}
+		
+		if(!(jsonObj.get("startTime").toString().isEmpty()) && jsonObj.get("startTime")!=null ) {
+			stratTime = jsonObj.get("startTime").toString();
+			
+		}
+		if(!(jsonObj.get("endTime").toString().isEmpty()) && jsonObj.get("endTime")!=null ) {
+			endTime =jsonObj.get("endTime").toString();
+			
+		}
+		if(!(jsonObj.get("status").toString().isEmpty()) && jsonObj.get("status")!=null ) {
+			status =jsonObj.get("status").toString();
+			
+		}
+		 if(departmentId!=0 && appointmentType!=0 && !stratTime.isEmpty() && !endTime.isEmpty() ) {
+			 resp =appointmentDAO.updateAppointmentSession(rowId,departmentId,appointmentType,stratTime,endTime,status);
+			 if(!resp.isEmpty()) {
+					json.put("msg", resp);
+					json.put("status", 1);
+				}
+		 }else {
+			 json.put("msg", "Record not updated");
+			 json.put("status", 0);
+		 }
+
+		return json.toString();
+	}
+	
+}

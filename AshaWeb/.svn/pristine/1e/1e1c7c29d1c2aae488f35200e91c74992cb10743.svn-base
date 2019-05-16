@@ -1,0 +1,49 @@
+package com.asha.icgweb.service.impl;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
+import com.asha.icgweb.service.AppointmentService;
+import com.asha.icgweb.utils.RestUtils;
+
+@Service("AppointmentService")
+public class AppointmentServiceImpl implements AppointmentService {
+
+	
+	@Override
+	public String getRecordsForDoctorAppointment(String data,HttpServletRequest request,
+			HttpServletResponse response) {
+			MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String,String>();
+			return RestUtils.postWithHeaders("http://localhost:8080/AshaServices/appointment/recordsforAppointmentSetUp", requestHeaders, data); 
+		
+	}
+
+	@Override
+	public String getLocationWiseAppointmentType(String data, HttpServletRequest request,
+			HttpServletResponse response) {
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String,String>();
+		return RestUtils.postWithHeaders("http://localhost:8080/AshaServices/appointment/locationWiseAppointmentType", requestHeaders, data); 
+	}
+	
+	@Override
+	public String getAppointmentSetupDetails(String data, HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+			MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		return RestUtils.postWithHeaders("http://localhost:8080/AshaServices/appointment/appointmentSetupDetails", requestHeaders, data);
+	}
+
+	@Override
+	public String submitAppointmentSetup(String data, HttpServletRequest request, HttpServletResponse response) {
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		return RestUtils.postWithHeaders("http://localhost:8080/AshaServices/appointment/submitAppointmentSetup", requestHeaders, data);
+	}
+
+
+	
+
+	
+}

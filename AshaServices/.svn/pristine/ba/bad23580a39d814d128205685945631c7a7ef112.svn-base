@@ -1,0 +1,92 @@
+package com.icg.jkt.entity;
+
+import java.io.Serializable;
+import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.Date;
+
+
+/**
+ * The persistent class for the MAS_FREQUENCY database table.
+ * 
+ */
+@Entity
+@Table(name="MAS_FREQUENCY")
+@NamedQuery(name="MasFrequency.findAll", query="SELECT m FROM MasFrequency m")
+public class MasFrequency implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@SequenceGenerator(name="MAS_FREQUENCY_FREQUENCYID_GENERATOR", sequenceName="MAS_FREQUENCY_SEQ", allocationSize=1)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="MAS_FREQUENCY_FREQUENCYID_GENERATOR")
+	@Column(name="FREQUENCY_ID")
+	private long frequencyId;
+
+	@Column(name="FREQUENCY_CODE")
+	private String frequencyCode;
+
+	@Column(name="FREQUENCY_NAME")
+	private String frequencyName;
+
+	@Column(name="LAST_CHG_BY")
+	private Long lastChgBy;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="LAST_CHG_DATE")
+	private Date lastChgDate;
+
+	@Column(name="STATUS")
+	private String status;
+
+	public MasFrequency() {
+	}
+
+	public long getFrequencyId() {
+		return this.frequencyId;
+	}
+
+	public void setFrequencyId(long frequencyId) {
+		this.frequencyId = frequencyId;
+	}
+
+	public String getFrequencyCode() {
+		return this.frequencyCode;
+	}
+
+	public void setFrequencyCode(String frequencyCode) {
+		this.frequencyCode = frequencyCode;
+	}
+
+	public String getFrequencyName() {
+		return this.frequencyName;
+	}
+
+	public void setFrequencyName(String frequencyName) {
+		this.frequencyName = frequencyName;
+	}
+
+	public Long getLastChgBy() {
+		return this.lastChgBy;
+	}
+
+	public void setLastChgBy(Long lastChgBy) {
+		this.lastChgBy = lastChgBy;
+	}
+
+	public Date getLastChgDate() {
+		return this.lastChgDate;
+	}
+
+	public void setLastChgDate(Date lastChgDate) {
+		this.lastChgDate = lastChgDate;
+	}
+
+	public String getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+}

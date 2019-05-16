@@ -161,14 +161,14 @@
             <version>2.8.7</version>
         </dependency>
          <dependency>
-  			  <groupId>org.glassfish</groupId>
-    		  <artifactId>javax.json</artifactId>
-    		 <version>1.0</version>
-   			 <scope>runtime</scope>
-		</dependency>
-		
-		
-		<dependency>
+    <groupId>org.glassfish</groupId>
+    <artifactId>javax.json</artifactId>
+    <version>1.0</version>
+    <scope>runtime</scope>
+</dependency>
+<dependency>
+
+
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.9</version>
@@ -188,7 +188,7 @@
                                                
           </dependency>
         
-      <dependency>
+           <dependency>
     <groupId>javax.servlet</groupId>
     <artifactId>jstl</artifactId>
     <version>1.2</version>
@@ -208,6 +208,8 @@
     <version>1.3.0</version>
 </dependency>
         
+        
+ 
  <!-- Added By Kaushal Mishra -->
 <!-- https://mvnrepository.com/artifact/org.eclipse.birt.runtime/viewservlets -->
 <dependency>
@@ -216,15 +218,6 @@
     <version>4.5.0</version>
 </dependency>
  <!-- Ended --> 
- 
- <dependency>
-  <groupId>commons-fileupload</groupId>
-  <artifactId>commons-fileupload</artifactId>
-  <version>1.3.1</version>
-</dependency>
-
-
-
   </dependencies>
   
   <repositories>

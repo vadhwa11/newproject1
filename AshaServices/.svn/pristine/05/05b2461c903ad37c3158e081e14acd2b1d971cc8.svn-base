@@ -1,0 +1,167 @@
+package com.icg.jkt.entity;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import java.util.Date;
+import java.sql.Timestamp;
+import java.util.List;
+
+
+/**
+ * The persistent class for the OPD_OBESITY_HD database table.
+ * 
+ */
+@Entity
+@Table(name="OPD_OBESITY_HD")
+@NamedQuery(name="OpdObesityHd.findAll", query="SELECT o FROM OpdObesityHd o")
+public class OpdObesityHd implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@SequenceGenerator(name="OPD_OBESITY_HD_OBESITYHDID_GENERATOR", sequenceName="OBESITY_HD_ID")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="OPD_OBESITY_HD_OBESITYHDID_GENERATOR")
+	@Column(name="OBESITY_HD_ID")
+	private long obesityHdId;
+
+	@Column(name="LAST_CHG_DATE")
+	private Timestamp lastChgDate;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name="CLOSE_DATE")
+	private Date closeDate;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name="INI_DATE")
+	private Date IniDate;
+
+	//bi-directional many-to-one association to OpdObesityDt
+	@OneToMany(mappedBy="opdObesityHd")
+	@JsonBackReference
+	private List<OpdObesityDt> opdObesityDts;
+	
+	@Column(name="VARIATION")
+	private long variation;
+
+	//bi-directional many-to-one association to Visit
+	@ManyToOne
+	@JoinColumn(name="VISIT_ID")
+	private Visit visit;
+
+	//bi-directional many-to-one association to MasHospital
+	@ManyToOne
+	@JoinColumn(name="HOSPITAL_ID")
+	private MasHospital masHospital;
+
+	//bi-directional many-to-one association to Patient
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="PATIENT_ID")
+	private Patient patient;
+
+	//bi-directional many-to-one association to User
+	@ManyToOne
+	@JoinColumn(name="LAST_CHG_BY")
+	private Users user;
+
+	public OpdObesityHd() {
+	}
+
+	public long getObesityHdId() {
+		return this.obesityHdId;
+	}
+
+	public void setObesityHdId(long obesityHdId) {
+		this.obesityHdId = obesityHdId;
+	}
+
+	public Timestamp getLastChgDate() {
+		return this.lastChgDate;
+	}
+
+	public void setLastChgDate(Timestamp lastChgDate) {
+		this.lastChgDate = lastChgDate;
+	}
+
+
+
+	public List<OpdObesityDt> getOpdObesityDts() {
+		return this.opdObesityDts;
+	}
+
+	public Date getCloseDate() {
+		return closeDate;
+	}
+
+	public void setCloseDate(Date closeDate) {
+		this.closeDate = closeDate;
+	}
+
+	public Date getIniDate() {
+		return IniDate;
+	}
+
+	public void setIniDate(Date iniDate) {
+		IniDate = iniDate;
+	}
+
+	public long getVariation() {
+		return variation;
+	}
+
+	public void setVariation(long variation) {
+		this.variation = variation;
+	}
+
+	public void setOpdObesityDts(List<OpdObesityDt> opdObesityDts) {
+		this.opdObesityDts = opdObesityDts;
+	}
+
+	public OpdObesityDt addOpdObesityDt(OpdObesityDt opdObesityDt) {
+		getOpdObesityDts().add(opdObesityDt);
+		opdObesityDt.setOpdObesityHd(this);
+
+		return opdObesityDt;
+	}
+
+	public OpdObesityDt removeOpdObesityDt(OpdObesityDt opdObesityDt) {
+		getOpdObesityDts().remove(opdObesityDt);
+		opdObesityDt.setOpdObesityHd(null);
+
+		return opdObesityDt;
+	}
+
+	public Visit getVisit() {
+		return this.visit;
+	}
+
+	public void setVisit(Visit visit) {
+		this.visit = visit;
+	}
+
+	public MasHospital getMasHospital() {
+		return this.masHospital;
+	}
+
+	public void setMasHospital(MasHospital masHospital) {
+		this.masHospital = masHospital;
+	}
+
+	public Patient getPatient() {
+		return this.patient;
+	}
+
+	public void setPatient(Patient patient) {
+		this.patient = patient;
+	}
+
+	public Users getUser() {
+		return this.user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
+	}
+
+}

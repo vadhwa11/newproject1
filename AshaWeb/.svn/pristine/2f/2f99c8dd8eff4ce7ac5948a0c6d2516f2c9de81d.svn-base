@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.5">
+    
+  
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.min.js"></script>
+    <script type="text/javascript"  src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript"  src="${pageContext.request.contextPath}/resources/js/form-validation.js"></script>
+    <script type="text/javascript"  src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.js"></script>
+    <script type="text/javascript"  src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript"  src="${pageContext.request.contextPath}/resources/js/bootstrap.js"></script>
+    <script type="text/javascript"  src="${pageContext.request.contextPath}/resources/js/bootstrap.min.js"></script>
+    
+    <title>APPOINTMENT SETUP</title>
+
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="${pageContext.request.contextPath}/resources/css/form-validation.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap-grid.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap-grid.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap-reboot.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap-reboot.min.css" rel="stylesheet">
+
+</head>
+
+
+<%
+	String[] day = new String[7];
+
+	day[0] = "Sunday";
+	day[1] = "Monday";
+	day[2] = "Tuesday";
+	day[3] = "Wednesday";
+	day[4] = "Thursday";
+	day[5] = "Friday";
+	day[6] = "Saturday";
+%>
+<script type="text/javascript" >
+var $j = jQuery.noConflict();
+$j(document).ready(function(){
+	 var dictionary = ${data};
+	 var deptList=dictionary.departmentList;
+	 var deptValues = "";
+	 for(dept in deptList){
+			deptValues += '<option value='+deptList[dept].departmentId+'>'
+						+ deptList[dept].departmentName
+						+ '</option>';
+	 }
+	 $j('#departmentId').append(deptValues); 
+	
+});
+
+function geAppointmentType(){
+	 
+	var deptId = $j('#departmentId').find('option:selected').val();
+	var params = {
+			"deptId":deptId
+	}
+	$j.ajax({
+		type : "POST",
+		contentType : "application/json",
+		url : 'getLocationWiseAppointmentType',
+		data : JSON.stringify(params),
+		dataType : "json",
+		cache : false,
+		success : function(msg) {
+			if (msg.status == '1') {
+			var appTypeValues = "";
+			var masAppsession = msg.appointmentTypeList;
+			document.getElementById("appointmentTypeId").options.length = 1;
+				  for(appType in masAppsession){
+					 	appTypeValues += '<option value='+masAppsession[appType].masAppointmentType.appointmentTypeId+'>'
+						+ masAppsession[appType].masAppointmentType.appointmentTypeName
+						+ '</option>';	
+						 }
+				  
+				  $j('#appointmentTypeId').append(appTypeValues);
+				
+			}
+		},
+		error : function(msg) {
+			alert("An error has occurred while contacting the server");
+		}
+	});
+	
+}
+
+
+function getAppointmentDetails(){
+	var deptId = $j('#departmentId').find('option:selected').val();
+	var appointmentTypeId = $j('#appointmentTypeId').find('option:selected').val();
+	document.getElementById("showButtonStatus").value="y";
+	var params = {
+		"deptId":deptId,
+		"appointmentTypeId":appointmentTypeId
+	}
+	
+	$j.ajax({
+		type : "POST",
+		contentType : "application/json",
+		url : 'getAppointmentSetupDetails',
+		data : JSON.stringify(params),
+		dataType : "json",
+		cache : false,
+		success : function(msg) {
+			var appSession = msg.appointmentTypeList;
+			for(item in appSession){
+				$j('#startTime').val(appSession[item].fromTime);
+				$j('#endTime').val(appSession[item].toTime);
+			}
+			if (msg.status == '1') {
+				var appSetupDataList = msg.appSetupList;
+				 for (i = 0; i < appSetupDataList.length; i++) {
+					 $j('#appointmentId'+i+'').val(appSetupDataList[i].id);
+					 $j('#tokenStart'+i+'').val(appSetupDataList[i].startToken);
+					 $j('#tokenInterval'+i+'').val(appSetupDataList[i].totalInterval);
+					 $j('#totalToken'+i+'').val(appSetupDataList[i].totalToken);
+					 $j('#totalOnlineToken'+i+'').val(appSetupDataList[i].totalOnlineToken);
+					 $j('#maxDays'+i+'').val(appSetupDataList[i].maxNoOfDays);
+					 $j('#minDays'+i+'').val(appSetupDataList[i].minNoOfDays);
+				 }
+				 $j('#submitbtn').hide();
+				 $j('#submitUpdatebtn').show();
+			}else{
+				alert("No Appointment Setup exist")
+			}
+		},
+		error : function(msg) {
+			alert("An error has occurred while contacting the server");
+		}
+	});
+	
+}
+
+function validateDatefield(){
+	var deptId = document.getElementById("departmentId").value;
+		var appointmentTypeId = document.getElementById("appointmentTypeId").value;
+		if (deptId == 0 || appointmentTypeId == 0) {
+			if (deptId == 0) {
+				alert("Please select Department");
+			} else if (appointmentTypeId == 0) {
+				alert("Please select Appointment Type");
+			}
+			return false;
+		}
+
+		var totalRow = document.getElementById('totalRowId').value;
+
+		var errorMessage = "";
+		for (var k = 0; k < totalRow; k++) {
+			if (document.getElementById('tokenStart' + k).value != ""
+					|| document.getElementById('tokenInterval' + k).value != ""
+					|| document.getElementById('totalToken' + k).value != ""
+					|| document.getElementById('totalOnlineToken' + k).value != "") {
+				if (document.getElementById('maxDays' + k).value == ""
+						|| document.getElementById('minDays' + k).value == "") {
+					alert("Please fill al the values for row "
+							+ parseInt(k + 1));
+					return false;
+				}
+			}
+		}
+
+		var flag = true;
+		for (var k = 0; k < totalRow; k++) {
+
+			if (document.getElementById('tokenStart' + k).value != ""
+					&& document.getElementById('tokenInterval' + k).value != ""
+					&& document.getElementById('totalToken' + k).value != ""
+					&& document.getElementById('totalOnlineToken' + k).value != ""
+					&& document.getElementById('maxDays' + k).value != ""
+					&& document.getElementById('minDays' + k).value != "") {
+				flag = false;
+				break;
+			}
+
+		}
+		if (flag == false) {
+			return true;
+		} else {
+			alert("Please Fill atleast one row!!!!");
+			return false;
+		}
+	}
+
+
+
+	function checkShowButton(id) {
+		if (document.getElementById("showButtonStatus").value == "n") {
+			alert("please click show setup button");
+			if (id != undefined)
+				document.getElementById(id).value = "";
+			return false;
+		}
+		return true;
+	}
+
+	
+	$j(function() {
+			   $j('button[type=submit]').click(function(e) {
+				 //$j('#submitbtn').click(function(e) {
+			   var params = {
+					// "appSetupData":$j('#appSetupform').serializeArray() 
+					 "appSetupData":$j('#appSetupform').serializeObject() 
+					}
+		      e.preventDefault();
+		      $j.ajax({
+		    	  
+		    	  type : "POST",
+				  contentType : "application/json",
+				  url : 'submitAppointmentSetup',
+				  data : JSON.stringify(params),
+				  dataType : "json",
+				  cache : false,
+		         success : function(response) {
+		         var message = response.msg;
+		         $j('#message').val(message);
+		         $j(document).ready(function(){
+		             $j('#message').fadeOut(5000);
+		             });
+		         }
+		      })
+		   });
+		});
+	
+	
+	$j.fn.serializeObject = function()
+	{
+	    var o = {};
+	    var a = this.serializeArray();
+	    $j.each(a, function() {
+	        if (o[this.name] !== undefined) {
+	            if (!o[this.name].push) {
+	                o[this.name] = [o[this.name]];
+	            }
+	            o[this.name].push(this.value || '');
+	        } else {
+	            o[this.name] = this.value || '';
+	        }
+	    });
+	    return o;
+	};
+</script>
+<body>
+    <br>    
+    <div class="container">
+    <form  id="appSetupform" name="appSetupform" method="POST" action="submitAppointmentSetup" >
+    <p align="center" id="message" style="color:green; font-weight: bold;" ></p>
+     <h6 style="text-align: center">APPOINTMENT SETUP CREATION</h6>      
+        <div class="row">                
+        <div class="col-md-12">
+                <h6 style=" background: grey;padding: 7px 0px 8px 12px;border-radius: 1px;">APPOINTMENT SETUP</h6>
+        </div>
+        
+            <div class="col-md-6">
+                    <div class="form-group row">
+                        <label for="service" class="col-sm-3 col-form-label">Department<sup><span>&#9733;</span></sup></label>
+                        <div class="col-sm-9">
+                            <select id=departmentId name="department" onchange="geAppointmentType()">
+                            <option value="0" selected="selected">Select</option>
+                            </select>
+                        </div>
+                    </div>
+               
+            </div>
+
+            <div class="col-md-6">
+               
+                    <div class="form-group row">
+                        <label for="service" class="col-sm-3 col-form-label">OPD Type<sup><span>&#9733;</span></sup></label>
+                        <div class="col-sm-9">
+                            <select id="appointmentTypeId" name="appointmentType">
+                               <option value="0" selected="selected">Select</option> 
+                            </select>
+                        </div>
+                    </div>
+                
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off" onClick="getAppointmentDetails();">
+            SHOW SETUP
+        </button>
+        <br>
+        <br>
+        <div class="row">
+            <div class="col-md-3">
+               
+                    <div class="form-group row">
+                        <label for="time" class="col-sm-5 col-form-label">Start Time<sup><span>&#9733;</span></sup></label>
+                        <div class="col-sm-7">
+
+                            <input type="text" class="form-control" id="startTime" placeholder="Start Time">
+                        </div>
+                    </div>
+               
+            </div>
+            <div class="col-md-3">
+               
+                    <div class="form-group row">
+                        <label for="rank" class="col-sm-5 col-form-label">End Time<sup><span>&#9733;</span></sup></label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="endTime" placeholder="End Time">
+                        </div>
+                    </div>
+                
+                
+                <!-- start -->
+            </div>
+        </div>
+        <br>
+
+        <table class="table   table-bordered " id="tblListAppSetUp">
+            <thead>
+                <tr>
+                    <th id="th1">DAYS</th>
+                    <th id="th2">TOKEN START NO.</th>
+                    <th id="th3">TOTAL INTERVAL</th>
+                    <th id="th4">TOTAL TOKEN</th>
+                    <th id="th5">TOTAL ONLINE TOKEN</th>
+                    <th id="th5">Max Days</th>
+                    <th id="th5">Min Days</th>
+                </tr>
+            </thead>
+        <tbody>
+	<% int inc = 0;
+		for(inc=0;inc<7;inc++){
+	%>
+	<tr>
+	<input type="hidden" name="appointment" id="appointmentId<%=inc%>" value="" />
+	<input type="hidden" id="days<%=inc%>" name="days" value="<%=day[inc]%>"/>
+	<td id="dayId" name="dayName"><%=day[inc]%></td>
+	<td><input type="text" size=8 id="tokenStart<%=inc%>" autocomplete="off" name="TokenStart" 
+			MAXLENGTH="8" validate='Days,int,no' onblur="checkShowButton(this.id)"
+			id="breakToTime2" onkeyup="setOnlineToken('TokenStart<%=inc%>','TotalToken<%=inc%>','TokenInterval<%=inc%>','TotalOnlineToken<%=inc%>','1');"/></td>	
+	<td><input type="text" size=8 id="tokenInterval<%=inc%>" name="TokenInterval" 
+			 MAXLENGTH="8" id="breakFromTime3" autocomplete="off" onkeyup="setOnlineToken('TokenStart<%=inc%>','TotalToken<%=inc%>','TokenInterval<%=inc%>','TotalOnlineToken<%=inc%>','1');"/></td>
+				
+	<td><input type="text" size=8 id="totalToken<%=inc%>" name="TotalToken" autocomplete="off" onkeyup="setOnlineToken('TokenStart<%=inc%>','TotalToken<%=inc%>','TokenInterval<%=inc%>','TotalOnlineToken<%=inc%>','1');"
+			 MAXLENGTH="8" id="breakToTime3" /></td>	
+			
+	<td><input type="text"  size=8 id="totalOnlineToken<%=inc%>" name="TotalOnlineToken" onkeyup="setOnlineToken('TokenStart<%=inc%>','TotalToken<%=inc%>','TokenInterval<%=inc%>','TotalOnlineToken<%=inc%>','2');"
+			 MAXLENGTH="8" id="breakToTime3" /></td>		
+				
+	<td><input type="text" size=8 id="maxDays<%=inc%>" name="maxdays" MAXLENGTH="2" autocomplete="off" validate="Max. no. of Days,num,no" /></td>
+	<td><input type="text" size=8 id="minDays<%=inc%>" name="mindays" MAXLENGTH="2" autocomplete="off" validate="Min no. of Days,num,no" /></td>
+	</tr>
+	<%	}%>
+    </tbody>
+  	</table>
+<input  type="hidden" value="<%=inc%>" name="totalRow" id="totalRowId"/>
+<input  type="hidden" value="n" name="showButtonStatus" id="showButtonStatus"/>
+   <!-- <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off"   onclick="if(validateDatefield() && checkShowButton()){submitAppSetUp()}"> -->
+   <button type="submit" id="submitbtn" name="submitbtn" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off"> Submit</button>
+   <button style="display: none" type="submit" id="submitUpdatebtn" name="submitUpdatebtn" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off">Update</button>         
+   <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off">RESET</button>
+    	<br><br>
+    	  </form>
+    </div>
+</body>
+
+</html>

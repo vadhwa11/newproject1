@@ -1,0 +1,155 @@
+package com.icg.jkt.entity;
+
+import java.io.Serializable;
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.Date;
+
+
+/**
+ * The persistent class for the MAS_IDEAL_WEIGHT database table.
+ * 
+ */
+@Entity
+@Table(name="MAS_IDEAL_WEIGHT")
+@NamedQuery(name="MasIdealWeight.findAll", query="SELECT m FROM MasIdealWeight m")
+public class MasIdealWeight implements Serializable {
+	private static final long serialVersionUID = 1247166928149155978L;
+
+	@Id
+	@SequenceGenerator(name="MAS_IDEAL_WEIGHT_IDEALWEIGHTID_GENERATOR", sequenceName="IDEAL_WEIGHT_ID")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="MAS_IDEAL_WEIGHT_IDEALWEIGHTID_GENERATOR")
+	@Column(name="IDEAL_WEIGHT_ID")
+	private Long idealWeightId;
+
+	@Column(name="GENDER_ID")
+	private Long genderId;
+	
+	@Column(name="FROM_HEIGHT")
+	private Long fromHeight;
+	
+	@Column(name="TO_HEIGHT")
+	private Long toHeight;
+	
+	@Column(name="WEIGHT")
+	private Long weight;
+	
+	//bi-directional many-to-one association to User
+	@ManyToOne
+	@JoinColumn(name="LAST_CHG_BY")
+	private Users user;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="LAST_CHG_DATE")
+	private Date lastChgDate;
+	
+	@Column(name="STATUS")
+	private String status;
+	
+	@Column(name="FROM_AGE")
+	private String fromAge;
+
+	@Column(name="TO_AGE")
+	private String toAge;	
+
+	@Column(name="SD")
+	private String sd;
+
+	public MasIdealWeight() {
+	}
+
+	public long getIdealWeightId() {
+		return this.idealWeightId;
+	}
+
+	public void setIdealWeightId(long idealWeightId) {
+		this.idealWeightId = idealWeightId;
+	}
+
+	public String getFromAge() {
+		return this.fromAge;
+	}
+
+	public void setFromAge(String fromAge) {
+		this.fromAge = fromAge;
+	}
+
+	
+
+	public Long getGenderId() {
+		return genderId;
+	}
+
+	public void setGenderId(Long genderId) {
+		this.genderId = genderId;
+	}
+
+	public Long getFromHeight() {
+		return fromHeight;
+	}
+
+	public void setFromHeight(Long fromHeight) {
+		this.fromHeight = fromHeight;
+	}
+
+	public Long getToHeight() {
+		return toHeight;
+	}
+
+	public void setToHeight(Long toHeight) {
+		this.toHeight = toHeight;
+	}
+
+	public void setIdealWeightId(Long idealWeightId) {
+		this.idealWeightId = idealWeightId;
+	}
+
+	public Date getLastChgDate() {
+		return this.lastChgDate;
+	}
+
+	public void setLastChgDate(Date lastChgDate) {
+		this.lastChgDate = lastChgDate;
+	}
+
+	public String getSd() {
+		return this.sd;
+	}
+
+	public void setSd(String sd) {
+		this.sd = sd;
+	}
+
+	public String getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getToAge() {
+		return this.toAge;
+	}
+
+	public void setToAge(String toAge) {
+		this.toAge = toAge;
+	}
+
+	public Long getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Long weight) {
+		this.weight = weight;
+	}
+
+	public Users getUser() {
+		return this.user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
+	}
+
+}

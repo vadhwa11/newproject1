@@ -1,0 +1,291 @@
+
+OSB_IP_AND_PORT=http://192.168.10.59:7003
+LOCAL_IP=http://192.168.203.195:8082
+#-----------------------------------------------------------------------------------------------------------------------------------------#
+############################################################## OSB SERVICES END POINT #####################################################
+#=========================================================================================================================================#
+
+#/************************************************* MAS DEPARTMENT *****************************************************/
+OSB_GET_DEPARTMENT_TYPE_LIST=/MasterGetDepartmentTypeList/RestService/GetDepartmentTypeList
+OSB_GET_ALL_DEPARTMENT=/MasterGetAllDepartment/ProxyService/GetAllDepartment
+OSB_ADD_DEPARTMENT=/MasterAddDepartment/ProxyService/AddDepartment
+OSB_UPDATE_DEPARTMENT_STATUS=/MasterUpdateDepartmentStatus/ProxytService/UpdateDepartmentStatus
+OSB_UPDATE_DEPARTMENT_DETAILS=/MasterUpdateDepartmentDetails/ProxyService/UpdateDepartmentDetails
+
+#/************************************************* MAS OPD FREQUENCY **************************************************/
+OSB_GET_ALL_OPD_FREQUENCY=/MasterGetAllOpdFrequency/ProxyService/GetAllOpdFrequency
+OSB_ADD_OPD_FREQUENCY=/MasterAddOpdFrequency/ProxyService/AddOpdFrequency
+OSB_UPDATE_OPD_FREQUENCY_DETAILS=/MasterU/ProxyService/UpdateOpdFrequency
+OSB_UPDATE_OPD_FREQUENCY_STATUS=/MasterUpdateOpdFrequencyStatus/ProxyService/UpdateOpdFrequencyStatus
+
+#/************************************************* APPOINTMENT TYPE ***************************************************/
+OSB_ADD_APPOINTMENT_TYPE=/Master_AddAppointmentType/ProxyService/AddAppointmentType
+OSB_GET_ALL_APPOINTMENT_TYPE=/Master_GetAllAppointmentType/ProxyService/GetAllAppointmentType
+OSB_UPDATE_APPOINTMENT_TYPE_DETAILS=/Master_UpdateAppointmentTypeDetails/ProxyService/UpdateAppointmentTypeDetails
+OSB_UPDATE_APPOINTMENT_STATUS=/Master_UpdateAppointmentTypeStatus/ProxyService/UpdateAppointmentTypeStatus
+
+#/************************************************* DISPOSAL MASTER ****************************************************/
+OSB_ADD_DISPOSAL=/Master_AddDisposal/ProxyService/AddDisposal
+OSB_GET_ALL_DISPOSAL=/Master_GetAllDisposal/ProxyService/GetAllDisposal
+OSB_UPDATE_DISPOSAL_DETAILS=/Master_UpdateDisposalDetails/ProxyService/UpdateDisposalDetails
+OSB_UPDATE_DISPOSAL_STATUS=/Master_UpdateDisposalStatus/ProxyService/UpdateDisposalStatus
+
+#/************************************************** COMMAND MASTER *********************************************************/
+OSB_ADD_COMMAND=/Master_AddCommand/ProxyService/addCommand
+OSB_UPDATE_COMMAND=/Master_UpdateCommand/ProxyService/UpdateCommand
+OSB_STATUS_COMMAND=/Master_StatusCommand/ProxyService/StatusCommand
+OSB_GET_ALL_COMMAND=/Master_GetAllCommand/ProxyService/getAllCommand
+OSB_GET_COMMAND_TYPE_LIST=/Master_GetCommandTypeList/ProxyService/GetCommandType
+
+
+#/************************************************** UNIT MASTER **********************************************************/
+#OSB_GET_UNIT_TYPE=/AshaServices/v0.1/master/getUnitType
+OSB_GET_COMMAND_LIST=/Master_GetCommandList/ProxyService/GetCommandList
+OSB_UPDATE_UNIT=/Master_UpdateUnit/ProxyService/UpdateUnit
+OSB_GET_ALL_UNIT=/Master_GetAllUnit/ProxyService/GetAllUnit
+OSB_ADD_UNIT=/Master_AddUnit/ProxyService/addUnit
+OSB_UPDATE_UNIT_STATUS=/Master_UpdateStatus/ProxyService/UpdateStatus
+OSB_GET_UNIT_TYPE_LIST=/Master_GetUnitTypeList/ProxyService/GetUnitTypeList
+
+
+#/************************************************* MAS HOSPITAL **********************************************/
+UPDATE_HOS_STATUS=/AshaServices/v0.1/master/updateHospitalMasterStatus
+UPDATE_HOS_DETAILS=/AshaServices/v0.1/master/updateHospitalDetails
+OSB_GET_ALL_HOSPITAL=/Master_GetAllHospital/ProxyService/GetAllHospatal
+OSB_GET_UNIT_NAME_LIST=/Master_GetUnitNameList/ProxyService/GetUnitNameList
+ADD_MASHOSPITAL=/AshaServices/v0.1/master/addMasHospital
+
+####IMPANELLED HOSPITAL###
+GET_ALL_EMPANELLED_HOSPITAL=/Master_GetAllEmpHospital/ProxyService/GetAllEmpanelledHospital
+UPDATE_EMPANELLED_HOSPITAL=/Master_updateEmpHospital/ProxyService/UpdateEmpanelledHospital
+ADD_EMPPANELLED_HOSPITAL=/Master_AddEmpanelledHospital/ProxyService/AddEmpanelledHospital
+
+####PHSIOTHREAPY ############
+GET_ALL_PHYSIOTHERAPY=/Master_GetAllPhysiotherapy/ProxyService/GetAllPhysiotherapy
+ADD_PHSIOTHERAPY_CARE=/Master_AddPhsiotherapyCare/ProxyService/AddPhsiotherapyCare
+UPDATE_PHSITHERAPY_DETAILS=/Master_UpdatePhysioDetails/ProxyService/UpdatePhysiotherapyDetails
+
+#GET_ALL_IDEAL_WEIGHT=/Master_GetAllIdealWeight/ProxyService/GetAllIdealWeight
+#GET_AGE=/Master_getAge/ProxyService/getAge
+updateIdealWeight = /AshaServices/v0.1/master/updateIdealWeight
+addIdealWeightMaster = /AshaServices/v0.1/master/addIdealWeight
+GET_ALL_IDEAL_WEIGHT=/AshaServices/v0.1/master/getAllIdealWeight
+GET_AGE=/AshaServices/v0.1/master/getAge
+############################# USER MANAGEMENT ##########################
+GET_ALL_USER_APPLICATION=/AshaServices/user/getAllUserApplication
+osb_GET_ALL_USER_APPLICATION=/User_GetAllUserApplication/ProxyService/GetAllUserApplication
+UPDATE_USER_APPLICATION=/AshaServices/user/updateUserApplication
+GET_ALL_TEMPLATE=/AshaServices/user/getAllTemplate
+osb_GET_ALL_TEMPLATE=/User_getAllTemplate/ProxyService/GetAllTemplate
+GET_APPLICATION_AUTO_COMPLETE=/AshaServices/user/getApplicationAutoComplete
+ADD_USER_APPLICATION=/AshaServices/user/addUserApplication
+osb_ADD_USER_APPLICATION=/User_AddUserApplication/ProxyService/AddUserApplication
+UPDATE_TEMPLATE=/AshaServices/user/updateTemplate
+osb_UPDATE_TEMPLATE=/User_UpdateTemplate/ProxyService/UpdateTemplate
+ADD_TEMPLATE=/AshaServices/user/addTemplate
+osb_ADD_TEMPLATE=/User_AddTemplate/ProxyService/AddTemplate
+GET_TEMPLATE_LIST=/AshaServices/user/getTemplateList
+osb_GET_TEMPLATE_LIST=/User_GetTemplateList/ProxyService/GetTemplateList
+GET_MODULE_NAME_TEMPLATE_WISE=/AshaServices/user/getModuleNameTemplateWise
+osb_GET_MODULE_NAME_TEMPLATE_WISE=/User_GetModNameTempWise/ProxyService/GetModuleNameTemplateWise
+addFormAndReports=/AshaServices/user/addFormAndReports
+getAllApplicationAndTemplates=/AshaServices/user/getAllApplicationAndTemplates
+addTemplateApplication=/AshaServices/user/addTemplateApplication
+
+GET_APPLICATIONNAME_FORMS_AND_REPORT=/AshaServices/user/getApplicationNameFormsAndReport
+UPDATE_ADDFORM_AND_REPORT=/AshaServices/user/updateAddFormsAndReport
+#*********************************** ROLES RIGHT ***********************************/
+getRoleRightsList=/AshaServices/user/getRoleRightsList
+getTemplateNameList=/AshaServices/user/getTemplateNameList
+saveRolesRight=/AshaServices/user/saveRolesRight
+getAssingedTemplateNameList=/AshaServices/user/getAssingedTemplateNameList
+GET_ROLE_RIGHTS_LIST=/Admin_GetRoleRightsList/ProxyService/GetRoleRightsList
+GET_TEMPLATE_NAME_LIST=/Admin_GetTemplateNameList/ProxyService/GetTemplateNameList
+SAVE_ROLES_RIGHT=/Admin_SaveRolesRight/ProxyService/SaveRolesRight
+GET_ASSINGEED_NAME_LIST=/Admin_GetAssingedTemplateNameList/ProxyService/GetAssingedTemplateNameList
+
+#/*************************************************Start Patient Registration And Appointment ********************************************************/
+
+
+
+DEPT_BlOOD_MEDICAL_CAT=/DeptBloodGroupAndMeCat/ProxyService/departmentBloodGroupAndMedicalCategory
+PATIEN_DETAILS=/PatientsRegistration/ProxyRestService/PatientsRegistration
+TOKEN_FOR_MULTI_VISIT=/TokenNoForDeptMultiVisit/ProxyService/tokenNoForDepartmentMultiVisit
+SUBMIT_PATIENT_DETAILS=/SubmitPatientDetails/ProxyService/submitPatientDetails
+APPOINTMENT_FOR_OTHERS=/ShowAppointmentForOthers/ProxyService/ShowAppointmentForOthers
+TOKEN_FOR_OTHERS=/TokenNoOfDeptForOthers/ProxyService/TokenNoOfDeptForOthers
+SUBMIT_OTHERS_PATIENTS_DATA=/SubmitPatientDetailsForOthers/ProxyService/SubmitPatientDetailsForOthers
+SEARCH_FOR_REGISTERED_PATIENT=/SearchOthersRegisteredPatient/proxyService/SearchOthersRegisteredPatient
+RECORD_FOR_APPOINTMENT_SETUP=/RecordsforAppointmentSetUp/ProxyService/RecordsforAppointment
+LOCATION_WISE_APPOINTMENT=/AppointmentType/ProxyService/locationWiseAppointment
+APPOINTMENT_SETUP_DETAIL=/AppointmentSetupDetails/ProxyService/AppointmentSetup
+SUBMIT_APPOINTMENT_SETUP=/SubmitAppointmentSetup/ProxyService/SubmitAppointment
+SHOW_APPOINTMENT_SESSION=/ShowAppointmentSession/ProxyService/ShowAppointmentSession
+SUBMIT_APPOINTMENT_SESSION=/SubmitAppointmentSession/ProxyService/SubmitAppointmentSession
+UPDATE_APP_SESSION=/UpdateAppointmentSession/ProxyService/updateAppointmentSession
+UPLOAD_PATIENT_DOCUMENT=/patientListForUploadDoc/ProxyService/PatientListForUploadDocument
+GET_ALL_APPOINTMENT_SESSION=/Master_GetAllAppointmentSession/ProxyService/GetAllAppointmentSession
+
+GET_APPLICATION_BASED_ON_ROLE=/AshaServices/user/getApplicationNameBasesOnRole
+
+
+VISIT_FLAG_FOR_RECEPTION=R
+#below URL need OBS 
+
+#Self Relation code
+SELF_RELATION_ID=8
+REGISTRATION_TYPE_NAME_ICG=ICG
+REGISTRATION_TYPE_ICG_ID=1
+REGISTRATION_TYPE_OTHER_DEFENCE_ID=2
+REGISTRATION_TYPE_OTHER_CIVIL_ID=3
+APPOINTMENT_TYPE=OPD
+#/*************************************************End Patient Registration And Appointment ********************************************************/
+
+#/************************************************************ OPD Module 02/04/2019******************************************************************************/
+
+	preConsPatientWatingWeb=/GetPreConsPatientWatingListMapped/ProxyService/GetPreConsPatientWating
+	saveVitailsPatientdetails=/AddVitalDetails/ProxyServices/AddVitalDetails
+	getOpdWaitingList=/GetOpdPatientWatingList/ProxyService/GetOpdPatientWating
+	getIcdList=/GetICDList/ProxyService/GetICDList
+	getFamilyPatientHistory=/GetFamilyHistoryDetails/ProxyService/GetFamilyHistory
+	getOpdPatientDetailModel=/OPD_GetPatientDetails/ProxyServices/GetPatientDetails
+	saveOpdPatientdetails=/SaveOpdPatientDetails/ProxyService/SaveOpdPatientDetails
+	saveOpdTemplates=/AshaServices/v0.1/opd/saveOpdTemplates
+	getIinvestigationList=/GetInvestigationList/ProxyService/GetInvestigationList
+	getMasStoreItemList=/GetMasStoreItem/ProxyService/GetMasStoreItem
+	getEmpanelledHospital=/GetEmpHospital/ProxyService/GetEmpHospital
+	getTemplateName=/GetTemplateName/ProxyService/GetTemplateName
+	getTemplateInvestigationData=/GetTemplateInvestData/ProxyService/GetTemplateInvestData
+	getMasFrequency=/GetMasFrequency/ProxyService/GetMasFrequency
+	getTemplateInvestData=/GetTemplateInvestData/ProxyService/GetTemplateInvestData
+	getMasNursingCare=GetMasNursingCare/ProxyService/GetMasNursingCare
+	getDisposalList=/GetDisposalList/ProxyService/GetDisposalList
+
+
+#/************************************************************End OPD ***************************************************************************/
+#doctor roaster
+getDepartmentList=/GetDepartmentList/ProxyService/getDepartment
+getDoctorRoasterDetail=/GetDoctorRoaster/ProxyService/GetRoaster
+submitDepartmentRoaster=//SubmitDepartmentRoaster/ProxyService/SubmitDeptRoaster
+
+#obesity module
+getObesityDetail=/GetObesityDetails/ProxyService/GetObesityDetails
+obesityWaitingList=/GetObesityWaiting/ProxyService/GetObesity
+getIdealWeight=/GetIdealWeight/ProxyService/GetIdealWeight
+saveObesityDetail=/SaveObesityDetails/ProxyService/SaveObesityDetails
+
+#Referral patient outside
+referralWaitingList=/ReferredPatientList/ProxyService/ReferredPatient
+referralDetailList=/ReferredPatientDetail/ProxyServices/ReferredPatientDetail
+updateReferralDetail=/UpdateReferralDetail/ProxyService/UpdateReferralDetail
+
+#admission discharge outside module
+getAdmissionDischargeList=/OPD_GetAdmissionDischargeList/ProxyService/GetAdmissionDischargeList
+admissionAndDischarge=/OPD_AdmissionAndDischarge/ProxyService/AdmissionAndDischarge
+savePatientAdmission=/OPD_SavePatientAdmission/ProxyService/SavePatientAdmission
+saveNewAdmission=/OPD_SaveNewAdmission/ProxyService/SaveNewAdmission
+getServiceWisePatientList=/OPD_GetServiceWisePatientList/ProxyServices/GetServiceWisePatientList
+getPendingDischargeList=GetPendingDischargeList/ProxyService/GetPendingDischargeList
+
+
+#/*******************************MAS RANK******************************************/
+
+osb_getRank = /Master_GetAllRank/ProxyService/GetAllRank
+osb_addRank = /Master_AddRank/ProxyService/AddRank
+osb_updateRank = /Master_updateRank/ProxyService/UpdateRank
+osb_statusRank =  /Master_StatusRank/ProxyService/StatusRank
+osb_getEmployeeCategoryList = /Master_EmployeeCategoryList/ProxyService/EmployeeCategoryList
+
+
+#/*******************************MAS TRADE*************************************/
+getAllTrade = /Master_GetAllTrade/ProxyService/GetAllTrade 
+addTrade = /Master_AddTrade/RestService/AddTrade
+updateTrade = /Master_UpdateTrade/ProxyService/UpdateTrade  
+statusTrade = /Master_StatusTrade/RestService/StatusTrade
+getServiceTypeList = /Master_GetServiceTypeList/ProxyService/GetServiceTypeList
+
+#/****************************MAS RELIGION***********************************/
+getAllReligion=/Master_GetAllReligion/ProxyService/GetAllReligion 
+addReligion=/Master_AddReligion/ProxyService/AddReligion
+updateReligionDetails=/Master_UpdateReligionDetails/ProxyService/UpdateReligion
+updateReligionStatus=/Master_UpdateReligionStatus/ProxyService/UpdateReligionStatus
+
+#/****************************MAS MARITAL STATUS***********************************/
+getAllMaritalStatus= /Master_GetAllMaritalStatus/ProxyService/GetAllMaritalStatus
+addMaritalStatus= /Master_AddMaritalStatus/ProxyService/AddMaritalStatus
+updateMaritalStatusDetails= /Master_UpdateMaritalStatusDetails/ProxyService/UpdateMaritalStatusDetails
+updateMaritalStatusStatus= /Master_UpdateMaritalStatusStatus/ProxyService/UpdateMaritalStatus
+
+#/****************************MAS EMPLOYEE CATEGORY***********************************/
+getAllEmployeeCategory=  /Master_GetAllEmployeeCategory/ProxyService/GetAllEmpCategory 
+addEmployeeCategory= /Master_AddEmployeeCategory/ProxyService/AddEmployeeCategory 
+updateEmployeeCategoryDetails= /Master_UpdateEmployeeCategoryDetails/ProxyService/UpdateEmployeeCategoryDetails
+updateEmployeeCategoryStatus= /Master_UpdateEmployeeCategoryStatus/ProxyService/UpdateEmpCategoryStatus 
+
+#/***********************************MAS Administrative Sex***********************************/
+getAllAdministrativeSex= /Master_GetAllAdministrativeSex/ProxyService/GetAllAdministrativeSex 
+addAdministrativeSex= /Master_AddAdministrativeSex/ProxyService/AddAdministrativeSex
+updateAdministrativeSexDetails= /Master_updateAdminSexDetails/ProxyService/updateAdminSexDetails
+updateAdministrativeSexStatus= /Master_UpdateAdmSexStatus/ProxyService/UpdateAdministrativeSexStatus
+
+#/***********************************MAS MedicalCategory***********************************/
+getAllMedicalCategory= /Master_GetAllMedicalCategory/ProxyService/GetAllMedicalCategory
+addMedicalCategory= /Master_AddMedicalCategory/ProxyService/AddMedicalCategory
+updateMedicalCategoryDetails= /Master_UpdateMedicalCategoryDetails/ProxyService/UpdateMCDetails
+updateMedicalCategoryStatus=/Master_UpdateMedicalCategoryStatus/ProxyService/UpdateMCStatus
+
+#/***********************************MAS Blood Group***********************************/
+getAllBloodGroup= /Master_GetAllBloodGroup/ProxyService/GetAllBloodGroup
+addBloodGroup= /Master_AddBloodGroup/ProxyService/AddBloodGroup
+updateBloodGroupDetails= /Master_UpdateBloodGroupDetails/ProxyService/UpdateBloodGroupDetails
+updateBloodGroupStatus= /Master_UpdateBloodGroupStatus/ProxyService/UpdateBloodGroupStatus
+
+#/***********************************MAS SAMPLE***********************************/
+getAllSample= /Master_GetAllSample/ProxyService/GetAllSample
+addSample= /Master_AddSample/ProxyService/AddSample
+updateSampleDetails= /Master_UpdateSampleDetails/ProxyService/UpdateSampleDetails
+updateSampleStatus= /Master_UpdateSampleStatus/ProxyService/UpdateSampleStatus
+
+#***********************************MAS UOM***********************************/
+getAllUOM=/Master_GetAllUOM/ProxyService/GetAllUOM
+addUOM=/Master_AddUOM/ProxyService/AddUOM
+updateUOMDetails= /Master_UpdateUOMDetails/ProxyService/UpdateUOMDetails
+updateUOMStatus= /Master_UpdateUOMStatus/ProxyService/UpdateUOMStatus
+
+#***********************************MAS Item Unit***********************************/
+getAllItemUnit=/Master_GetAllItemUnit/ProxyService/GetAllItemUnit
+addItemUnit=/Master_AddItemUnit/ProxyService/AddItemUnit
+updateItemUnitDetails= /Master_UpdateItemUnitDetails/ProxyService/UpdateItemUnitDetails
+updateItemUnitStatus= /Master_UpdateItemUnitStatus/ProxyService/UpdateItemUnitStatus
+
+#/*******************************Users******************************************/
+
+getAllUsers=/Master_GetAllUsers/ProxytService/GetAllUsers
+addUsers=/Master_AddUsers/ProxyService/AddUsers
+updateUsersDetails=/Master_UpdateUsersDetails/ProxyService/UpdateUsersDetails
+updateUsersStatus=/Master_UpdateUsersStatus/ProxyService/UpdateUsersStatus
+getHospitalList=/Master_GetHospitalList/ProxyService/GetHospitalList
+
+#/*******************************Mas MainChargecode******************************************/
+#
+getAllMainChargecode=/AshaServices/v0.1/master/getAllMainChargecode
+addMainChargecode=/AshaServices/v0.1/master/addMainChargecode
+updateMainChargecodeDetails = /AshaServices/v0.1/master/updateMainChargecodeDetails
+updateMainChargecodeStatus =  /AshaServices/v0.1/master/updateMainChargecodeStatus
+getDepartmentList = /AshaServices/v0.1/master/getDepartmentList
+
+#/****************************MAS Role***********************************/
+getAllRole=/Master_GetAllRole/ProxyService/GetAllRole
+addRole=/Master_AddRole/ProxyService/AddRole 
+updateRoleDetails=/Master_UpdateRoleDetails/ProxyService/UpdateRoleDetails
+updateRoleStatus=/Master_UpdateRoleStatus/ProxyService/updateRoleStatus 
+
+	#OPD Recall
+GetExaminationDetail=/GetExaminationDetail/ProxyService/GetExaminationDetail
+GetInvestigationDetail=/GetInvestigationDetail/ProxyService/GetInvestigationDetail
+GetTreatmentPatientDetail=/GetTreatmentPatientDetail/ProxyService/GetTreatmentPatientDetail
+GetPatientHistoryDetail=/GetPatientHistoryDetail/ProxyService/GetPatientHistoryDetail
+GetPatientReferalDetail=/GetPatientReferalDetail/ProxyService/GetPatientReferalDetail
+DeleteGridRow=/DeleteGridRow/ProxyService/DeleteGridRow
+
+

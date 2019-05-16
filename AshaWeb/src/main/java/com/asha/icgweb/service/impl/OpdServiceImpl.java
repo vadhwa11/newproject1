@@ -25,8 +25,8 @@ public class OpdServiceImpl implements OpdService {
 		String Url = HMSUtil.getProperties("urlextension.properties","preConsPatientWatingWeb");
 		String OSBURL = ipAndPort + Url;
 		System.out.println(OSBURL);
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.preConsPatientWatingWeb, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.preConsPatientWatingWeb, requestHeaders, payload);
 	}
 
 	@Override
@@ -36,8 +36,8 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","saveVitailsPatientdetails");
 		String OSBURL = ipAndPort + Url;
-	    return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.saveVitailsPatientdetails, requestHeaders, payload);
+	    //return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.saveVitailsPatientdetails, requestHeaders, payload);
 	}
 
 	@Override
@@ -46,8 +46,8 @@ public class OpdServiceImpl implements OpdService {
 				MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 				String Url = HMSUtil.getProperties("urlextension.properties","getIdealWeight");
 				String OSBURL = ipAndPort + Url;
-				return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-				//return RestUtils.postWithHeaders(AppUrlConstant.getIdealWeight, requestHeaders, payload);
+				//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+				return RestUtils.postWithHeaders(AppUrlConstant.getIdealWeight, requestHeaders, payload);
 	}
 
 	@Override
@@ -56,8 +56,8 @@ public class OpdServiceImpl implements OpdService {
 		String Url = HMSUtil.getProperties("urlextension.properties","getOpdWaitingList");
 		String OSBURL = ipAndPort + Url;
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.getOpdWaitingList, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.getOpdWaitingList, requestHeaders, payload);
 	}
 
 	@Override
@@ -66,8 +66,8 @@ public class OpdServiceImpl implements OpdService {
 		String Url = HMSUtil.getProperties("urlextension.properties","getIcdList");
 		String OSBURL = ipAndPort + Url;
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.getIcdList, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.getIcdList, requestHeaders, payload);
 	}
 
 	/*@Override
@@ -82,8 +82,8 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","getFamilyPatientHistory");
 		String OSBURL = ipAndPort + Url;
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.getFamilyPatientHistory, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.getFamilyPatientHistory, requestHeaders, payload);
 	}
 
 	@Override
@@ -91,8 +91,8 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","getOpdPatientDetailModel");
 		String OSBURL = ipAndPort + Url;
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.getOpdPatientDetailModel, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.getOpdPatientDetailModel, requestHeaders, payload);
 	}
 
 	@Override
@@ -101,8 +101,8 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","saveOpdPatientdetails");
 		String OSBURL = ipAndPort + Url;
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.saveOpdPatientdetails, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.saveOpdPatientdetails, requestHeaders, payload);
 	}
 
 	@Override
@@ -111,8 +111,8 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","saveOpdInvestigationTemplates");
 		String OSBURL = ipAndPort + Url;
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.saveOpdTemplates, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.saveOpdTemplates, requestHeaders, payload);
 	}
 	
 	@Override
@@ -122,8 +122,8 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","saveOpdTreatTemplates");
 		String OSBURL = ipAndPort + Url;
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.saveOpdTreatmentTemplates, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.saveOpdTreatmentTemplates, requestHeaders, payload);
 	}
 
 	@Override
@@ -132,8 +132,8 @@ public class OpdServiceImpl implements OpdService {
 				MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 				String Url = HMSUtil.getProperties("urlextension.properties","getIinvestigationList");
 				String OSBURL = ipAndPort + Url;
-				return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-				//return RestUtils.postWithHeaders(AppUrlConstant.getIinvestigationList, requestHeaders, payload);
+				//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+				return RestUtils.postWithHeaders(AppUrlConstant.getIinvestigationList, requestHeaders, payload);
 	}
 
 	@Override
@@ -141,8 +141,8 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","getMasStoreItemList");
 		String OSBURL = ipAndPort + Url;
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.getMasStoreItemList, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.getMasStoreItemList, requestHeaders, payload);
 	}
 
 
@@ -151,9 +151,9 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","getDisposalList");
 		String OSBURL = ipAndPort + Url;
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
 		//return RestUtils.postWithHeaders(AppUrlConstant.getMasDisposalList, requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.getMasDisposalList, requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.getMasDisposalList, requestHeaders, payload);
 	}
 
 	@Override
@@ -161,8 +161,8 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","getMasFrequency");
 		String OSBURL = ipAndPort + Url;
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.getMasFrequency, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.getMasFrequency, requestHeaders, payload);
 	}
 	
 	@Override
@@ -170,8 +170,8 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","getMasNursingCare");
 		String OSBURL = ipAndPort + Url;
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.getMasNursingCare, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.getMasNursingCare, requestHeaders, payload);
 	}
 
 	
@@ -180,8 +180,8 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","getTemplateName");
 		String OSBURL = ipAndPort + Url;
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.getTemplateName, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.getTemplateName, requestHeaders, payload);
 	}
 	
 	@Override
@@ -189,8 +189,8 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","getEmpanelledHospital");
 		String OSBURL = ipAndPort + Url;
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.getEmpanelledHospital, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.getEmpanelledHospital, requestHeaders, payload);
 	}
 
 
@@ -199,8 +199,8 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","getTemplateInvestigationData");
 		String OSBURL = ipAndPort + Url;
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.getTemplateInvestData, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.getTemplateInvestData, requestHeaders, payload);
 	}
 	
 	@Override
@@ -208,8 +208,8 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","getTemplateTreatmentData");
 		String OSBURL = ipAndPort + Url;
-	    return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.getTemplateTreatmentData, requestHeaders, payload);
+	    //return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.getTemplateTreatmentData, requestHeaders, payload);
 	}
 
 
@@ -218,8 +218,8 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","getOpdPatientDetailModel");
 		String OSBURL = ipAndPort + Url;
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.getOpdPatientDetailModel, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.getOpdPatientDetailModel, requestHeaders, payload);
 	}
 	
 	@Override
@@ -228,8 +228,8 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","getOpdReportsDetailsbyServiceNo");
 		String OSBURL = ipAndPort + Url;
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.getOpdPatientDetailModel, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.getOpdReportsDetailsbyServiceNo, requestHeaders, payload);
 	}
 
 	@Override
@@ -238,8 +238,8 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","GetOpdReportsDetailsbyPatinetId");
 		String OSBURL = ipAndPort + Url;
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.getOpdPatientDetailModel, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.getOpdReportsDetailsbyPatinetId, requestHeaders, payload);
 	}
 	
 	@Override
@@ -248,8 +248,8 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","GetOpdPreviousVisitRecord");
 		String OSBURL = ipAndPort + Url;
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders("http://localhost:8181/AshaServices/v0.1/opd/getOpdPreviousVisitRecord", requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.getOpdPreviousVisitRecord, requestHeaders, payload);
 	
 	}
 
@@ -258,8 +258,8 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","GetOpdPreviousVitalRecord");
 		String OSBURL = ipAndPort + Url;
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.getOpdPreviousVitalRecord, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.getOpdPreviousVitalRecord, requestHeaders, payload);
 	}
 	
 	@Override
@@ -267,8 +267,8 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","getMasFrequency");
 		String OSBURL = ipAndPort + Url;
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.getDispUnit, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.getDispUnit, requestHeaders, payload);
 	}
 
 	@Override
@@ -276,9 +276,11 @@ public class OpdServiceImpl implements OpdService {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","getMasFrequency");
 		String OSBURL = ipAndPort + Url;
-		return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
-		//return RestUtils.postWithHeaders(AppUrlConstant.getMasItemClass, requestHeaders, payload);
+		//return RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, payload);
+		return RestUtils.postWithHeaders(AppUrlConstant.getMasItemClass, requestHeaders, payload);
 	}
+
+	
 
 	@Override
 	public String obesityWaitingList(String payload) {
@@ -364,7 +366,6 @@ public class OpdServiceImpl implements OpdService {
 		//return RestUtils.postWithHeaders("http://localhost:8181/AshaServices/v0.1/opd/getExaminationDetail", requestHeaders, payload);
 	}
 
-	 
 	@Override
 	public String getPocedureDetail(String payload, HttpServletRequest request, HttpServletResponse response) {
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
@@ -374,8 +375,6 @@ public class OpdServiceImpl implements OpdService {
 		//return RestUtils.postWithHeaders("http://localhost:8082/AshaServices/v0.1/opd/getPocedureDetailRecall", requestHeaders, payload);
 	
 	}
-
-
 
 	
 

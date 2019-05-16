@@ -29,10 +29,11 @@ $j(document).ready(function()
 	$j("#btnActive").hide();
 	$j("#btnInActive").hide();		
 	$j('#updateBtn').hide();
+	getAgeListOfMasRange();
 	//$j('#selectAgeDiv').hide();
 	//$j('#selectHeightDiv').hide();
 			
-	GetAge();
+	//GetAge();
 	GetAllIdealWeight('ALL');
 	GetAllAdministrativeSex();		
 		});
@@ -112,66 +113,7 @@ function makeTable(jsonData)
 	
 }
 
-var comboArray = [];
-var idealWtId;
-var idealWtFromHeight;
-var idealWtToHeight;
-var idealWtFromAge;
-var idealWtToAge;
-var idealWtWeight;
-var idealWtStatus;
-var genderId;
-function executeClickEvent(idealWeightId,data)
-{
-	
-	for(j=0;j<data.data.length;j++){
-		if(idealWeightId == data.data[j].idealWeightId){
-			idealWtId = data.data[j].idealWeightId;
-			genderId = data.data[j].genderId;
-			idealWtFromAge = data.data[j].fromAge;			
-			idealWtToAge = data.data[j].toAge;
-			idealWtFromHeight = data.data[j].fromHeight;
-			idealWtToHeight = data.data[j].toHeight;
-			idealWtWeight = data.data[j].weight;
-			idealWtStatus = data.data[j].status;
-			
-			
-		}
-	}
-	rowClick(idealWtId,genderId,idealWtFromAge,idealWtToAge,idealWtFromHeight,idealWtToHeight,idealWtWeight,idealWtStatus);
-}
 
-function rowClick(idealWtId,genderId,idealWtFromAge,idealWtToAge,idealWtFromHeight,idealWtToHeight,idealWtWeight,idealWtStatus){	
-	document.getElementById("ideaWeight").value = idealWtWeight;
-	document.getElementById("toHeight").value = idealWtToHeight;
-	document.getElementById("fromHeight").value = idealWtFromHeight;
-	document.getElementById("selectGender").value = genderId;
-	document.getElementById("selectAge").value = age;	 
-	
-	for(var j=0; j<comboArray.length;j++){		
-		if(comboArray[j] == idealWtId){
-			
-			jQuery("#selectAge").val(idealWtId);
-		}
-	}
-
-	if(idealWtStatus == 'Y' || idealWtStatus == 'y'){		
-		$j("#btnInActive").show();
-		$j("#btnActive").hide();
-		$j('#updateBtn').show();
-	}
-	if(idealWtStatus == 'N' || idealWtStatus == 'n'){
-		$j("#btnActive").show();
-		$j("#btnInActive").hide();
-		$j('#updateBtn').hide();
-	}
-	
-	$j('#addIdealWeight').hide();
-	
-	 $j("#btnActive").attr("disabled", false);
-	 $j("#btnInActive").attr("disabled", false);
-	
-}
 
 function GetAge(){
 	jQuery.ajax({
@@ -226,7 +168,7 @@ function changeGenderId(){
 		
 	}
 }
-
+var rangeID;
 function getAgeListOfMasRange(){
 	jQuery('#selectAge').html("");
 	jQuery('#selectHeight').html("");
@@ -263,8 +205,8 @@ function getAgeListOfMasRange(){
 	    }
 	    
 	});
-	$j('#selectAgeDiv').show();
-	$j('#selectHeightDiv').show();
+	//$j('#selectAgeDiv').show();
+	//$j('#selectHeightDiv').show();
 }
 
 function getHeightListOfMasRange(){
@@ -282,6 +224,7 @@ function getHeightListOfMasRange(){
 	    	for(var i=0;i<result.data.length;i++){    		
 	    		comboArray[i] = result.data[i].rangeId;	
 	    		if(result.data[i].rangeFlag == 'H' && result.data[i].genderId == 1){
+	    			
 	    		combo += '<option value='+result.data[i].rangeId+'>' +result.data[i].fromHeightToHeight+ '</option>';	    			    		
 	    		}	    		
 	    	}
@@ -293,6 +236,86 @@ function getHeightListOfMasRange(){
 	$j('#selectAgeDiv').show();
 	$j('#selectHeightDiv').show();
 }
+
+var comboArray = [];
+var idealWtId;
+var idealWtFromHeight;
+var idealWtToHeight;
+var idealWtFromAge;
+var idealWtToAge;
+var idealWtWeight;
+var idealWtStatus;
+var genderId;
+var adminSexName;
+function executeClickEvent(idealWeightId,data)
+{
+	
+	for(j=0;j<data.data.length;j++){
+		if(idealWeightId == data.data[j].idealWeightId){
+			idealWtId = data.data[j].idealWeightId;
+			genderId = data.data[j].genderId;
+			//adminSexName = data.data[j].administrativeSexName;
+			idealWtFromAge = data.data[j].fromAge;			
+			idealWtToAge = data.data[j].toAge;
+			idealWtFromHeight = data.data[j].fromHeight;
+			idealWtToHeight = data.data[j].toHeight;
+			idealWtWeight = data.data[j].weight;
+			idealWtStatus = data.data[j].status;
+			
+			
+		}
+	}
+	rowClick(idealWtId,genderId,idealWtFromAge,idealWtToAge,idealWtFromHeight,idealWtToHeight,idealWtWeight,idealWtStatus, rangeID);
+}
+
+function rowClick(idealWtId,genderId,idealWtFromAge,idealWtToAge,idealWtFromHeight,idealWtToHeight,idealWtWeight,idealWtStatus, rangeID){
+	var agerange = idealWtFromAge+"-"+idealWtToAge
+	//alert("agerange:: "+agerange);
+	
+/* 	for(var i=0; i<comboArray.length; i++){
+		//alert("comboArray :: "+comboArray);
+		if(comboArray[i]==genderId){
+			alert("genderId :: "+genderId)
+			jQuery("#selectGender").val(genderId);
+		}
+	}
+	document.getElementById("ideaWeight").value = idealWtWeight; */
+	
+	 if(genderId!=0){	 
+			alert("genderId if :: "+genderId); 
+			jQuery("#selectGender").val(genderId);
+	}	
+	document.getElementById("ideaWeight").value = idealWtWeight; 
+	
+	//jQuery("#selectAge").val(rangeID); 
+	
+
+	
+	for(var j=0; j<comboArray.length;j++){		
+		if(comboArray[j] == idealWtId){
+			
+			jQuery("#selectAge").val(idealWtId);
+		}
+	}
+
+	if(idealWtStatus == 'Y' || idealWtStatus == 'y'){		
+		$j("#btnInActive").show();
+		$j("#btnActive").hide();
+		$j('#updateBtn').show();
+	}
+	if(idealWtStatus == 'N' || idealWtStatus == 'n'){
+		$j("#btnActive").show();
+		$j("#btnInActive").hide();
+		$j('#updateBtn').hide();
+	}
+	
+	$j('#addIdealWeight').hide();
+	
+	 $j("#btnActive").attr("disabled", false);
+	 $j("#btnInActive").attr("disabled", false);
+	
+}
+
 /* function searchIdealWeightList(){	
 	if(document.getElementById('sGenderList').value == "" || document.getElementById('sGenderList') == null){
 		 alert("Plese Select Gender Name");
@@ -552,18 +575,14 @@ function updateIdealWeight()
                                                         </div>
                                                     </div>
                                                     
-                                                     <div class="col-md-4">
-                                                        <div class="form-group row" id="selectHeightDiv">                                                        
-                                                            <label for="recordoffice" class="col-sm-5 col-form-label inner_md_htext"> Height <span style="color:red">*</span></label>  
-                                                             <div class="col-md-7">                                                          
-                                                             <select class="form-control" id="selectHeight" name="selectHeight">
-                                                                    
-                                                                </select>
+                                                       <div class="col-md-4">
+                                                        <div class="form-group row">                                                        
+                                                            <label for="recordoffice" class="col-sm-5 col-form-label inner_md_htext">Ideal Weight <span style="color:red">*</span></label>                                                            
+                                                            <div class="col-md-7">
+                                                                 <input type="text" class="form-control" id="ideaWeight" name="ideaWeight" placeholder="Ideal Weight" onkeypress="return validateText('ideaWeight',3);"/>
                                                             </div>
                                                         </div>
-                                                        
                                                     </div>
-                                                    
                                                     <div class="col-md-4">
                                                        <div class="form-group row" id="selectAgeDiv">
                                                         <div class="col-sm-5">
@@ -576,16 +595,18 @@ function updateIdealWeight()
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    
-                                                       <div class="col-md-4">
-                                                        <div class="form-group row">                                                        
-                                                            <label for="recordoffice" class="col-sm-5 col-form-label inner_md_htext">Ideal Weight <span style="color:red">*</span></label>                                                            
-                                                            <div class="col-md-7">
-                                                                 <input type="text" class="form-control" id="ideaWeight" name="ideaWeight" placeholder="Ideal Weight" onkeypress="return validateText('ideaWeight',4,'Ideal Weight');"/>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group row" id="selectHeightDiv">                                                        
+                                                            <label for="recordoffice" class="col-sm-5 col-form-label inner_md_htext"> Height <span style="color:red">*</span></label>  
+                                                             <div class="col-md-7">                                                          
+                                                             <select class="form-control" id="selectHeight" name="selectHeight">
+                                                                    
+                                                                </select>
                                                             </div>
                                                         </div>
+                                                        
                                                     </div>
-                                                   
+                                                 
                                                 </div>
                                             </form>
                                         </div>

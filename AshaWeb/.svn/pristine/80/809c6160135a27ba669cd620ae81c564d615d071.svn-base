@@ -1,0 +1,99 @@
+package com.asha.icgweb.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.pool2.impl.AbandonedConfig;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.asha.icgweb.model.LoginModel;
+import com.asha.icgweb.model.OpdModel;
+import com.asha.icgweb.service.OpdService;
+import com.asha.icgweb.utils.RestUtils;
+
+@RequestMapping("/v0.1/opd")
+@RestController
+@CrossOrigin
+public class OpdController  {
+	
+	@Autowired
+	OpdService os;
+	
+	@RequestMapping(value="/getPreConsPatientWatingWeb", method = RequestMethod.POST)
+	 //HashMap<String,String> listMap =  new HashMap<String,String>();
+	public String preConsPatientWatingWeb(@RequestBody String payload, HttpServletRequest request,
+			HttpServletResponse response) {	
+		
+		return os.preConsPatientWatingWeb(payload, request, response);
+	}
+	
+	@RequestMapping(value="/obesityWaitingJsp", method = RequestMethod.GET)
+	public ModelAndView obesityWaitingLJsp() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String jsp = "obesityWaitingList";
+		ModelAndView mv =new ModelAndView();
+		mv.setViewName(jsp);
+		return mv;
+	}
+	
+	@RequestMapping(value="/obesityWaitingList", method = RequestMethod.POST)
+	public String obesityWaitingList(@RequestBody String payload, HttpServletRequest request,
+			HttpServletResponse response) {	
+		System.out.println("aasha web called");
+		String result = os.obesityWaitingList(payload);
+		return result;
+	}
+	
+	@RequestMapping(value="/patientObesityDetailjsp", method = RequestMethod.GET)
+	public ModelAndView patientObesityDetailjsp( HttpServletRequest request,
+			HttpServletResponse response) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String jsp = "patientObesityDetail";		
+		int id= Integer.parseInt(request.getParameter("Id"));
+		String payload = "{\"id\":"+id+"}";
+		String jsonResponse = os.getObesityDetail(payload, request, response);		
+		System.out.println("jsonResponse "+jsonResponse);
+		ModelAndView mv =new ModelAndView();
+		mv.addObject("data", jsonResponse);
+		mv.setViewName(jsp);
+		return mv;
+	}
+	
+	@RequestMapping(value="/getIdealWeight", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String getIdealWeight(@RequestBody String payload, HttpServletRequest request, HttpServletResponse response) {
+		//String idealWeight = os.idealWeight(map, request, response);
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		//String data =  RestUtils.postWithHeaders("http://localhost:8081/AshaServices/v0.1/opd/getIdealWeight", requestHeaders, payload);
+			//osb link 
+		String data =  RestUtils.postWithHeaders("http://192.168.10.59:7003/GetIdealWeight/ProxyService/GetIdealWeight", requestHeaders, payload);
+		System.out.println("data "+data);
+		return data;
+	}
+	
+	@RequestMapping(value="/saveObesityDetails", method = RequestMethod.POST,produces="application/json",consumes="application/json")
+	public String saveObesityDetails(@RequestBody String payload, HttpServletRequest request, HttpServletResponse response) {
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		//String data =  RestUtils.postWithHeaders("http://localhost:8081/AshaServices/v0.1/opd/saveObesityDetails", requestHeaders, payload);
+		//osb link
+		String data =  RestUtils.postWithHeaders("http://192.168.10.59:7003/SaveObesityDetails/ProxyService/SaveObesityDetails", requestHeaders, payload);
+		System.out.println("data "+data);
+		return data;
+	}
+}

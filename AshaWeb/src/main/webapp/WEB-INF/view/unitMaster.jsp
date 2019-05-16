@@ -185,7 +185,7 @@ function GetCommandList(){
 		for(var k=0; k<comboArray.length;k++){
 			
 			if(comboArray[k] == uType){
-				alert("uType"+uType);	
+				
 				jQuery("#sUnitTypList").val(uTypeId);
 			}
 		}
@@ -498,7 +498,7 @@ function generateReport()
     <!-- Begin page -->
     <div id="wrapper">
 
-      
+        
         <div class="content-page">
             <!-- Start content -->
             <div class="">
@@ -594,7 +594,7 @@ function generateReport()
 
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <for3 id="addUnitForm" name="addUnitForm" action="" method="POST">
+                                            <form id="addUnitForm" name="addUnitForm" action="" method="POST">
                                                 <div class="row">
                                                     <div class="col-md-4">
                                                         <div class="form-group row">

@@ -1,0 +1,642 @@
+package com.icg.jkt.dao.impl;
+
+import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.icg.jkt.dao.PatientRegistrationDao;
+import com.icg.jkt.entity.AppSetup;
+import com.icg.jkt.entity.DoctorRoaster;
+import com.icg.jkt.entity.MasAdministrativeSex;
+import com.icg.jkt.entity.MasAppointmentSession;
+import com.icg.jkt.entity.MasBloodGroup;
+import com.icg.jkt.entity.MasDepartment;
+import com.icg.jkt.entity.MasEmployee;
+import com.icg.jkt.entity.MasEmployeeDependent;
+import com.icg.jkt.entity.MasIdentificationType;
+import com.icg.jkt.entity.MasMedicalCategory;
+import com.icg.jkt.entity.MasRegistrationType;
+import com.icg.jkt.entity.MasRelation;
+import com.icg.jkt.entity.MasServiceType;
+import com.icg.jkt.entity.Patient;
+import com.icg.jkt.entity.Visit;
+import com.icg.jkt.hibernateutils.GetHibernateUtils;
+import com.icg.jkt.utils.HMSUtil;
+
+
+@Repository
+@Transactional
+public class PatientRegistrationDaoImpl implements PatientRegistrationDao{
+
+	@Autowired
+	GetHibernateUtils getHibernateUtils;
+	
+
+
+	@SuppressWarnings({ "unchecked"})
+	@Override
+	public Map<String,Object> findPatientAndDependentFromEmployee(String serviceNo) {
+		// TODO Auto-generated method stub
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<MasEmployee> employeeList = new ArrayList<MasEmployee>();
+		List<Patient> patientList = new ArrayList<Patient>();
+		List<MasEmployeeDependent> employeeDependentList = new ArrayList<MasEmployeeDependent>();
+		
+		long selfRelationId= Long.parseLong(HMSUtil.getProperties("adt.properties","SELF_RELATION_ID"));
+		int i=0;
+		
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+
+			
+			patientList = session.createCriteria(Patient.class)
+							.add(Restrictions.eq("serviceNo",serviceNo))
+							.add(Restrictions.isNotNull("uhidNo")).list();
+			
+			
+			if(patientList.size()>0 && !patientList.isEmpty()) {
+				
+				Long []relationArray = new Long [patientList.size()];
+				for(Patient patient:patientList) {
+					relationArray[i] = patient.getMasRelation().getRelationId();
+					i++;
+				}
+				
+				boolean contains = Arrays.stream(relationArray).anyMatch(x -> x ==selfRelationId);
+				long employeeId = patientList.get(0).getMasEmployee().getEmployeeId();
+				
+				if(contains)  { //true
+					employeeDependentList = session.createCriteria(MasEmployeeDependent.class)
+							.add(Restrictions.eq("masEmployee.employeeId", employeeId))
+							.add(Restrictions.not(Restrictions.in("masRelation.relationId", relationArray)))
+							.list();
+				}else { // false
+					
+					employeeList = session.createCriteria(MasEmployee.class)
+							.add(Restrictions.eq("serviceNo",serviceNo))
+							.add(Restrictions.eq("status","y"))
+							.list();
+					employeeDependentList = session.createCriteria(MasEmployeeDependent.class)
+							.add(Restrictions.eq("masEmployee.employeeId", employeeId))
+							.add(Restrictions.not(Restrictions.in("masRelation.relationId", relationArray)))
+							.list();
+				}
+				
+			}
+			else {
+				employeeList = session.createCriteria(MasEmployee.class)
+				.add(Restrictions.eq("serviceNo",serviceNo))
+				.add(Restrictions.eq("status","y"))
+				.list();
+			}
+			map.put("patientList", patientList);
+			map.put("employeeList", employeeList);
+			map.put("employeeDependentList", employeeDependentList);
+		}catch (Exception e) {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return map;
+	}
+
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<MasDepartment> geDepartmentList() {
+		
+		List<MasDepartment> departmentList = new ArrayList<MasDepartment>();
+		long departmentTypeId = Long.parseLong(HMSUtil.getProperties("adt.properties", "DEPARTMENT_TYPE_ID").trim());
+		
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			departmentList=session.createCriteria(MasDepartment.class)
+					.add(Restrictions.eq("status","y").ignoreCase())
+					.createAlias("masDepartmentType", "dt")
+					.add(Restrictions.eq("dt.departmentTypeId",departmentTypeId))
+					.addOrder(Order.asc("departmentName"))
+					.list();
+			
+		}catch (Exception e) {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return departmentList;
+	}
+
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<MasBloodGroup> geBloodGroupList() {
+		List<MasBloodGroup> bloodGroupList = new ArrayList<MasBloodGroup>();
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			bloodGroupList= session.createCriteria(MasBloodGroup.class)
+					.addOrder(Order.asc("bloodGroupName")).list();
+		}catch(Exception e) {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return bloodGroupList;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<MasMedicalCategory> getMedicalCategoryList() {
+		List<MasMedicalCategory> medicalCategoryList = new ArrayList<MasMedicalCategory>();
+		
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			medicalCategoryList = session.createCriteria(MasMedicalCategory.class)
+					.addOrder(Order.asc("medicalCategoryName")).list();
+		}catch(Exception e) {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		
+		return medicalCategoryList;
+	}
+
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, Object> getTokenNoForDepartmentMultiVisit(long departmentId,long hospitalId,long appointmentTypeId) {
+		Map<String, Object>map = new HashMap<String, Object>();
+		 List<DoctorRoaster> doctorRosterList = new ArrayList<DoctorRoaster>();
+		 List<Long>tokenNoList = new ArrayList<Long>();
+		 long tokenNo = 0;
+		 long appSessionId=0;
+		 String tokenMsg="";
+		 
+		 try {
+			 Date visitStratDate= null;
+			 Date visitEndDate= null;
+			 
+			 Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			 
+			 Date today = new Date();
+		     String dateString = HMSUtil.convertDateToStringFormat(today, "yyyy-MM-dd");
+				try {
+					visitStratDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}    
+			
+				visitEndDate =HMSUtil.getNextDate(today) ;
+						
+						
+						
+				doctorRosterList =session.createCriteria(DoctorRoaster.class)
+									.add(Restrictions.eq("masDepartment.departmentId", departmentId))
+									.add(Restrictions.eq("masHospital.hospitalId", hospitalId))
+									.add(Restrictions.eq("roasterDate", visitStratDate))
+									.list();
+				
+				
+				if(doctorRosterList.size()>0) {
+					 String rosterValues = doctorRosterList.get(0).getRoasterValue();
+					 String[] arrayValues = rosterValues.split(",");
+					 String appTypeAndValue= "";
+					 for(int i=0;i<arrayValues.length;i++) {
+						 appTypeAndValue = arrayValues[i];
+						 if(appTypeAndValue.substring(appTypeAndValue.lastIndexOf('@')+1).equalsIgnoreCase(String.valueOf(appointmentTypeId))) {
+							 
+					appSessionId = getAppointmentSessionId(hospitalId, departmentId, appointmentTypeId);
+					if(appSessionId!=0) {		 
+							 tokenNoList = session.createCriteria(Visit.class)
+									 .createAlias("masAppointmentSession", "session").add(Restrictions.eq("session.id", appSessionId)) 
+									 .createAlias("masAppointmentType", "appType").add(Restrictions.eq("appType.appointmentTypeId", appointmentTypeId))
+									 .createAlias("masHospital", "hospital") .add(Restrictions.eq("hospital.hospitalId", hospitalId))
+									 .add(Restrictions.ge("visitDate", visitStratDate))
+									 .add(Restrictions.lt("visitDate", visitEndDate))
+									 .setProjection(Projections.max("tokenNo"))
+									 .list();
+							 
+							 if (tokenNoList.get(0) != null) {
+								 tokenNo = tokenNoList.get(0);
+								 tokenNo++;
+								 
+							}
+							 else{ //  tokenNoList is null
+								 tokenNo = 1;
+							 }
+						
+							 
+							 List<AppSetup>setupList = new ArrayList<AppSetup>();				 	
+							 String dayName = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(visitStratDate.getTime());
+							
+							 setupList=session.createCriteria(AppSetup.class)
+									    .add(Restrictions.eq("masHospital.hospitalId", hospitalId)) 
+									    .add(Restrictions.eq("masDepartment.departmentId", departmentId))
+									    .add(Restrictions.eq("days", dayName))
+										.add(Restrictions.eq("masAppointmentSession.id", appSessionId))
+										.list();
+							 
+							
+								if(setupList.size()>0)
+								{
+									if(tokenNo > (setupList.get(0).getTotalToken().intValue()))
+									{
+										tokenNo = 0;
+										tokenMsg="Token is Full for " + "("+ dayName+")";
+									}
+									else{
+											tokenMsg = String.valueOf(tokenNo);
+									}
+								}
+								else
+								{
+									tokenMsg ="No Appointment Setup";
+								}
+
+						}
+						 	break;
+					}
+				}
+
+			}else {
+				tokenMsg ="Doctor Roster is not available";
+			}
+				map.put("tokenMsg",tokenMsg );
+				map.put("appointmentTypeId",appointmentTypeId );
+			 
+		 }catch(Exception e) {
+				getHibernateUtils.getHibernateUtlis().CloseConnection();
+				e.printStackTrace();
+			}finally {
+				getHibernateUtils.getHibernateUtlis().CloseConnection();
+			}
+		 
+		  return map;
+	}
+
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<MasRegistrationType> getRegistrationTypeList() {
+		List<MasRegistrationType> masRegistrationTypeList = new ArrayList<MasRegistrationType>();
+		
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			masRegistrationTypeList = session.createCriteria(MasRegistrationType.class)
+					.addOrder(Order.desc("registrationTypeName")).list();
+		}catch(Exception e) {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return masRegistrationTypeList;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<MasAdministrativeSex> getGenderList() {
+		List<MasAdministrativeSex> genderList = new ArrayList<MasAdministrativeSex>();
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			genderList = session.createCriteria(MasAdministrativeSex.class)
+					.addOrder(Order.asc("administrativeSexName")).list();
+		}catch(Exception e) {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return genderList;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<MasIdentificationType> getIdentificationList() {
+		List<MasIdentificationType> identificationTypeList = new ArrayList<MasIdentificationType>();
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			identificationTypeList = session.createCriteria(MasIdentificationType.class)
+					.addOrder(Order.asc("identificationName")).list();
+		}catch(Exception e) {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return identificationTypeList;
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<MasServiceType> getServiceTypeList() {
+		List<MasServiceType> serviceTypeList = new ArrayList<MasServiceType>();
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			serviceTypeList = session.createCriteria(MasServiceType.class)
+					.add(Restrictions.eq("status","y"))
+					.addOrder(Order.asc("serviceTypeName")).list();
+		}catch(Exception e) {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		
+		return serviceTypeList;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public long getPatientFromUhidNo(long uhidNO) {
+		long patientId=0;
+		List<Patient> patientList =new ArrayList<Patient>(); 
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			patientList =	session.createCriteria(Patient.class)
+			.add(Restrictions.eq("uhidNo", uhidNO)).list();
+			
+			if(patientList.size()>0) {
+				patientId=	patientList.get(0).getPatientId();
+			}
+		}catch(Exception e) {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		
+		return patientId;
+	}
+
+
+
+	@SuppressWarnings("unused")
+	@Override
+	public long saveVisitForRegisteredPatient(Visit visit) {
+	
+		long visitId =0;
+		
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			Criteria criteria = session.createCriteria(Visit.class);
+			Transaction tx = session.beginTransaction();
+			Serializable id = session.save(visit);
+			tx.commit();
+			if (id != null) {
+				visitId = (long)id;
+			} else {
+				visitId = 0;
+			}
+		} catch (Exception e) {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+			e.getMessage();
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return visitId;
+	}
+
+
+
+	@SuppressWarnings("unused")
+	@Override
+	public long savePatient(Patient patient) {
+		long patientId =0;
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			Criteria criteria = session.createCriteria(Patient.class);
+			Transaction tx = session.beginTransaction(); 
+			Serializable id = session.save(patient);
+			 tx.commit(); 
+			if (id != null) {
+				patientId = (long)id;
+			} else {
+				patientId = 0;
+			}
+		} catch (Exception e) {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+			e.getMessage();
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return patientId;
+	}
+
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<MasRelation> getRelationList() {
+		List<MasRelation> masRelationList = new ArrayList<MasRelation>();
+		Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+		try {
+			masRelationList = session.createCriteria(MasRelation.class)
+					.addOrder(Order.asc("relationName")).list();
+		}catch (Exception e) {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+			e.getMessage();
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return masRelationList;
+	}
+
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, List<Patient>> searchOthersRegisteredPatient(long uhinNo, String patientName, String serviceNo,
+			String mobileNo) {
+		Map<String,List<Patient>> map = new HashMap<String, List<Patient>>();
+		List<Patient> patientList = new ArrayList<Patient>();
+		long ICG_REGISTRATION_TYPE_ID= Long.parseLong(HMSUtil.getProperties("adt.properties","ICG_REGISTRATION_TYPE_ID"));
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			Criteria cr=null;
+			cr=session.createCriteria(Patient.class);
+			if(uhinNo!=0) {
+				cr=cr.add(Restrictions.eq("uhidNo", uhinNo));
+			}
+			if(!patientName.isEmpty()) {
+				cr=cr.add(Restrictions.ilike("patientName", "%"+patientName+"%"));
+				
+			}
+			if(!serviceNo.isEmpty()) {
+				cr=cr.add(Restrictions.eq("serviceNo", serviceNo));
+			}
+			if(!mobileNo.isEmpty()) {
+				cr=cr.add(Restrictions.eq("mobileNo", mobileNo));
+			}
+			
+			// condition for registration type not equal to ICG
+			cr=cr.add(Restrictions.ne("masRegistrationType.registrationTypeId", ICG_REGISTRATION_TYPE_ID));
+			patientList= cr.list();
+			
+			map.put("patientList", patientList);
+		}catch (Exception e) {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+			e.getMessage();
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return map;
+	}
+
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, Object> getPatientTypeCodeAndRelationCode(long patientRelationId, long registrationTypeId) {
+
+		List<MasRelation> masRelationList = new ArrayList<MasRelation>();
+		List<MasRegistrationType> registrationTypeList = new ArrayList<MasRegistrationType>();	
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			String relationCode = "";
+			String registrationTypeCode = "";
+
+			
+			masRelationList = session.createCriteria(MasRelation.class)
+					.add(Restrictions.eq("status", "y").ignoreCase())
+					.add(Restrictions.idEq(patientRelationId)).list();
+			
+			
+			for (MasRelation masRelation : masRelationList) {
+				relationCode =String.valueOf(masRelation.getNewRelationCode()) ;
+				map.put("relationCode", relationCode);
+			}	
+			
+			registrationTypeList = session.createCriteria(MasRegistrationType.class)
+					.add(Restrictions.eq("status", "y").ignoreCase())
+					.add(Restrictions.idEq(registrationTypeId)).list();
+				
+			for (MasRegistrationType registrationType : registrationTypeList) {
+				registrationTypeCode = String.valueOf(registrationType.getRegistrationTypeCode());
+				map.put("registrationTypeCode", registrationTypeCode);
+			}
+		}catch (Exception e) {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+			e.getMessage();
+			e.printStackTrace();
+		}finally {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return map;
+	}
+
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public String getHinIdOthers(String patientCode) {
+		String previousHinNo = "";
+		String maxSequenceNo = "";
+		List<Patient> previousHinNoList = new ArrayList<Patient>();
+		int hospitalId = 1;// HospitalId will fetch from session
+		
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			
+				previousHinNoList = session.createCriteria(Patient.class).createAlias("masRegistrationType", "mt")
+						.add(Restrictions.eq("mt.registrationTypeCode", patientCode)).list();
+						System.out.println("patientCode"+patientCode);
+			
+			if (previousHinNoList.size() > 0) {
+
+				ArrayList hinNoSequenceList = new ArrayList();
+				for (Patient patient : previousHinNoList) {
+					
+						previousHinNo = Long.toString(patient.getUhidNo());						
+						String sequenceNo = previousHinNo.substring(2);
+						int i = Integer.parseInt(sequenceNo);
+						hinNoSequenceList.add(i);
+						
+					
+				}
+
+				if (hinNoSequenceList.size() > 0) {
+					maxSequenceNo = Collections.max(hinNoSequenceList)
+							.toString();
+				}
+			}
+		} catch (HibernateException e) {
+			e.printStackTrace();
+		//	session.close();
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
+		return maxSequenceNo;
+
+	
+	}
+
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public long getAppointmentSessionId(long hospitalId, long departmentId, long appointmentTypeId) {
+		List<Long> appSession = new ArrayList<Long>();
+		long appSessionId = 0;
+
+		try {
+			Session session = getHibernateUtils.getHibernateUtlis().OpenSession();
+			appSession = session.createCriteria(MasAppointmentSession.class)
+					.add(Restrictions.eq("masHospital.hospitalId", hospitalId))
+					.add(Restrictions.eq("masDepartment.departmentId", departmentId))
+					.add(Restrictions.eq("masAppointmentType.appointmentTypeId", appointmentTypeId))
+					.setProjection(Projections.property("id")).list();
+
+			if (appSession.size() > 0) {
+				appSessionId = appSession.get(0);
+			}
+		} catch (Exception e) {
+			getHibernateUtils.getHibernateUtlis().CloseConnection();
+			e.getMessage();
+			e.printStackTrace();
+		} finally {
+			//This session will not be close 
+			//getHibernateUtils.getHibernateUtlis().CloseConnection();
+		}
+		return appSessionId;
+	}
+	
+
+}

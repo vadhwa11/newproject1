@@ -1,0 +1,123 @@
+package com.icg.jkt.service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface OpdService {
+
+	Map<String, Object> getWaitingPatientList(Map mapForDS);
+
+	String addVitalPreConsulataionDetails(HashMap<String, Object> payload, HttpServletRequest request,
+			HttpServletResponse response);
+
+	String PreConsPatientWatingList(HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+
+	String PreConsPatientWatingListMapped(HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+
+	String OpdPatientWatingList(HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+
+	String searchPatientWatingList(HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+
+	//String idealWeight(HashMap<String, String> jsondata, HttpServletRequest request, HttpServletResponse response);
+
+	String OpdPatientDetails(HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+
+	String familyHistoryDetails(HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+
+	String saveOpdPatientDetails(HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+
+	String saveOpdTemplates(HashMap<String, Object> jsondata, HttpServletRequest request, HttpServletResponse response);
+
+	String saveInvestigationDetails(HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+
+	String saveReferalDetails(HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+	
+	String getObesityWaitingList(HashMap<String, Object> jsondata);	
+
+	String getObesityDetails(HashMap<String, Object> jsondata);	
+	
+	String idealWeight(HashMap<String, String> jsondata, HttpServletRequest request,HttpServletResponse response);
+	
+	String saveObesityDetails(HashMap<String, Object> jsondata);
+	
+	String referredPatientList(HashMap<String, String> jsondata, HttpServletRequest request,HttpServletResponse response);
+	
+	String referredPatientDetail(HashMap<String, String> jsondata, HttpServletRequest request,HttpServletResponse response);
+	
+	String updateReferralDetail(HashMap<String, Object> jsondata, HttpServletRequest request,HttpServletResponse response);
+	
+	String getAdmissionDischargeList(HashMap<String, String> jsondata, HttpServletRequest request,HttpServletResponse response);
+	
+	String admissionAndDischarge(HashMap<String, String> jsondata, HttpServletRequest request,HttpServletResponse response);
+	
+	String savePatientAdmission(HashMap<String, String> jsondata, HttpServletRequest request,HttpServletResponse response);
+	
+	String getServiceWisePatientList(HashMap<String, String> jsondata, HttpServletRequest request,HttpServletResponse response);
+	
+	String saveNewAdmission(HashMap<String, String> jsondata, HttpServletRequest request,HttpServletResponse response);
+	
+	String nursingCareWaitingList(HashMap<String, String> jsondata, HttpServletRequest request,HttpServletResponse response);
+	
+	String getNursingCareDetail(HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+	
+	String getProcedureDetail(HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response);  
+	
+	String saveProcedureDetail(HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+	String getPendingDischargeList(HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+	
+	String physioTherapyWaitingList(Map<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+	
+	String getphysioTherapyDetail(HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+	
+	String getOpdReportsDetailsbyServiceNo(HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+
+	String getOpdReportsDetailsbyPatinetId(HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+
+	String getOpdReportsDetailsbyVisitId(HashMap<String, Object> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+	
+	String getExaminationDetail(HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+	
+	String getInvestigationDetail(HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+
+	String getTreatmentPatientDetail(HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+	String getPatientHistoryDetail(HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+	String getPatientReferalDetail(HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+	
+	String submitPatientRecall(HashMap<String, Object> payload, HttpServletRequest request,
+			HttpServletResponse response);
+	
+	String deleteGridRow(HashMap<String, String> jsondata, HttpServletRequest request,
+			HttpServletResponse response);
+
+
+}
